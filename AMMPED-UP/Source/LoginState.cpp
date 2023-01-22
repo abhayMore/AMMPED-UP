@@ -1,11 +1,14 @@
-#include "../Header Files/Login.h"
+#include "../Header Files/LoginState.h"
 #include "../Header Files/MainMenu.h"
 
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
+#include "../Header Files/LoginPageState.h"
+#include "../Header Files/RegisterPageState.h"
+
 #include <memory>
 
-Login::Login(std::shared_ptr<Context>& context) :
+LoginState::LoginState(std::shared_ptr<Context>& context) :
 	m_context(context), 
 	m_isLoginButtonSelected(true),
 	m_isLoginButtonPressed(false),
@@ -16,11 +19,11 @@ Login::Login(std::shared_ptr<Context>& context) :
 {
 }
 
-Login::~Login()
+LoginState::~LoginState()
 {
 }
 
-void Login::init()
+void LoginState::init()
 {
 	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
 
@@ -61,7 +64,7 @@ void Login::init()
 	
 }
 
-void Login::processInput()
+void LoginState::processInput()
 {
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
@@ -144,7 +147,7 @@ void Login::processInput()
 	}
 }
 
-void Login::update(sf::Time deltaTime)
+void LoginState::update(sf::Time deltaTime)
 {
 	if (m_isLoginButtonSelected)
 	{
@@ -171,11 +174,15 @@ void Login::update(sf::Time deltaTime)
 	{
 		//TODO
 		//Go to Play State
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_context->m_states->add(std::make_unique<LoginPageState>(m_context), true);
+
+		//m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
 
 	}
 	else if (m_isRegisterButtonPressed)
 	{
+		m_context->m_states->add(std::make_unique<RegisterPageState>(m_context), true);
+
 
 	}
 	else if (m_isExitButtonPressed)
@@ -184,7 +191,7 @@ void Login::update(sf::Time deltaTime)
 	}
 }
 
-void Login::draw()
+void LoginState::draw()
 {
 	m_context->m_window->clear();
 	m_context->m_window->draw(m_loginBackground);
@@ -197,10 +204,10 @@ void Login::draw()
 	m_context->m_window->display();
 }
 
-void Login::start()
+void LoginState::start()
 {
 }
 
-void Login::pause()
+void LoginState::pause()
 {
 }
