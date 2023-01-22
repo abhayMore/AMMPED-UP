@@ -7,6 +7,7 @@
 #include "SFML/Audio/Sound.hpp"
 #include "../Header Files/Animation.h"
 
+
 #include "Game.h"
 #include "State.h"
 #include "Snake.h"
@@ -38,6 +39,7 @@ private:
 
 	Animation foodAnimation;
 
+
 public:
 	GamePlay(std::shared_ptr<Context>& context);
 	~GamePlay();
@@ -53,3 +55,4 @@ public:
 
 	void takeScreenshot(const std::string& filename);
 };
+

@@ -1,14 +1,11 @@
-#include "../Header Files/LoginState.h"
+#include "../Header Files/Login.h"
 #include "../Header Files/MainMenu.h"
 
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
-#include "../Header Files/LoginPageState.h"
-#include "../Header Files/RegisterPageState.h"
-
 #include <memory>
 
-LoginState::LoginState(std::shared_ptr<Context>& context) :
+Login::Login(std::shared_ptr<Context>& context) :
 	m_context(context), 
 	m_isLoginButtonSelected(true),
 	m_isLoginButtonPressed(false),
@@ -19,11 +16,11 @@ LoginState::LoginState(std::shared_ptr<Context>& context) :
 {
 }
 
-LoginState::~LoginState()
+Login::~Login()
 {
 }
 
-void LoginState::init()
+void Login::init()
 {
 	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
 
@@ -64,7 +61,7 @@ void LoginState::init()
 	
 }
 
-void LoginState::processInput()
+void Login::processInput()
 {
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
@@ -147,7 +144,7 @@ void LoginState::processInput()
 	}
 }
 
-void LoginState::update(sf::Time deltaTime)
+void Login::update(sf::Time deltaTime)
 {
 	if (m_isLoginButtonSelected)
 	{
@@ -174,15 +171,11 @@ void LoginState::update(sf::Time deltaTime)
 	{
 		//TODO
 		//Go to Play State
-		m_context->m_states->add(std::make_unique<LoginPageState>(m_context), true);
-
-		//m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
 
 	}
 	else if (m_isRegisterButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<RegisterPageState>(m_context), true);
-
 
 	}
 	else if (m_isExitButtonPressed)
@@ -191,7 +184,7 @@ void LoginState::update(sf::Time deltaTime)
 	}
 }
 
-void LoginState::draw()
+void Login::draw()
 {
 	m_context->m_window->clear();
 	m_context->m_window->draw(m_loginBackground);
@@ -204,10 +197,10 @@ void LoginState::draw()
 	m_context->m_window->display();
 }
 
-void LoginState::start()
+void Login::start()
 {
 }
 
-void LoginState::pause()
+void Login::pause()
 {
 }

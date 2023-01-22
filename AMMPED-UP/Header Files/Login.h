@@ -6,7 +6,7 @@
 #include "State.h"
 #include "Game.h"
 
-class LoginState : public am::State
+class Login : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
@@ -26,8 +26,8 @@ private:
 	bool m_isExitButtonPressed;
 
 public:
-	LoginState(std::shared_ptr<Context>& context);
-	~LoginState();
+	Login(std::shared_ptr<Context>& context);
+	~Login();
 
 	void init() override;
 	void processInput() override;
