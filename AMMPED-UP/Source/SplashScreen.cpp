@@ -1,5 +1,5 @@
 #include "../Header Files/SplashScreen.h"
-#include "../Header Files/Login.h"
+#include "../Header Files/LoginState.h"
 #include "SFML/Window/Event.hpp"
 
 SplashScreen::SplashScreen(std::shared_ptr<Context>& context):
@@ -35,7 +35,7 @@ void SplashScreen::update(sf::Time deltaTime)
 	
 	if (m_clock.getElapsedTime().asSeconds() > 3)
 	{
-		m_context->m_states->add(std::make_unique<Login>(m_context));
+		m_context->m_states->add(std::make_unique<LoginState>(m_context));
 	}
 }
 
