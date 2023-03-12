@@ -42,7 +42,7 @@
     <ClCompile Include="Source\PauseGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Snake.cpp">
+    <ClCompile Include="Source\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\SoundPlayer.cpp">
@@ -64,6 +64,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\RegisterPageState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Bomb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,7 +95,7 @@
     <ClInclude Include="Header Files\PauseGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\Snake.h">
+    <ClInclude Include="Header Files\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\SoundPlayer.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="json-3.11.2\include\nlohmann\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Bomb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

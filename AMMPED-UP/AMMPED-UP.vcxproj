@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Animation.cpp" />
     <ClCompile Include="Source\AssetManager.cpp" />
+    <ClCompile Include="Source\Bomb.cpp" />
     <ClCompile Include="Source\ExitState.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\GameOver.cpp" />
@@ -32,7 +33,7 @@
     <ClCompile Include="Source\MusicPlayer.cpp" />
     <ClCompile Include="Source\PauseGame.cpp" />
     <ClCompile Include="Source\RegisterPageState.cpp" />
-    <ClCompile Include="Source\Snake.cpp" />
+    <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SoundPlayer.cpp" />
     <ClCompile Include="Source\SplashScreen.cpp" />
     <ClCompile Include="Source\StateManager.cpp" />
@@ -40,6 +41,7 @@
   <ItemGroup>
     <ClInclude Include="Header Files\Animation.h" />
     <ClInclude Include="Header Files\AssetManager.h" />
+    <ClInclude Include="Header Files\Bomb.h" />
     <ClInclude Include="Header Files\Button.h" />
     <ClInclude Include="Header Files\ExitState.h" />
     <ClInclude Include="Header Files\Game.h" />
@@ -51,7 +53,7 @@
     <ClInclude Include="Header Files\MusicPlayer.h" />
     <ClInclude Include="Header Files\PauseGame.h" />
     <ClInclude Include="Header Files\RegisterPageState.h" />
-    <ClInclude Include="Header Files\Snake.h" />
+    <ClInclude Include="Header Files\Player.h" />
     <ClInclude Include="Header Files\SoundPlayer.h" />
     <ClInclude Include="Header Files\SplashScreen.h" />
     <ClInclude Include="Header Files\State.h" />

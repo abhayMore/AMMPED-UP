@@ -32,8 +32,8 @@ void SplashScreen::processInput()
 
 void SplashScreen::update(sf::Time deltaTime)
 {
-	
-	if (m_clock.getElapsedTime().asSeconds() > 3)
+	m_elapsedTime += deltaTime;
+	if (m_elapsedTime.asSeconds() > 3.0)
 	{
 		m_context->m_states->add(std::make_unique<LoginState>(m_context));
 	}

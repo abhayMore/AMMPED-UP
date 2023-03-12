@@ -2,6 +2,7 @@
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/SplashScreen.h"
+#include "../Header Files/MainMenu.h"
 
 Game::Game() : m_context(std::make_shared<Context>())
 {
@@ -16,7 +17,7 @@ Game::Game() : m_context(std::make_shared<Context>())
     m_context->m_assets->addSoundTrack(IN_GAME_SOUND_TRACK, "Resources/assets/music/assets_audio_Spinning out.ogg", true);
 
 	//Add First State(SPLASHSCREEN STATE) to m_states here
-    m_context->m_states->add(std::make_unique<SplashScreen>(m_context));
+    m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 }
 
 Game::~Game() 

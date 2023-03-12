@@ -1,4 +1,5 @@
 #include "../Header Files/Animation.h"
+
 Animation::Animation(sf::Sprite& target) : m_target(target)
 {
 	progress = totalLength = sf::Time(sf::seconds(0));
