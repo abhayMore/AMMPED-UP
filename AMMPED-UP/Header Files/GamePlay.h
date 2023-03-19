@@ -84,6 +84,7 @@ private:
 	sf::Sound m_foodEatSfx;
 	sf::Music& m_inGame;
 
+	std::vector<sf::Sprite> m_explosions;
 
 public:
 	GamePlay(std::shared_ptr<Context>& context);
@@ -99,6 +100,7 @@ public:
 	void start() override;
 
 	bool checkCollision(sf::Vector2f pos);
-	void removeWalls(sf::Vector2f pos);
+	void removeWalls(sf::Vector2f pos, int radius);
+	void explosions(sf::Vector2f bombPos, int radius);
 	void takeScreenshot(const std::string& filename);
 };

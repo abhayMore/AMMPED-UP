@@ -32,9 +32,7 @@ void Animation::update(sf::Time elapsed)
 			m_target.setTextureRect(m_frames[i].rect);
 			break;
 		}
-		
 	}
-
 }
 
 const sf::Time Animation::getLength() const

@@ -34,6 +34,9 @@ void GamePlay::init()
 	m_context->m_assets->addTextures(PLAYER, "Resources/assets/yellowPlayer.png");
 	m_context->m_assets->addTextures(BREAKABLE, "Resources/assets/breakable.png");
 	m_context->m_assets->addTextures(BOMB_TRIGGER, "Resources/assets/bombTileset.png");
+	m_context->m_assets->addTextures(EXPLOSION_CENTER, "Resources/assets/ExplosionCenter.png");
+	m_context->m_assets->addTextures(EXPLOSION_SIDE, "Resources/assets/ExplosionSide.png");
+	m_context->m_assets->addTextures(EXPLOSION_END, "Resources/assets/ExplosionEnd.png");
 
 	//GAME MAP
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -157,16 +160,11 @@ void GamePlay::update(sf::Time deltaTime)
 	if (!m_isPaused)
 	{
 		m_elapsedTime += deltaTime;
-		
 		if (m_elapsedTime.asSeconds() > 1.0)
 		{
 			m_time--;
 			m_timerText.setString("Time : " + std::to_string(m_time));
 			m_elapsedTime = sf::Time::Zero;
-			if (m_time < 0)
-			{
-				m_context->m_states->add(std::make_unique<GameOver>(m_context));
-			}
 		}
 		if (m_player.m_isBombPlaced)
 		{
@@ -174,7 +172,15 @@ void GamePlay::update(sf::Time deltaTime)
 
 			if (m_player.m_bomb.isBlasted())
 			{
-				removeWalls(m_player.m_bomb.getPosition());
+				if (m_player.playerBombCollision(m_player.m_bomb.getPosition()))
+				{
+					m_lives--;
+					m_livesText.setString("Lives : " + std::to_string(m_lives));
+					
+				}
+
+				removeWalls(m_player.m_bomb.getPosition(), 2);
+				explosions(m_player.m_bomb.getPosition(), 2);
 				m_player.m_isBombPlaced = false;
 				m_player.m_bomb.setIsBlasted(false);
 				m_player.m_bomb.setPosition(sf::Vector2f(640, 400));
@@ -188,6 +194,11 @@ void GamePlay::update(sf::Time deltaTime)
 		m_player.update(m_playerDirection, deltaTime);
 
 
+
+		if (m_lives <= 0 || m_time < 0)
+		{
+			m_context->m_states->add(std::make_unique<GameOver>(m_context));
+		}
 		m_playerDirection = { 0,0 };
 	}
 }
@@ -227,7 +238,17 @@ void GamePlay::draw()
 	}
 	m_context->m_window->draw(m_food);*/
 	m_context->m_window->draw(m_player.m_bomb);
+	
+	//if (m_player.m_bomb.isBlasted())
+	{
+		for (auto& explo : m_explosions)
+		{
+			m_context->m_window->draw(explo);
 
+		}
+	}
+	//m_explosions.clear();
+	
 	m_context->m_window->draw(m_player);
 
 	m_context->m_window->draw(m_scoreText);
@@ -273,17 +294,101 @@ void GamePlay::takeScreenshot(const std::string& filename)
 	}
 }
 
-void GamePlay::removeWalls(sf::Vector2f pos)
+void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 {
 	int x = pos.x / 16;
 	int y = pos.y / 16;
-	if (collisionMap[y - 1][x] == BREAKABLE_TILE)
-		collisionMap[y - 1][x] = EMPTY_TILE;
-	if (collisionMap[y][x - 1] == BREAKABLE_TILE)
-		collisionMap[y][x - 1] = EMPTY_TILE;
-	if (collisionMap[y + 1][x] == BREAKABLE_TILE)
-		collisionMap[y + 1][x] = EMPTY_TILE;
-	if (collisionMap[y][x + 1] == BREAKABLE_TILE)
-		collisionMap[y][x + 1] = EMPTY_TILE;
+
+	for (int i = 0; i <= radius; i++)
+	{
+		if (collisionMap[y - i][x] == BREAKABLE_TILE)
+			collisionMap[y - i][x] = EMPTY_TILE;
+		if (collisionMap[y][x - i] == BREAKABLE_TILE)
+			collisionMap[y][x - i] = EMPTY_TILE;
+		if (collisionMap[y + i][x] == BREAKABLE_TILE)
+			collisionMap[y + i][x] = EMPTY_TILE;
+		if (collisionMap[y][x + i] == BREAKABLE_TILE)
+			collisionMap[y][x + i] = EMPTY_TILE;
+	}
+}
+
+void GamePlay::explosions(sf::Vector2f bombPos, int radius)
+{
+	sf::Sprite center;
+	center.setTexture(m_context->m_assets->getTexture(EXPLOSION_CENTER));
+	center.setPosition(bombPos);
+	m_explosions.push_back(center);
+
+	sf::Sprite end[4];
+	for (int i = 0; i < 4; i++)
+	{
+		end[i].setTexture(m_context->m_assets->getTexture(EXPLOSION_END));
+	}
+
+	end[0].setPosition(sf::Vector2f(bombPos.x, bombPos.y - 16 * radius));
+	//end[0].setOrigin(8, 8);
 	
+	//end[1].setOrigin(end[1].getLocalBounds().width / 2, end[1].getLocalBounds().height / 2);
+
+	end[1].setPosition(sf::Vector2f(bombPos.x , bombPos.y + 16 * radius));
+	end[1].setOrigin(8, 8);
+	end[1].setRotation(180.0f);
+	end[1].setOrigin(0, 0);
+	end[1].setPosition(end[1].getPosition() + sf::Vector2f(16, 16));
+
+	end[2].setPosition(sf::Vector2f(bombPos.x - 16 * radius, bombPos.y));
+	end[2].setOrigin(8,8);
+	end[2].setRotation(-90.0f);
+	//sf::Vector2f offset2 = end[2].getPosition() - sf::Vector2f(bombPos.x - 16 * radius, bombPos.y);
+	end[2].setOrigin(0, 0);
+	end[2].setPosition(end[2].getPosition() + sf::Vector2f(0, 16));
+
+	//end[2].setOrigin(0, 0);
+
+	end[3].setPosition(sf::Vector2f(bombPos.x + 16 * radius, bombPos.y));
+	end[3].setOrigin(8,8);
+	end[3].setRotation(90.0f);
+	//sf::Vector2f offset3 = end[3].getPosition() - sf::Vector2f(bombPos.x + 16 * radius, bombPos.y);
+	end[3].setOrigin(0, 0);
+	end[3].setPosition(end[3].getPosition() + sf::Vector2f(16, 0));
+
+
+
+
+	for (int i = 1; i < radius; i++)
+	{
+		sf::Sprite sprite1;
+		sprite1.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+		sprite1.setPosition(sf::Vector2f(bombPos.x, bombPos.y - 16*i));
+
+		sf::Sprite sprite2;
+		sprite1.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+		sprite1.setPosition(sf::Vector2f(bombPos.x, bombPos.y + 16 * i));
+	
+		sf::Sprite sprite3;
+		sprite3.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+		sprite3.setPosition(sf::Vector2f(bombPos.x - 16 * i, bombPos.y));
+		sprite3.setOrigin(8, 8);
+		sprite3.setRotation(-90);
+		sprite3.setOrigin(0, 0);
+
+		sf::Sprite sprite4;
+		sprite4.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+		sprite4.setPosition(sf::Vector2f(bombPos.x + 16 * i, bombPos.y));
+		sprite4.setOrigin(8, 8);
+		sprite4.setRotation(90);
+		sprite4.setOrigin(0, 0);
+
+		m_explosions.push_back(sprite1);
+		m_explosions.push_back(sprite2);
+		m_explosions.push_back(sprite3);
+		m_explosions.push_back(sprite4);
+
+	}
+	m_explosions.push_back(end[0]);
+	m_explosions.push_back(end[1]);
+	m_explosions.push_back(end[2]);
+	m_explosions.push_back(end[3]);
+
+
 }

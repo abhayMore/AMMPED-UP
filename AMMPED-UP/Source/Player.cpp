@@ -78,6 +78,39 @@ sf::Vector2f Player::getPosition()
 	return m_playerPosition;
 }
 
+bool Player::playerBombCollision(sf::Vector2f bombPos)
+{
+	if (bombPos.x - 16 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
+	{
+		return true;
+	}
+	else if (bombPos.x == m_playerPosition.x && bombPos.y + 16 == m_playerPosition.y)
+	{
+		return true;
+	}
+	else if (bombPos.x + 16 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
+	{
+		return true;
+
+	}
+	else if (bombPos.x == m_playerPosition.x && bombPos.y - 16 == m_playerPosition.y)
+	{
+		return true;
+	}
+	else if (bombPos == m_playerPosition)
+	{
+		return true;
+	}
+	return false;
+
+}
+
+bool Player::playerCollisionIsOn(sf::Sprite& bombSprite)
+{
+
+	return m_playerSprite.getGlobalBounds().intersects(bombSprite.getGlobalBounds());
+}
+
 void Player::setPosition(sf::Vector2f pos)
 {
 	m_playerPosition = pos;

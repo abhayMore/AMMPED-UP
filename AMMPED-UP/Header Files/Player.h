@@ -39,6 +39,10 @@ public:
 
 	sf::Vector2f getPosition();
 
+	bool playerBombCollision(sf::Vector2f bombPos);
+	bool playerCollisionIsOn(sf::Sprite& bombSprite);
+
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
