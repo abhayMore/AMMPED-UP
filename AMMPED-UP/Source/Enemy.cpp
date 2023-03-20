@@ -1,22 +1,31 @@
-#include "../Header Files/Player.h"
-#include <iostream>
+#include "../Header Files/Enemy.h"
 
-Player::Player() :
-	m_playerPosition({ 16,16 }),
-	velocity(100),
+Enemy::Enemy() :
+	velocity(1),
 	m_playerUpWalkAnimation(m_playerSprite),
 	m_playerDownWalkAnimation(m_playerSprite),
 	m_playerLeftWalkAnimation(m_playerSprite),
-	m_playerRightWalkAnimation(m_playerSprite),
-	m_isBombPlaced(false)
+	m_playerRightWalkAnimation(m_playerSprite)
 {
 }
 
-Player::~Player()
+
+Enemy::Enemy(sf::Vector2f pos) :
+m_playerPosition(pos),
+velocity(1),
+m_playerUpWalkAnimation(m_playerSprite),
+m_playerDownWalkAnimation(m_playerSprite),
+m_playerLeftWalkAnimation(m_playerSprite),
+m_playerRightWalkAnimation(m_playerSprite)
 {
 }
 
-void Player::init(const sf::Texture& texture)
+Enemy::~Enemy()
+{
+
+}
+
+void Enemy::init(const sf::Texture& texture)
 {
 	m_playerSprite.setTexture(texture);
 	m_playerSprite.setTextureRect(sf::IntRect(96, 0, 16, 16));
@@ -25,7 +34,7 @@ void Player::init(const sf::Texture& texture)
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.001)) });
 
 	m_playerDownWalkAnimation.addFrame({ sf::IntRect(48,0,16,16), sf::Time(sf::seconds(0.001)) });
-	m_playerDownWalkAnimation.addFrame({ sf::IntRect(64,0,16,16), sf::Time(sf::seconds(0.001) )});
+	m_playerDownWalkAnimation.addFrame({ sf::IntRect(64,0,16,16), sf::Time(sf::seconds(0.001)) });
 	m_playerDownWalkAnimation.addFrame({ sf::IntRect(80,0,16,16), sf::Time(sf::seconds(0.001)) });
 
 	m_playerRightWalkAnimation.addFrame({ sf::IntRect(96,0,16,16), sf::Time(sf::seconds(0.001)) });
@@ -42,98 +51,59 @@ void Player::init(const sf::Texture& texture)
 
 }
 
-void Player::update(const sf::Vector2f& direction, sf::Time deltaTime)
+void Enemy::update(const sf::Vector2f& direction, sf::Time deltaTime)
 {
-	if (direction == sf::Vector2f(0, -1))
+	if (direction == sf::Vector2f(0, -16))
 	{
 		m_playerUpWalkAnimation.update(deltaTime);
 	}
-	else if (direction == sf::Vector2f(0, 1))
+	else if (direction == sf::Vector2f(0, 16))
 	{
 		m_playerDownWalkAnimation.update(deltaTime);
 	}
-	else if (direction == sf::Vector2f(1, 0))
+	else if (direction == sf::Vector2f(16, 0))
 	{
 		m_playerRightWalkAnimation.update(deltaTime);
 	}
-	else if (direction == sf::Vector2f(-1, 0))
+	else if (direction == sf::Vector2f(-16, 0))
 	{
 		m_playerLeftWalkAnimation.update(deltaTime);
 	}
-	m_playerPosition += velocity * direction * deltaTime.asSeconds();
+	//p = p + v * t;
+	m_playerPosition += direction;
 	m_playerSprite.setPosition(m_playerPosition);
 }
 
-bool Player::isOn(const sf::Sprite& other) const
+bool Enemy::isOn(const sf::Sprite& other) const
 {
 	return other.getGlobalBounds().intersects(m_playerSprite.getGlobalBounds());
 }
 
-void Player::grow(const sf::Vector2f& direction)
+void Enemy::grow(const sf::Vector2f& direction)
 {
-	
 }
 
-sf::Vector2f Player::getPosition()
+bool Enemy::isSelfIntersecting()
 {
-	return m_playerPosition;
-}
-
-bool Player::playerBombCollision(sf::Vector2f bombPos)
-{
-	if (bombPos.x - 16 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
-	{
-		return true;
-	}
-	else if (bombPos.x == m_playerPosition.x && bombPos.y + 16 == m_playerPosition.y)
-	{
-		return true;
-	}
-	else if (bombPos.x + 16 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
-	{
-		return true;
-
-	}
-	else if (bombPos.x == m_playerPosition.x && bombPos.y - 16 == m_playerPosition.y)
-	{
-		return true;
-	}
-	else if (bombPos == m_playerPosition)
-	{
-		return true;
-	}
 	return false;
-
 }
 
-bool Player::playerCollisionIsOn(sf::Sprite& bombSprite)
-{
-
-	return bombSprite.getGlobalBounds().intersects(m_playerSprite.getGlobalBounds());
-}
-
-void Player::setPosition(sf::Vector2f pos)
+void Enemy::setPosition(sf::Vector2f pos)
 {
 	m_playerPosition = pos;
 }
 
-void Player::setIsBombPlaced(bool isPlaced)
+sf::Vector2f Enemy::getPosition()
 {
-	m_isBombPlaced = isPlaced;
+	return sf::Vector2f(m_playerPosition);
 }
 
-bool Player::getIsBombPlaced()
+bool Enemy::playerCollisionIsOn(sf::Sprite& sprite)
 {
-	return m_isBombPlaced;
+	return false;
 }
 
-bool Player::isSelfIntersecting()
+void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	return 1;
-}
-
-void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-		
 	target.draw(m_playerSprite);
 }

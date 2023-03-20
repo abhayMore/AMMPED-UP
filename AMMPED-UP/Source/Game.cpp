@@ -8,7 +8,7 @@ Game::Game() : m_context(std::make_shared<Context>())
 {
     //CREATE THE WINDOW
 	m_context->m_window->create(sf::VideoMode(640, 480), "AMMPED-UP", sf::Style::Close);
-    m_context->m_window->setKeyRepeatEnabled(true);
+    //m_context->m_window->setKeyRepeatEnabled(true);
 
     //LOAD GAME RELATED SOUNDEFFECTS
     m_context->m_assets->addSoundEffects(FOOD_SFX, "Resources/assets/music/assets_audio_Simple Coin 006.wav");

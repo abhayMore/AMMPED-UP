@@ -23,13 +23,11 @@ void Bomb::update(const sf::Vector2f pos, sf::Time deltatime)
 	m_bomb.setPosition(m_bombPosition);
 	m_bombTickAnimation.update(deltatime);
 	m_bombTriggerTime += deltatime;
-	//std::cout << m_bombTriggerTime.asSeconds() << std::endl;
 
 	if (m_bombTriggerTime.asSeconds() > 2.0)
 	{
 		m_blasted = true;
 		m_bombTriggerTime = sf::Time::Zero;
-		std::cout << "Hello" << std::endl;
 
 	}
 }

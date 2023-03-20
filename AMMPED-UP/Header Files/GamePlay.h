@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <array>
+#include <utility>
 
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Text.hpp"
@@ -10,6 +11,7 @@
 #include "Game.h"
 #include "State.h"
 #include "Player.h"
+#include "Enemy.h"
 
 enum CMapTile
 {
@@ -29,6 +31,18 @@ private:
 	std::array<sf::Sprite, 4> m_walls;
 	Player m_player;
 
+	Enemy m_enemyAI1; // RANDOM AI:
+	Enemy m_enemyAI2; // RANDOM AI VERTICAL
+	Enemy m_enemyAI3; // RANDOM AI HORIZONTAL
+	sf::Vector2f enemyAI1Dir;
+	sf::Vector2f enemyAI2Dir;
+	sf::Vector2f enemyAI3Dir;
+	sf::Vector2f randDirection;
+	sf::Time m_changeDirection;
+	sf::Time m_elaspedTimeForEnemy;
+
+	std::vector<std::pair<sf::Sprite, int>> pairTile;
+
 	std::vector<sf::Sprite> m_breakableTiles;
 
 	int collisionMap[30][40] = {
@@ -46,8 +60,8 @@ private:
 		{1, 0, 0, 0, 0, 2, 2, 2, 1, 1, 1, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 2, 0, 0, 0, 0, 1, },
 		{1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 1, 1, 0, 1, },
 		{1, 0, 1, 1, 2, 0, 0, 0, 2, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 1, 1, 0, 1, },
-		{1, 2, 2, 0, 2, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 2, 1, },
-		{1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 1, },
+		{1, 2, 2, 0, 2, 0, 0, 0, 2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 2, 0, 0, 0, 2, 2, 1, },
+		{1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 1, },
 		{1, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0, 1, 1, 0, 1, },
 		{1, 0, 1, 1, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 0, 0, 0, 0, 2, 2, 0, 0, 1, 1, 0, 1, },
 		{1, 2, 2, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 2, 0, 0, 0, 2, 0, 2, 1, },
@@ -66,6 +80,11 @@ private:
 	};
 
 	sf::Sprite m_gameMap;
+
+	std::vector<sf::Vector2f> openSpaces;
+	
+	
+	std::vector<sf::Vector2f> m_directions;
 
 	sf::Vector2f m_playerDirection;
 	sf::Time m_elapsedTime;
@@ -86,6 +105,10 @@ private:
 
 	std::vector<sf::Sprite> m_explosions;
 
+	//used for explosions remove
+	sf::Time blastTime;
+	bool blastBool;
+
 public:
 	GamePlay(std::shared_ptr<Context>& context);
 	~GamePlay();
@@ -99,6 +122,7 @@ public:
 	void pause() override;
 	void start() override;
 
+	sf::Vector2f checkCollision(sf::Vector2f pos, sf::Vector2f dir);
 	bool checkCollision(sf::Vector2f pos);
 	void removeWalls(sf::Vector2f pos, int radius);
 	void explosions(sf::Vector2f bombPos, int radius);

@@ -22,6 +22,7 @@
     <ClCompile Include="Source\Animation.cpp" />
     <ClCompile Include="Source\AssetManager.cpp" />
     <ClCompile Include="Source\Bomb.cpp" />
+    <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\ExitState.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\GameOver.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="Source\MainMenu.cpp" />
     <ClCompile Include="Source\MusicPlayer.cpp" />
     <ClCompile Include="Source\PauseGame.cpp" />
+    <ClCompile Include="Source\PoweUp.cpp" />
     <ClCompile Include="Source\RegisterPageState.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\SoundPlayer.cpp" />
@@ -43,6 +45,7 @@
     <ClInclude Include="Header Files\AssetManager.h" />
     <ClInclude Include="Header Files\Bomb.h" />
     <ClInclude Include="Header Files\Button.h" />
+    <ClInclude Include="Header Files\Enemy.h" />
     <ClInclude Include="Header Files\ExitState.h" />
     <ClInclude Include="Header Files\Game.h" />
     <ClInclude Include="Header Files\GameOver.h" />
@@ -52,6 +55,7 @@
     <ClInclude Include="Header Files\MainMenu.h" />
     <ClInclude Include="Header Files\MusicPlayer.h" />
     <ClInclude Include="Header Files\PauseGame.h" />
+    <ClInclude Include="Header Files\PoweUp.h" />
     <ClInclude Include="Header Files\RegisterPageState.h" />
     <ClInclude Include="Header Files\Player.h" />
     <ClInclude Include="Header Files\SoundPlayer.h" />
