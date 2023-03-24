@@ -12,6 +12,7 @@
 #include "State.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "PowerUP.h"
 
 enum CMapTile
 {
@@ -19,9 +20,9 @@ enum CMapTile
 	WALL_TILE,				//	1 in array
 	BREAKABLE_TILE,			//	2 in array
 	BREAKABLE_TILE_V2,		//	3 in array
-	VERTICAL_WALL,
-	HORIZONTAL_WALL,
-	INNER_COMPARTMENT_WALL,
+	VERTICAL_WALL_TILE,
+	HORIZONTAL_WALL_TILE,
+	INNER_COMPARTMENT_WALL_TILE,
 	COLUMN_WALL1 = 61,
 	COLUMN_WALL2 = 62,
 	COLUMN_WALL3 = 63,
@@ -29,12 +30,12 @@ enum CMapTile
 
 };
 
+
+
 class GamePlay : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
-	sf::Sprite m_grass;
-	sf::Sprite m_food;
 	Player m_player;
 
 	Enemy m_enemyAI1; // RANDOM AI
@@ -63,7 +64,7 @@ private:
 
 	std::vector<std::pair<sf::Sprite, int>> pairTile;
 
-	std::vector<sf::Sprite> m_allWalls;
+	std::vector<sf::Sprite> m_breakableWalls;
 	std::vector<sf::Sprite> m_VWalls;
 	std::vector<sf::Sprite> m_HWalls;
 	std::vector<sf::Sprite> m_innerCompartmentWalls;
@@ -104,14 +105,16 @@ private:
 	};
 
 	sf::Sprite m_gameMap;
-
 	std::vector<sf::Vector2f> openSpaces;
-	
-	
+	std::vector<sf::Vector2f> powerUPSpaces;
 	std::vector<sf::Vector2f> m_directions;
 
 	sf::Vector2f m_playerDirection;
 	sf::Time m_elapsedTime;
+
+	std::list<PowerUP> m_powerUPs;
+	bool powerUpTime = false;
+
 
 	sf::Text m_timerText;
 	int m_time = 100;
@@ -132,6 +135,7 @@ private:
 	//used for explosions remove
 	sf::Time blastTime;
 	bool blastBool;
+	int m_radius = 1;
 	sf::Vector2f prevPosiition;
 
 public:
@@ -150,7 +154,8 @@ public:
 	bool checkCollision1(sf::Vector2f pos);
 	bool checkCollision2(sf::Vector2f pos);
 	bool checkCollision(sf::Vector2f pos);
-	void removeWalls(sf::Vector2f pos, int radius);
+	void applyPowerUPEffect(PowerUPType powerUPType);
+	int removeWalls(sf::Vector2f pos, int radius); //returns count of removed walls
 	void explosions(sf::Vector2f bombPos, int radius);
 	void takeScreenshot(const std::string& filename);
 };

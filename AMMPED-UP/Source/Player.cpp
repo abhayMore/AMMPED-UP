@@ -3,7 +3,7 @@
 
 Player::Player() :
 	m_playerPosition({ 16,16 }),
-	velocity(200),
+	m_velocity(100),
 	m_playerUpWalkAnimation(m_playerSprite),
 	m_playerDownWalkAnimation(m_playerSprite),
 	m_playerLeftWalkAnimation(m_playerSprite),
@@ -60,13 +60,13 @@ void Player::update(const sf::Vector2f& direction, sf::Time deltaTime)
 	{
 		m_playerLeftWalkAnimation.update(deltaTime);
 	}
-	m_playerPosition +=(velocity * direction * deltaTime.asSeconds());
+	m_playerPosition +=(m_velocity * direction * deltaTime.asSeconds());
 	m_playerSprite.setPosition(m_playerPosition);
 }
 
 bool Player::isOn(const sf::Sprite& other) const
 {
-	return other.getGlobalBounds().intersects(m_playerSprite.getGlobalBounds());
+	return m_playerSprite.getGlobalBounds().intersects(other.getGlobalBounds());
 }
 
 void Player::grow(const sf::Vector2f& direction)
@@ -117,6 +117,16 @@ void Player::setPosition(sf::Vector2f pos)
 	m_playerPosition = pos;
 }
 
+void Player::setVelocity(float vel)
+{
+	m_velocity = vel;
+}
+
+float Player::getVelocity()
+{
+	return m_velocity;
+}
+
 void Player::setIsBombPlaced(bool isPlaced)
 {
 	m_isBombPlaced = isPlaced;
@@ -125,6 +135,12 @@ void Player::setIsBombPlaced(bool isPlaced)
 bool Player::getIsBombPlaced()
 {
 	return m_isBombPlaced;
+}
+
+sf::Sprite& Player::getSprite()
+{
+	// TODO: insert return statement here
+	return m_playerSprite;
 }
 
 bool Player::isSelfIntersecting()

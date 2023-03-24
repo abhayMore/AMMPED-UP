@@ -33,6 +33,7 @@
     <ClCompile Include="Source\MainMenu.cpp" />
     <ClCompile Include="Source\MusicPlayer.cpp" />
     <ClCompile Include="Source\PauseGame.cpp" />
+    <ClCompile Include="Source\PowerUP.cpp" />
     <ClCompile Include="Source\PoweUp.cpp" />
     <ClCompile Include="Source\RegisterPageState.cpp" />
     <ClCompile Include="Source\Player.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="Header Files\MainMenu.h" />
     <ClInclude Include="Header Files\MusicPlayer.h" />
     <ClInclude Include="Header Files\PauseGame.h" />
+    <ClInclude Include="Header Files\PowerUP.h" />
     <ClInclude Include="Header Files\PoweUp.h" />
     <ClInclude Include="Header Files\RegisterPageState.h" />
     <ClInclude Include="Header Files\Player.h" />

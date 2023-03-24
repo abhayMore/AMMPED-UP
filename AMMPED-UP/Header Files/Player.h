@@ -15,7 +15,7 @@ class Player : public sf::Drawable
 private:
 	sf::Sprite m_playerSprite;
 	sf::Vector2f m_playerPosition;
-	float velocity;
+	float m_velocity;
 	Animation m_playerUpWalkAnimation;
 	Animation m_playerDownWalkAnimation;
 	Animation m_playerLeftWalkAnimation;
@@ -35,8 +35,12 @@ public:
 	void grow(const sf::Vector2f& direction);
 	bool isSelfIntersecting() ;
 	void setPosition(sf::Vector2f pos);
+	void setVelocity(float vel);
+	float getVelocity();
+
 	void setIsBombPlaced(bool isPlaced);
 	bool getIsBombPlaced();
+	sf::Sprite& getSprite();
 
 	sf::Vector2f getPosition();
 

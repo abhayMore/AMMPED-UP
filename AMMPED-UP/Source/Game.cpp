@@ -27,25 +27,15 @@ Game::~Game()
 
 void Game::run()
 {
-
     sf::Clock clock;
     sf::Time timeSinceLastFrame = sf::Time::Zero;
 
     while (m_context->m_window->isOpen())
     {
-        timeSinceLastFrame += clock.restart();   
-        //timeSinceLastFrame = clock.restart();
-
-        while (timeSinceLastFrame > TIME_PER_FRAME)
-        {
-            timeSinceLastFrame -= TIME_PER_FRAME;
-
-            m_context->m_states->processStateChange();
-            m_context->m_states->getCurrent()->processInput();
-            //m_context->m_states->getCurrent()->update(timeSinceLastFrame);
-            m_context->m_states->getCurrent()->update(TIME_PER_FRAME);
-            m_context->m_states->getCurrent()->draw();
-
-        }
+        timeSinceLastFrame = clock.restart();
+        m_context->m_states->processStateChange();
+        m_context->m_states->getCurrent()->processInput();
+        m_context->m_states->getCurrent()->update(timeSinceLastFrame);
+        m_context->m_states->getCurrent()->draw();
     }
 }
