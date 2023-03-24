@@ -30,8 +30,6 @@ enum CMapTile
 
 };
 
-
-
 class GamePlay : public am::State
 {
 private:
