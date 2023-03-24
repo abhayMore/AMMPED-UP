@@ -3,7 +3,7 @@
 
 Player::Player() :
 	m_playerPosition({ 16,16 }),
-	velocity(100),
+	velocity(200),
 	m_playerUpWalkAnimation(m_playerSprite),
 	m_playerDownWalkAnimation(m_playerSprite),
 	m_playerLeftWalkAnimation(m_playerSprite),
@@ -60,7 +60,7 @@ void Player::update(const sf::Vector2f& direction, sf::Time deltaTime)
 	{
 		m_playerLeftWalkAnimation.update(deltaTime);
 	}
-	m_playerPosition += velocity * direction * deltaTime.asSeconds();
+	m_playerPosition +=(velocity * direction * deltaTime.asSeconds());
 	m_playerSprite.setPosition(m_playerPosition);
 }
 

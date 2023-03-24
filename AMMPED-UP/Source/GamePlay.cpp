@@ -39,8 +39,14 @@ void GamePlay::init()
 {
 	// LOADING TEXTURES OF GAMEPLAY STATE
 	m_context->m_assets->addTextures(PLAYER, "Resources/assets/yellowPlayer.png");
-	m_context->m_assets->addTextures(ENEMY, "Resources/assets/enemy1.png");
+	m_context->m_assets->addTextures(ENEMY1, "Resources/assets/enemy1.png");
+	m_context->m_assets->addTextures(ENEMY2, "Resources/assets/enemy2.png");
+	m_context->m_assets->addTextures(ENEMY3, "Resources/assets/enemy3.png");
 	m_context->m_assets->addTextures(BREAKABLE, "Resources/assets/breakable.png");
+	m_context->m_assets->addTextures(VERTICAL_WALL_TILE, "Resources/assets/verticalWall.png");
+	m_context->m_assets->addTextures(HORIZONTAL_WALL_TILE, "Resources/assets/HorizontalWall.png");
+	m_context->m_assets->addTextures(INNER_COMPARTMENT_WALL_TILE, "Resources/assets/innerWall.png");
+
 	m_context->m_assets->addTextures(BOMB_TRIGGER, "Resources/assets/bombTileset.png");
 	m_context->m_assets->addTextures(EXPLOSION_CENTER, "Resources/assets/ExplosionCenter.png");
 	m_context->m_assets->addTextures(EXPLOSION_SIDE, "Resources/assets/ExplosionSide.png");
@@ -57,7 +63,6 @@ void GamePlay::init()
 	{
 		for (int j = 0; j < 40; j++)
 		{
-			//std::cout << collisionMap[i][j] << ' ';
 
 			if (collisionMap[i][j] == BREAKABLE_TILE)
 			{
@@ -65,23 +70,51 @@ void GamePlay::init()
 				sf::Sprite breakabletile;
 				breakabletile.setTexture(m_context->m_assets->getTexture(BREAKABLE));
 				breakabletile.setPosition(sf::Vector2f( j * 16, i * 16 ));
-				m_breakableTiles.push_back(breakabletile);
+				m_allWalls.push_back(breakabletile);
 
-				pairTile.push_back(std::make_pair(breakabletile, BREAKABLE_TILE));
+				//pairTile.push_back(std::make_pair(breakabletile, BREAKABLE_TILE));
+			}
+			if (collisionMap[i][j] == VERTICAL_WALL)
+			{
+				sf::Sprite vWall;
+				vWall.setTexture(m_context->m_assets->getTexture(VERTICAL_WALL_TILE));
+				vWall.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_VWalls.push_back(vWall);
+			}
+
+			if (collisionMap[i][j] == HORIZONTAL_WALL)
+			{
+
+				sf::Sprite hWall;
+				hWall.setTexture(m_context->m_assets->getTexture(HORIZONTAL_WALL_TILE));
+				hWall.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_HWalls.push_back(hWall);
+			}
+			if (collisionMap[i][j] == INNER_COMPARTMENT_WALL)
+			{
+
+				sf::Sprite iWall;
+				iWall.setTexture(m_context->m_assets->getTexture(INNER_COMPARTMENT_WALL_TILE));
+				iWall.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_innerCompartmentWalls.push_back(iWall);
 			}
 		}
 	}
 
 	
 
-	m_directions = { sf::Vector2f(0,-16), sf::Vector2f(0,16), sf::Vector2f(-16,0), sf::Vector2f(16,0) };
-	randDirection = m_directions[ReturnIntRandom(0, 1)];
+	m_directions = { sf::Vector2f(0,-1), sf::Vector2f(0,1), sf::Vector2f(-1,0), sf::Vector2f(1,0) };
+	enemyDirectionAI1 = m_directions[ReturnIntRandom(0, 3)];
+	enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
+	enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
+	enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
+
 	//OPEN SPACES AVAILABLE
 	for (int i = 0; i < 30; i++)
 	{
 		for (int j = 0; j < 40; j++)
 		{
-			if (collisionMap[i][j] == EMPTY_TILE)
+			if (collisionMap[j][i] == EMPTY_TILE)
 			{
 				openSpaces.push_back(sf::Vector2f(j * 16, i * 16));
 			}
@@ -91,14 +124,23 @@ void GamePlay::init()
 	// PLAYER INIT
 	m_player.init(m_context->m_assets->getTexture(PLAYER));
 	m_player.m_bomb.init(m_context->m_assets->getTexture(BOMB_TRIGGER));
+	prevPosiition = m_player.getPosition();
 
 	//AI INIT
-	m_enemyAI1.setPosition(openSpaces[ReturnIntRandom(0, openSpaces.size() - 1)]);
-	m_enemyAI1.init(m_context->m_assets->getTexture(ENEMY));
-	m_enemyAI2.init(m_context->m_assets->getTexture(ENEMY));
-	m_enemyAI3.init(m_context->m_assets->getTexture(ENEMY));
-	m_enemyAI2.setPosition(openSpaces[ReturnIntRandom(0, openSpaces.size()-1)]);
-	m_enemyAI3.setPosition(openSpaces[ReturnIntRandom(0, openSpaces.size()-1)]);
+	m_enemyAI1.setPosition(sf::Vector2f(241,176));
+	m_enemyAI2.setPosition(sf::Vector2f(384, 288));
+	m_enemyAI3.setPosition(sf::Vector2f(560, 208));
+	m_enemyAI4.setPosition(sf::Vector2f(304,448));
+
+	enemyPrevPosition1 = m_enemyAI1.getPosition();
+	enemyPrevPosition2 = m_enemyAI2.getPosition();
+	enemyPrevPosition3 = m_enemyAI3.getPosition();
+	enemyPrevPosition4 = m_enemyAI4.getPosition();
+
+	m_enemyAI1.init(m_context->m_assets->getTexture(ENEMY3));
+	m_enemyAI2.init(m_context->m_assets->getTexture(ENEMY3));
+	m_enemyAI3.init(m_context->m_assets->getTexture(ENEMY2));
+	m_enemyAI4.init(m_context->m_assets->getTexture(ENEMY2));
 
 	// SCORE INIT
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
@@ -230,9 +272,18 @@ void GamePlay::update(sf::Time deltaTime)
 {
 	if (!m_isPaused)
 	{
-		m_changeDirection += deltaTime;
+		m_changeDirectionTime += deltaTime;
 		m_elapsedTime += deltaTime;
 		m_elaspedTimeForEnemy += deltaTime;
+
+		m_player.update(m_playerDirection, deltaTime);
+		if (checkCollision1(m_player.getPosition()))
+			m_player.setPosition(prevPosiition);
+		prevPosiition = m_player.getPosition();
+
+
+
+
 		if (m_elapsedTime.asSeconds() > 1.0)
 		{
 			m_time--;
@@ -241,7 +292,7 @@ void GamePlay::update(sf::Time deltaTime)
 		}
 		if (m_player.m_isBombPlaced)
 		{
-			sf::Vector2i bombPos = sf::Vector2i((int)(m_player.m_bombPos.x / 16) * 16, (int)( m_player.m_bombPos.y / 16) * 16);
+			sf::Vector2i bombPos = sf::Vector2i((int)((m_player.m_bombPos.x + 8)/ 16) * 16, (int)( (m_player.m_bombPos.y +8) / 16) * 16);
 			m_player.m_bomb.update(sf::Vector2f(bombPos), deltaTime);
 
 			if (m_player.m_bomb.isBlasted())
@@ -278,39 +329,63 @@ void GamePlay::update(sf::Time deltaTime)
 			m_explosions.clear();
 			blastTime = sf::Time::Zero;
 		}
+			
+
+		
 		
 
-		//m_player.setPosition(checkCollision(m_player.getPosition(), m_playerDirection));
-		
-
-		m_player.update(m_playerDirection, deltaTime);
-
-		if (m_elaspedTimeForEnemy.asSeconds() > 0.4)
+		//if (m_elaspedTimeForEnemy.asSeconds() > 0.4)
 		{
-			if (m_changeDirection.asSeconds() >= 4.0)
+			if (m_changeDirectionTime.asSeconds() >= 4.0)
 			{
-				randDirection = m_directions[ReturnIntRandom(0,3)];
-				
-				std::cout << randDirection.x<< "   " <<randDirection.y << std::endl;
-				m_changeDirection = sf::Time::Zero;
+				enemyDirectionAI1 = m_directions[ReturnIntRandom(0, 3)];
+				enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
+				enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
+				enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
+				m_changeDirectionTime = sf::Time::Zero;
 			}
-			if (checkCollision(m_enemyAI1.getPosition() + randDirection))
+			if (checkCollision2(m_enemyAI1.getPosition()))
 			{
-				std::cout << "True" << std::endl;
-				randDirection = -randDirection;
+				m_enemyAI1.setPosition(enemyPrevPosition1);
+				enemyDirectionAI1 = -enemyDirectionAI1;
 			}
-			m_enemyAI1.update(randDirection, deltaTime);
+
+			if (checkCollision2(m_enemyAI2.getPosition()))
+			{
+				m_enemyAI2.setPosition(enemyPrevPosition2);
+				enemyDirectionAI2 = -enemyDirectionAI2;
+			}
+
+			if (checkCollision2(m_enemyAI3.getPosition()))
+			{
+				m_enemyAI3.setPosition(enemyPrevPosition3);
+				enemyDirectionAI3 = -enemyDirectionAI3;
+			}
+
+			if (checkCollision2(m_enemyAI4.getPosition()))
+			{
+				m_enemyAI4.setPosition(enemyPrevPosition4);
+				enemyDirectionAI4 = -enemyDirectionAI4;
+			}
+			m_enemyAI1.update(enemyDirectionAI1, deltaTime);
+			m_enemyAI2.update(enemyDirectionAI2, deltaTime);
+			m_enemyAI3.update(enemyDirectionAI3, deltaTime);
+			m_enemyAI4.update(enemyDirectionAI4, deltaTime);
+
 			m_elaspedTimeForEnemy = sf::Time::Zero;
 		}
 
-		//m_enemyAI2.update(m_playerDirection, deltaTime);
-		//m_enemyAI3.update(m_playerDirection, deltaTime);
+		
 
-
+		enemyPrevPosition1 = m_enemyAI1.getPosition();
+		enemyPrevPosition2 = m_enemyAI2.getPosition();
+		enemyPrevPosition3 = m_enemyAI3.getPosition();
+		enemyPrevPosition4 = m_enemyAI4.getPosition();
 		if (m_lives <= 0 || m_time < 0)
 		{
 			m_context->m_states->add(std::make_unique<GameOver>(m_context));
 		}
+
 	}
 }
 
@@ -320,7 +395,7 @@ void GamePlay::draw()
 	m_context->m_window->draw(m_gameMap);
 
 	// use std::vector<std::pair<sf::Sprite, int>> breakableTiles
-	m_breakableTiles.clear();
+	m_allWalls.clear();
 	for (int i = 0; i < 30; i++)
 	{
 		for (int j = 0; j < 40; j++)
@@ -330,15 +405,30 @@ void GamePlay::draw()
 				sf::Sprite breakabletile;
 				breakabletile.setTexture(m_context->m_assets->getTexture(BREAKABLE));
 				breakabletile.setPosition(sf::Vector2f(j * 16, i * 16));
-				m_breakableTiles.push_back(breakabletile);
+				m_allWalls.push_back(breakabletile);
 			}
 		}
 	}
 
-	for (auto& breakable : m_breakableTiles)
+	for (auto& walls : m_allWalls)
 	{
-		//if(breakable.second == breakableTile) then draw;
-		m_context->m_window->draw(breakable);
+		m_context->m_window->draw(walls);
+	}
+
+	for (auto& walls : m_VWalls)
+	{
+		m_context->m_window->draw(walls);
+
+	}
+	for (auto& walls : m_HWalls)
+	{
+		m_context->m_window->draw(walls);
+
+	}
+
+	for (auto& walls : m_innerCompartmentWalls)
+	{
+		m_context->m_window->draw(walls);
 
 	}
 	m_context->m_window->draw(m_player.m_bomb);
@@ -352,8 +442,9 @@ void GamePlay::draw()
 	m_context->m_window->draw(m_player);
 
 	m_context->m_window->draw(m_enemyAI1);
-	//m_context->m_window->draw(m_enemyAI2);
-	//m_context->m_window->draw(m_enemyAI3);
+	m_context->m_window->draw(m_enemyAI2);
+	m_context->m_window->draw(m_enemyAI3);
+	m_context->m_window->draw(m_enemyAI4);
 
 
 	m_context->m_window->draw(m_scoreText);
@@ -375,23 +466,43 @@ void GamePlay::start()
 	m_inGame.play();
 }
 
-sf::Vector2f GamePlay::checkCollision(sf::Vector2f pos, sf::Vector2f dir)
+bool GamePlay::checkCollision1(sf::Vector2f pos)
 {
 	for (int i = 0; i < 30; i++)
 	{
 		for (int j = 0; j < 40; j++)
 		{
-			if (collisionMap[j][i] == WALL_TILE || collisionMap[j][i] == BREAKABLE_TILE)
+			if (collisionMap[i][j] == HORIZONTAL_WALL || collisionMap[i][j] == VERTICAL_WALL || collisionMap[i][j] == COLUMN_WALL || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL)
 			{
 				if (pos.x + 16 > j * 16 &&
-					pos.x < j * 16 + 16 &&
+					pos.x + 1 <= j * 16 + 14 &&
 					pos.y + 16 > i * 16 &&
-					pos.y < i * 16 + 16)
-					return sf::Vector2f(j * 16 - dir.x*16, i * 16 - dir.y*16);
+					pos.y + 1 <= i * 16 + 14)
+				
+					return true;
 			}
 		}
 	}
-	return pos;
+	return false;
+}
+
+bool GamePlay::checkCollision2(sf::Vector2f pos)
+{
+	for (int i = 0; i < 30; i++)
+	{
+		for (int j = 0; j < 40; j++)
+		{
+			if (collisionMap[i][j] == HORIZONTAL_WALL || collisionMap[i][j] == VERTICAL_WALL || collisionMap[i][j] == COLUMN_WALL || collisionMap[i][j] == BREAKABLE_TILE)
+			{
+				if (pos.x + 16 > j * 16 &&
+					pos.x + 1<= j * 16 + 16 &&
+					pos.y + 16 > i * 16 &&
+					pos.y + 1 <= i * 16 + 16)
+					return true;
+			}
+		}
+	}
+	return false;
 }
 
 bool GamePlay::checkCollision(sf::Vector2f pos)
@@ -402,7 +513,6 @@ bool GamePlay::checkCollision(sf::Vector2f pos)
 		return true;
 	return false;
 }
-
 
 void GamePlay::takeScreenshot(const std::string& filename)
 {
@@ -446,7 +556,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			std::cout << radius << "out of upward loop" << i << std::endl;
 			break;
 		}
-		else if (collisionMap[y - i][x] == WALL_TILE)
+		else if (collisionMap[y - i][x] == HORIZONTAL_WALL || collisionMap[y - i][x] == VERTICAL_WALL || collisionMap[y - i][x] == COLUMN_WALL)
 			break;
 		else if (collisionMap[y - i][x] == EMPTY_TILE && i !=radius)
 		{
@@ -482,7 +592,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 
 			break;
 		}
-		else if (collisionMap[y + i][x] == WALL_TILE)
+		else if (collisionMap[y + i][x] == HORIZONTAL_WALL || collisionMap[y + i][x] == VERTICAL_WALL || collisionMap[y + i][x] == COLUMN_WALL)
 			break;
 		else if (collisionMap[y + i][x] == EMPTY_TILE && i != radius)
 		{
@@ -518,7 +628,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 
 			break;
 		}
-		else if (collisionMap[y][x - i] == WALL_TILE)
+		else if (collisionMap[y][x - i] == HORIZONTAL_WALL || collisionMap[y][x - i] == VERTICAL_WALL || collisionMap[y][x - i] == COLUMN_WALL)
 			break;
 		else if (collisionMap[y][x - i] == EMPTY_TILE && i != radius)
 		{
@@ -559,7 +669,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 
 			break;
 		}
-		else if (collisionMap[y][x + i] == WALL_TILE)
+		else if (collisionMap[y][x + i] == HORIZONTAL_WALL || collisionMap[y][x + i] == VERTICAL_WALL || collisionMap[y][x + i] == COLUMN_WALL)
 			break;
 		else if (collisionMap[y][x + i] == EMPTY_TILE && i != radius)
 		{

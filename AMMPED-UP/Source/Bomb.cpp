@@ -24,7 +24,7 @@ void Bomb::update(const sf::Vector2f pos, sf::Time deltatime)
 	m_bombTickAnimation.update(deltatime);
 	m_bombTriggerTime += deltatime;
 
-	if (m_bombTriggerTime.asSeconds() > 2.0)
+	if (m_bombTriggerTime.asSeconds() > 6.0)
 	{
 		m_blasted = true;
 		m_bombTriggerTime = sf::Time::Zero;

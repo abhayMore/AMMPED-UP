@@ -8,6 +8,7 @@ Game::Game() : m_context(std::make_shared<Context>())
 {
     //CREATE THE WINDOW
 	m_context->m_window->create(sf::VideoMode(640, 480), "AMMPED-UP", sf::Style::Close);
+    //m_context->m_window->setFramerateLimit(60);
     //m_context->m_window->setKeyRepeatEnabled(true);
 
     //LOAD GAME RELATED SOUNDEFFECTS
@@ -33,6 +34,7 @@ void Game::run()
     while (m_context->m_window->isOpen())
     {
         timeSinceLastFrame += clock.restart();   
+        //timeSinceLastFrame = clock.restart();
 
         while (timeSinceLastFrame > TIME_PER_FRAME)
         {
@@ -40,6 +42,7 @@ void Game::run()
 
             m_context->m_states->processStateChange();
             m_context->m_states->getCurrent()->processInput();
+            //m_context->m_states->getCurrent()->update(timeSinceLastFrame);
             m_context->m_states->getCurrent()->update(TIME_PER_FRAME);
             m_context->m_states->getCurrent()->draw();
 

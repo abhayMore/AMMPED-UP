@@ -17,6 +17,7 @@ private:
 	Animation m_playerLeftWalkAnimation;
 	Animation m_playerRightWalkAnimation;
 	float velocity;
+	sf::Vector2f m_direction;
 
 public:
 	Enemy();
@@ -31,6 +32,8 @@ public:
 	void setPosition(sf::Vector2f pos);
 
 	sf::Vector2f getPosition();
+	void setDirection(sf::Vector2f direction);
+	sf::Vector2f getDirection();
 
 	bool playerCollisionIsOn(sf::Sprite& sprite);
 
