@@ -46,6 +46,7 @@ void GamePlay::init()
 	m_context->m_assets->addTextures(VERTICAL_WALL_TILE, "Resources/assets/verticalWall.png");
 	m_context->m_assets->addTextures(HORIZONTAL_WALL_TILE, "Resources/assets/HorizontalWall.png");
 	m_context->m_assets->addTextures(INNER_COMPARTMENT_WALL_TILE, "Resources/assets/innerWall.png");
+	m_context->m_assets->addTextures(COLUMN_WALL, "Resources/assets/columnWall.png");
 
 	m_context->m_assets->addTextures(BOMB_TRIGGER, "Resources/assets/bombTileset.png");
 	m_context->m_assets->addTextures(EXPLOSION_CENTER, "Resources/assets/ExplosionCenter.png");
@@ -97,6 +98,42 @@ void GamePlay::init()
 				iWall.setTexture(m_context->m_assets->getTexture(INNER_COMPARTMENT_WALL_TILE));
 				iWall.setPosition(sf::Vector2f(j * 16, i * 16));
 				m_innerCompartmentWalls.push_back(iWall);
+			}
+			if (collisionMap[i][j] == COLUMN_WALL1)
+			{
+
+				sf::Sprite cWall1;
+				cWall1.setTexture(m_context->m_assets->getTexture(COLUMN_WALL));
+				cWall1.setTextureRect({ 0,0,16,16 });
+				cWall1.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_columnWall.push_back(cWall1);
+			}
+			if (collisionMap[i][j] == COLUMN_WALL2)
+			{
+
+				sf::Sprite cWall2;
+				cWall2.setTexture(m_context->m_assets->getTexture(COLUMN_WALL));
+				cWall2.setTextureRect({ 16,0,16,16 });
+				cWall2.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_columnWall.push_back(cWall2);
+			}
+			if (collisionMap[i][j] == COLUMN_WALL3)
+			{
+
+				sf::Sprite cWall3;
+				cWall3.setTexture(m_context->m_assets->getTexture(COLUMN_WALL));
+				cWall3.setTextureRect({ 32,0,16,16 });
+				cWall3.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_columnWall.push_back(cWall3);
+			}
+			if (collisionMap[i][j] == COLUMN_WALL4)
+			{
+
+				sf::Sprite cWall4;
+				cWall4.setTexture(m_context->m_assets->getTexture(COLUMN_WALL));
+				cWall4.setTextureRect({ 48,0,16,16 });
+				cWall4.setPosition(sf::Vector2f(j * 16, i * 16));
+				m_columnWall.push_back(cWall4);
 			}
 		}
 	}
@@ -171,7 +208,6 @@ void GamePlay::init()
 
 void GamePlay::processInput()
 {
-	//float countSpeed = 16.0f;
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
 	{
@@ -322,17 +358,12 @@ void GamePlay::update(sf::Time deltaTime)
 		{
 			blastTime += deltaTime;
 		}
-		
 		if (blastTime.asSeconds() > 0.25)
 		{
 			blastBool = false;
 			m_explosions.clear();
 			blastTime = sf::Time::Zero;
 		}
-			
-
-		
-		
 
 		//if (m_elaspedTimeForEnemy.asSeconds() > 0.4)
 		{
@@ -431,6 +462,12 @@ void GamePlay::draw()
 		m_context->m_window->draw(walls);
 
 	}
+	for (auto& walls : m_columnWall)
+	{
+		m_context->m_window->draw(walls);
+
+	}
+
 	m_context->m_window->draw(m_player.m_bomb);
 	
 	for (auto& explo : m_explosions)
@@ -472,7 +509,7 @@ bool GamePlay::checkCollision1(sf::Vector2f pos)
 	{
 		for (int j = 0; j < 40; j++)
 		{
-			if (collisionMap[i][j] == HORIZONTAL_WALL || collisionMap[i][j] == VERTICAL_WALL || collisionMap[i][j] == COLUMN_WALL || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL)
+			if (collisionMap[i][j] == HORIZONTAL_WALL || collisionMap[i][j] == VERTICAL_WALL || collisionMap[i][j] == COLUMN_WALL1 || collisionMap[i][j] == COLUMN_WALL2 || collisionMap[i][j] == COLUMN_WALL3 || collisionMap[i][j] == COLUMN_WALL4 || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL)
 			{
 				if (pos.x + 16 > j * 16 &&
 					pos.x + 1 <= j * 16 + 14 &&
@@ -492,7 +529,7 @@ bool GamePlay::checkCollision2(sf::Vector2f pos)
 	{
 		for (int j = 0; j < 40; j++)
 		{
-			if (collisionMap[i][j] == HORIZONTAL_WALL || collisionMap[i][j] == VERTICAL_WALL || collisionMap[i][j] == COLUMN_WALL || collisionMap[i][j] == BREAKABLE_TILE)
+			if (collisionMap[i][j] == HORIZONTAL_WALL || collisionMap[i][j] == VERTICAL_WALL || collisionMap[i][j] == COLUMN_WALL1 || collisionMap[i][j] == COLUMN_WALL2 || collisionMap[i][j] == COLUMN_WALL3 || collisionMap[i][j] == COLUMN_WALL4 || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL)
 			{
 				if (pos.x + 16 > j * 16 &&
 					pos.x + 1<= j * 16 + 16 &&
@@ -556,7 +593,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			std::cout << radius << "out of upward loop" << i << std::endl;
 			break;
 		}
-		else if (collisionMap[y - i][x] == HORIZONTAL_WALL || collisionMap[y - i][x] == VERTICAL_WALL || collisionMap[y - i][x] == COLUMN_WALL)
+		else if (collisionMap[y - i][x] == HORIZONTAL_WALL || collisionMap[y - i][x] == VERTICAL_WALL || collisionMap[y - i][x] == COLUMN_WALL1 || collisionMap[y - i][x] == COLUMN_WALL2 || collisionMap[y - i][x] == COLUMN_WALL3 || collisionMap[y - i][x] == COLUMN_WALL4)
 			break;
 		else if (collisionMap[y - i][x] == EMPTY_TILE && i !=radius)
 		{
@@ -592,7 +629,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 
 			break;
 		}
-		else if (collisionMap[y + i][x] == HORIZONTAL_WALL || collisionMap[y + i][x] == VERTICAL_WALL || collisionMap[y + i][x] == COLUMN_WALL)
+		else if (collisionMap[y + i][x] == HORIZONTAL_WALL || collisionMap[y + i][x] == VERTICAL_WALL || collisionMap[y + i][x] == COLUMN_WALL1 || collisionMap[y + i][x] == COLUMN_WALL2 || collisionMap[y + i][x] == COLUMN_WALL3 || collisionMap[y + i][x] == COLUMN_WALL4)
 			break;
 		else if (collisionMap[y + i][x] == EMPTY_TILE && i != radius)
 		{
@@ -628,7 +665,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 
 			break;
 		}
-		else if (collisionMap[y][x - i] == HORIZONTAL_WALL || collisionMap[y][x - i] == VERTICAL_WALL || collisionMap[y][x - i] == COLUMN_WALL)
+		else if (collisionMap[y][x - i] == HORIZONTAL_WALL || collisionMap[y][x - i] == VERTICAL_WALL || collisionMap[y][x - i] == COLUMN_WALL1 || collisionMap[y][x - i] == COLUMN_WALL2 || collisionMap[y][x - i] == COLUMN_WALL3 || collisionMap[y][x - i] == COLUMN_WALL4)
 			break;
 		else if (collisionMap[y][x - i] == EMPTY_TILE && i != radius)
 		{
@@ -669,7 +706,7 @@ void GamePlay::removeWalls(sf::Vector2f pos, int radius)
 
 			break;
 		}
-		else if (collisionMap[y][x + i] == HORIZONTAL_WALL || collisionMap[y][x + i] == VERTICAL_WALL || collisionMap[y][x + i] == COLUMN_WALL)
+		else if (collisionMap[y][x + i] == HORIZONTAL_WALL || collisionMap[y][x + i] == VERTICAL_WALL || collisionMap[y][x + i] == COLUMN_WALL1 || collisionMap[y][x + i] == COLUMN_WALL2 || collisionMap[y][x + i] == COLUMN_WALL3 || collisionMap[y][x + i] == COLUMN_WALL4)
 			break;
 		else if (collisionMap[y][x + i] == EMPTY_TILE && i != radius)
 		{
