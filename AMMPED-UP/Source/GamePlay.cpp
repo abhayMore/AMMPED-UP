@@ -147,6 +147,8 @@ void GamePlay::init()
 	enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
 	enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
 	enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
+	enemyDirectionAI5 = m_directions[ReturnIntRandom(2, 3)];
+	enemyDirectionAI6 = m_directions[ReturnIntRandom(0, 1)];
 
 	//OPEN SPACES AVAILABLE
 	for (int i = 0; i < 30; i++)
@@ -174,16 +176,22 @@ void GamePlay::init()
 	m_enemyAI2.setPosition(sf::Vector2f(384, 288));
 	m_enemyAI3.setPosition(sf::Vector2f(560, 208));
 	m_enemyAI4.setPosition(sf::Vector2f(304,448));
+	m_enemyAI5.setPosition(sf::Vector2f(256, 16));
+	m_enemyAI6.setPosition(sf::Vector2f(96, 192));
 
 	enemyPrevPosition1 = m_enemyAI1.getPosition();
 	enemyPrevPosition2 = m_enemyAI2.getPosition();
 	enemyPrevPosition3 = m_enemyAI3.getPosition();
 	enemyPrevPosition4 = m_enemyAI4.getPosition();
+	enemyPrevPosition5 = m_enemyAI5.getPosition();
+	enemyPrevPosition6 = m_enemyAI6.getPosition();
 
-	m_enemyAI1.init(m_context->m_assets->getTexture(ENEMY3));
-	m_enemyAI2.init(m_context->m_assets->getTexture(ENEMY3));
+	m_enemyAI1.init(m_context->m_assets->getTexture(ENEMY1));
+	m_enemyAI2.init(m_context->m_assets->getTexture(ENEMY1));
 	m_enemyAI3.init(m_context->m_assets->getTexture(ENEMY2));
 	m_enemyAI4.init(m_context->m_assets->getTexture(ENEMY2));
+	m_enemyAI5.init(m_context->m_assets->getTexture(ENEMY3));
+	m_enemyAI6.init(m_context->m_assets->getTexture(ENEMY3));
 
 	// SCORE INIT
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
@@ -233,7 +241,6 @@ void GamePlay::processInput()
 		case sf::Event::Closed:
 		{
 			m_context->m_window->close();
-
 			break;
 		}
 		case sf::Event::KeyPressed:
@@ -243,37 +250,46 @@ void GamePlay::processInput()
 			case sf::Keyboard::Up:
 			{
 				m_playerDirection = { 0.0f, -1 };
+				break;
 			}
-			break;
 			case sf::Keyboard::Down:
 			{
 				m_playerDirection = { 0.0f, 1 };
+				break;
 			}
-			break;
 			case sf::Keyboard::Left:
 			{
 				m_playerDirection = { -1, 0.0f };
+				break;
 			}
-			break;
 			case sf::Keyboard::Right:
 			{
 				m_playerDirection = { 1, 0.0f };
-			}
-			break;
+				break;
+			}			
 			case sf::Keyboard::Escape:
 			{
 				// INIT PAUSE STATE, ADD PAUSE STATE to m_states
 				m_context->m_states->add(std::make_unique<PauseGame>(m_context));
-
+				break;
 			}
-			break;
 			case sf::Keyboard::Space:
 			{
-				m_player.m_bombPos = m_player.getPosition();
-				if (!m_player.m_bomb.isBlasted())
+				if (!m_player.m_isBombPlaced)
 				{
+					m_player.m_bombPos = m_player.getPosition();
 					m_player.m_isBombPlaced = true;
 				}
+				break;
+			}
+			//TEMPORARY DEBUGGIN TOOL
+			case sf::Keyboard::P :
+			{
+				if (!showPowerUP)
+					showPowerUP = true;
+				else
+					showPowerUP = false;
+				break;
 			}
 			default:
 				break;
@@ -313,8 +329,6 @@ void GamePlay::processInput()
 			}
 			break;
 		}
-		break;
-
 		default:
 			break;
 		}
@@ -323,6 +337,7 @@ void GamePlay::processInput()
 
 void GamePlay::update(sf::Time deltaTime)
 {
+	//std::cout << sf::Mouse::getPosition(*m_context->m_window).x / 16 << ' ' << sf::Mouse::getPosition(*m_context->m_window).y / 16 << std::endl;
 	if (!m_isPaused)
 	{
 		m_changeDirectionTime += deltaTime;
@@ -375,6 +390,8 @@ void GamePlay::update(sf::Time deltaTime)
 						break;
 					}
 				}
+
+				m_player.m_isBombPlaced = false;
 			}
 		}
 		// explosion clear
@@ -397,6 +414,9 @@ void GamePlay::update(sf::Time deltaTime)
 				enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
 				enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
 				enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
+				enemyDirectionAI5 = m_directions[ReturnIntRandom(2, 3)];
+				enemyDirectionAI6 = m_directions[ReturnIntRandom(0, 1)];
+
 				m_changeDirectionTime = sf::Time::Zero;
 			}
 			if (checkCollision2(m_enemyAI1.getPosition()))
@@ -422,10 +442,22 @@ void GamePlay::update(sf::Time deltaTime)
 				m_enemyAI4.setPosition(enemyPrevPosition4);
 				enemyDirectionAI4 = -enemyDirectionAI4;
 			}
+			if (checkCollision2(m_enemyAI5.getPosition()))
+			{
+				m_enemyAI5.setPosition(enemyPrevPosition5);
+				enemyDirectionAI5 = -enemyDirectionAI5;
+			}
+			if (checkCollision2(m_enemyAI6.getPosition()))
+			{
+				m_enemyAI6.setPosition(enemyPrevPosition6);
+				enemyDirectionAI6 = -enemyDirectionAI6;
+			}
 			m_enemyAI1.update(enemyDirectionAI1, deltaTime);
 			m_enemyAI2.update(enemyDirectionAI2, deltaTime);
 			m_enemyAI3.update(enemyDirectionAI3, deltaTime);
 			m_enemyAI4.update(enemyDirectionAI4, deltaTime);
+			m_enemyAI5.update(enemyDirectionAI5, deltaTime);
+			m_enemyAI6.update(enemyDirectionAI6, deltaTime);
 
 			m_elaspedTimeForEnemy = sf::Time::Zero;
 		}
@@ -436,6 +468,8 @@ void GamePlay::update(sf::Time deltaTime)
 		enemyPrevPosition2 = m_enemyAI2.getPosition();
 		enemyPrevPosition3 = m_enemyAI3.getPosition();
 		enemyPrevPosition4 = m_enemyAI4.getPosition();
+		enemyPrevPosition5 = m_enemyAI5.getPosition();
+		enemyPrevPosition6 = m_enemyAI6.getPosition();
 		if (m_lives <= 0 || m_time < 0)
 		{
 			m_context->m_states->add(std::make_unique<GameOver>(m_context));
@@ -469,11 +503,12 @@ void GamePlay::draw()
 		}
 	}
 	//DRAW POWERUPS BEFORE BREAKABLE WALLS TO HIDE IT UNDER THEM
-	for (auto& powerup : m_powerUPs)
-	{
-		m_context->m_window->draw(powerup);
+	if (!showPowerUP) {
+		for (auto& powerup : m_powerUPs)
+		{
+			m_context->m_window->draw(powerup);
+		}
 	}
-	
 
 	//DRAW BREAKABLE WALLS
 	for (auto& walls : m_breakableWalls)
@@ -504,10 +539,15 @@ void GamePlay::draw()
 		m_context->m_window->draw(walls);
 
 	}
-	
+	if (showPowerUP) {
+		for (auto& powerup : m_powerUPs)
+		{
+			m_context->m_window->draw(powerup);
+		}
+	}
 
 	//DRAW BOMB
-	m_context->m_window->draw(m_player.m_bomb);
+	if(m_player.m_isBombPlaced) m_context->m_window->draw(m_player.m_bomb);
 
 	//DRAW EXPLOSION
 	for (auto& explo : m_explosions)
@@ -522,6 +562,8 @@ void GamePlay::draw()
 	m_context->m_window->draw(m_enemyAI2);
 	m_context->m_window->draw(m_enemyAI3);
 	m_context->m_window->draw(m_enemyAI4);
+	m_context->m_window->draw(m_enemyAI5);
+	m_context->m_window->draw(m_enemyAI6);
 
 	//SCORE, TEXT & LIVES
 	m_context->m_window->draw(m_scoreText);
@@ -543,7 +585,7 @@ void GamePlay::start()
 	m_inGame.play();
 }
 
-bool GamePlay::checkCollision1(sf::Vector2f pos)
+bool GamePlay::checkCollision1(sf::Vector2f pos) //FOR PLAYER
 {
 	/*for (auto& walls : m_breakableWalls)
 	{
@@ -601,7 +643,7 @@ bool GamePlay::checkCollision1(sf::Vector2f pos)
 	return false;
 }
 
-bool GamePlay::checkCollision2(sf::Vector2f pos)
+bool GamePlay::checkCollision2(sf::Vector2f pos) //FOR ENEMY AI
 {
 	for (int i = 0; i < 30; i++)
 	{
@@ -609,10 +651,10 @@ bool GamePlay::checkCollision2(sf::Vector2f pos)
 		{
 			if (collisionMap[i][j] == HORIZONTAL_WALL_TILE || collisionMap[i][j] == VERTICAL_WALL_TILE || collisionMap[i][j] == COLUMN_WALL1 || collisionMap[i][j] == COLUMN_WALL2 || collisionMap[i][j] == COLUMN_WALL3 || collisionMap[i][j] == COLUMN_WALL4 || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL_TILE)
 			{
-				if (pos.x + 16 > j * 16 &&
-					pos.x + 1<= j * 16 + 16 &&
-					pos.y + 16 > i * 16 &&
-					pos.y + 1 <= i * 16 + 16)
+				if (pos.x + 14 > j * 16 &&
+					pos.x + 1 <= j * 16 + 14 &&
+					pos.y + 14 > i * 16 &&
+					pos.y + 1 <= i * 16 + 14)
 					return true;
 			}
 		}

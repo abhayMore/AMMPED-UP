@@ -69,11 +69,19 @@ void PowerUP::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 void PowerUP::setPosition(sf::Vector2f pos)
 {
+	m_powerUPPosition = pos;
 }
 
 bool PowerUP::playerIsOnPowerUP(sf::Sprite& other)
 {
-	return other.getGlobalBounds().intersects(m_powerUPSprite.getGlobalBounds());
+	if (getPosition().x + 14 > other.getPosition().x + 3 &&
+		getPosition().x + 1 <= other.getPosition().x + 14 &&
+		getPosition().y + 14 > other.getPosition().y + 3  &&
+		getPosition().y + 1 <= other.getPosition().y + 14)
+		return true;
+
+		
+	return false;
 }
 
 PowerUPType PowerUP::getType()
@@ -83,5 +91,5 @@ PowerUPType PowerUP::getType()
 
 sf::Vector2f PowerUP::getPosition()
 {
-	return sf::Vector2f();
+	return m_powerUPPosition;
 }

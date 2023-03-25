@@ -9,12 +9,12 @@ void Bomb::init(const sf::Texture& texture)
 	m_bomb.setTexture(texture);
 	m_bomb.setTextureRect(sf::IntRect(0,0,16,16));
 
-	m_bombTickAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(1.0))});
-	m_bombTickAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(1.0)) });
-	m_bombTickAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(1.0)) });
-	m_bombTickAnimation.addFrame({ sf::IntRect(48,0,16,16), sf::Time(sf::seconds(1.0)) });
-	m_bombTickAnimation.addFrame({ sf::IntRect(64,0,16,16), sf::Time(sf::seconds(1.0)) });
-	m_bombTickAnimation.addFrame({ sf::IntRect(80,0,16,16), sf::Time(sf::seconds(1.0)) });
+	m_bombTickAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.5))});
+	m_bombTickAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.5)) });
+	m_bombTickAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.5)) });
+	m_bombTickAnimation.addFrame({ sf::IntRect(48,0,16,16), sf::Time(sf::seconds(0.5)) });
+	m_bombTickAnimation.addFrame({ sf::IntRect(64,0,16,16), sf::Time(sf::seconds(0.5)) });
+	m_bombTickAnimation.addFrame({ sf::IntRect(80,0,16,16), sf::Time(sf::seconds(0.5)) });
 }
 
 void Bomb::update(const sf::Vector2f pos, sf::Time deltatime)
@@ -24,7 +24,7 @@ void Bomb::update(const sf::Vector2f pos, sf::Time deltatime)
 	m_bombTickAnimation.update(deltatime);
 	m_bombTriggerTime += deltatime;
 
-	if (m_bombTriggerTime.asSeconds() > 6.0)
+	if (m_bombTriggerTime.asSeconds() > 3.0f)
 	{
 		m_blasted = true;
 		m_bombTriggerTime = sf::Time::Zero;

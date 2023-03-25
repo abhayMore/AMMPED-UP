@@ -40,21 +40,29 @@ private:
 	Enemy m_enemyAI2; // RANDOM AI
 	Enemy m_enemyAI3; // RANDOM AI HORIZONTAL
 	Enemy m_enemyAI4; // RANDOM AI HORIZONTAL
+	Enemy m_enemyAI5; 
+	Enemy m_enemyAI6;
 
 	sf::Vector2f enemyAI1Dir;
 	sf::Vector2f enemyAI2Dir;
 	sf::Vector2f enemyAI3Dir;
 	sf::Vector2f enemyAI4Dir;
+	sf::Vector2f enemyAI5Dir;
+	sf::Vector2f enemyAI6Dir;
 
 	sf::Vector2f enemyDirectionAI1;
 	sf::Vector2f enemyDirectionAI2;
 	sf::Vector2f enemyDirectionAI3;
 	sf::Vector2f enemyDirectionAI4;
+	sf::Vector2f enemyDirectionAI5;
+	sf::Vector2f enemyDirectionAI6;
 
 	sf::Vector2f enemyPrevPosition1;
 	sf::Vector2f enemyPrevPosition2;
 	sf::Vector2f enemyPrevPosition3;
 	sf::Vector2f enemyPrevPosition4;
+	sf::Vector2f enemyPrevPosition5;
+	sf::Vector2f enemyPrevPosition6;
 
 
 	sf::Time m_changeDirectionTime;
@@ -135,6 +143,9 @@ private:
 	bool blastBool;
 	int m_radius = 1;
 	sf::Vector2f prevPosiition;
+
+	//DEBUGGING TOOL INFO
+	bool showPowerUP = false;
 
 public:
 	GamePlay(std::shared_ptr<Context>& context);
