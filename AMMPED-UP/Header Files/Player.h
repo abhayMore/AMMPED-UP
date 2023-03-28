@@ -20,7 +20,7 @@ private:
 	Animation m_playerDownWalkAnimation;
 	Animation m_playerLeftWalkAnimation;
 	Animation m_playerRightWalkAnimation;
-
+	int m_health;
 
 public:
 	Player();
@@ -43,7 +43,8 @@ public:
 	sf::Sprite& getSprite();
 
 	sf::Vector2f getPosition();
-
+	int getHealth();
+	void setHealth(int health);
 	bool playerBombCollision(sf::Vector2f bombPos);
 	bool playerCollisionIsOn(sf::Sprite& bombSprite);
 

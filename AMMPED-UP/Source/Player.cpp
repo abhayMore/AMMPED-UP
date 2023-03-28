@@ -8,7 +8,8 @@ Player::Player() :
 	m_playerDownWalkAnimation(m_playerSprite),
 	m_playerLeftWalkAnimation(m_playerSprite),
 	m_playerRightWalkAnimation(m_playerSprite),
-	m_isBombPlaced(false)
+	m_isBombPlaced(false),
+	m_health(100)
 {
 }
 
@@ -78,6 +79,16 @@ void Player::grow(const sf::Vector2f& direction)
 sf::Vector2f Player::getPosition()
 {
 	return m_playerPosition;
+}
+
+int Player::getHealth()
+{
+	return m_health;
+}
+
+void Player::setHealth(int health)
+{
+	m_health = health;
 }
 
 bool Player::playerBombCollision(sf::Vector2f bombPos)

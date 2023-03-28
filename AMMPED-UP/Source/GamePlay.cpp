@@ -23,7 +23,8 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_score(0),
 	m_lives(3),
 	m_isPaused(false),
-	m_inGame(m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK))
+	m_inGame(m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK)),
+	gui(*m_context->m_window)
 {
 
 
@@ -221,16 +222,20 @@ void GamePlay::init()
 	// LIVES COUNT INIT
 	m_livesText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_livesText.setString(std::to_string(m_lives));
-	m_livesText.setPosition(m_context->m_window->getSize().x - 144, -2);
-	m_livesText.setCharacterSize(23);
+	m_livesText.setPosition(m_context->m_window->getSize().x - 234, -2);
+	m_livesText.setCharacterSize(22);
 	m_livesText.setFillColor(sf::Color::White);
 	m_livesText.setOutlineThickness(1);
 
 	m_livesHeartUI.setTexture(m_context->m_assets->getTexture(HEART_UI));
-	m_livesHeartUI.setPosition(m_context->m_window->getSize().x - 150, -2);
+	m_livesHeartUI.setPosition(m_context->m_window->getSize().x - 240, 0);
 	m_livesHeartUI.setScale({ 2,2 });
 
-
+	progressBar = tgui::ProgressBar::create();
+	progressBar->setPosition(m_context->m_window->getSize().x - 205, 5);
+	progressBar->setSize(200, 20);
+	progressBar->setValue(m_player.getHealth());
+	gui.add(progressBar);
 
 	// POWER UP INIT
 	for (int i = 0; i < powerUPSpaces.size()/3; i++)
@@ -402,8 +407,10 @@ void GamePlay::update(sf::Time deltaTime)
 				{
 					if (m_player.playerCollisionIsOn(explosionSprite))
 					{
+						m_player.setHealth(m_player.getHealth() - 20);
 						std::cout << "True" << std::endl;
-						m_lives--;
+						if(progressBar->getValue() <= 0)
+							m_lives--;
 						break;
 					}
 				}
@@ -494,6 +501,7 @@ void GamePlay::update(sf::Time deltaTime)
 
 		m_scoreText.setString("Score : " + std::to_string(m_score));
 		m_livesText.setString(std::to_string(m_lives));
+		progressBar->setValue(m_player.getHealth());
 
 	}
 }
@@ -589,7 +597,7 @@ void GamePlay::draw()
 	m_context->m_window->draw(m_livesHeartUI);
 
 	m_context->m_window->draw(m_livesText);
-
+	gui.draw();
 	m_context->m_window->display();
 }
 
@@ -713,8 +721,7 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 	{
 	case HEART:
 	{
-		m_lives += 1;
-		m_livesText.setString(std::to_string(m_lives));
+		m_player.setHealth(100);
 	}
 		break;
 	case TIMER:
@@ -759,10 +766,7 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 	case APPLE:
 	{
 		std::cout << "Apple" << std::endl;
-
-		m_score += 10;
-		m_scoreText.setString("Score : " + std::to_string(m_score));
-
+		m_player.setHealth(m_player.getHealth() + 10);
 	}
 	default:
 		break;

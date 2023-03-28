@@ -7,6 +7,7 @@
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Audio/Sound.hpp"
 #include "../Header Files/Animation.h"
+#include "TGUI/TGUI.hpp"
 
 #include "Game.h"
 #include "State.h"
@@ -128,9 +129,15 @@ private:
 	sf::Text m_scoreText;
 	int m_score;
 
+
+	//PROGRESS BAR
 	sf::Text m_livesText;
 	int m_lives;
 	sf::Sprite m_livesHeartUI;
+	tgui::ProgressBar::Ptr progressBar;
+	//tgui::Theme theme{}
+	tgui::Gui gui;
+
 
 	bool m_isPaused;
 
@@ -138,6 +145,8 @@ private:
 	sf::Music& m_inGame;
 
 	std::vector<sf::Sprite> m_explosions;
+
+	
 
 	//used for explosions remove
 	sf::Time blastTime;
