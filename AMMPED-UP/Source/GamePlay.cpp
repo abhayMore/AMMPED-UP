@@ -692,7 +692,8 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 	{
 	case HEART:
 	{
-
+		m_lives += 1;
+		m_livesText.setString("Lives : " + std::to_string(m_lives));
 	}
 		break;
 	case TIMER:
