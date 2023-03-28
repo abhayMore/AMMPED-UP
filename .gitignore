@@ -374,3 +374,6 @@ FodyWeavers.xsd
 /AMMPED-UP/openal32.dll
 /AMMPED-UP/Dependencies/SFML
 /AMMPED-UP/json-3.11.2
+/AMMPED-UP/tgui.dll
+/AMMPED-UP/tgui-d.dll
+/AMMPED-UP/Dependencies
