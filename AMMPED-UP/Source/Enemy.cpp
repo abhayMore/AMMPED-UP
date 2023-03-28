@@ -31,6 +31,8 @@ void Enemy::init(const sf::Texture& texture)
 {
 	m_playerSprite.setTexture(texture);
 	m_playerSprite.setTextureRect(sf::IntRect(96, 0, 16, 16));
+	m_playerSprite.setScale({ 2,2 });
+
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.1)) });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.1)) });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.1)) });

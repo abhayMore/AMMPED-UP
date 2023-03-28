@@ -8,7 +8,7 @@ void Bomb::init(const sf::Texture& texture)
 {
 	m_bomb.setTexture(texture);
 	m_bomb.setTextureRect(sf::IntRect(0,0,16,16));
-
+	m_bomb.setScale({ 2,2 });
 	m_bombTickAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.5))});
 	m_bombTickAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.5)) });
 	m_bombTickAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.5)) });

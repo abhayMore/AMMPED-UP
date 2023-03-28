@@ -7,7 +7,7 @@ PowerUP::PowerUP()
 void PowerUP::init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType type)
 {
 	m_powerUPSprite.setTexture(texture);
-	m_powerUPSprite.setScale(16.0f / 48.0f, 16.0f / 48.0f);
+	m_powerUPSprite.setScale(32.0f / 48.0f, 32.0f / 48.0f);
 
 	m_type = type;
 	m_powerUPPosition = pos;
@@ -28,26 +28,21 @@ void PowerUP::init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType typ
 	{
 		m_powerUPSprite.setTextureRect({ 21 * 48,0,48,48 });
 
-
 	}if (m_type == EXPLOSION_RADIUS_INCREASE) //INCREASE EXPLOSION RADIUS BY 2
 	{
 		m_powerUPSprite.setTextureRect({ 3 * 48,0,48,48 });
 
-
 	}if (m_type == EXPLOSION_RADIUS_DECREASE) //DECREASE EXPLOSION RADIUS BY 2
 	{
 		m_powerUPSprite.setTextureRect({ 2 * 48,0,48,48 });
-
 	}
 	if (m_type == APPLE) //INCREASE SCORE BY 10
 	{
 		m_powerUPSprite.setTextureRect({ 10 * 48,0,48,48 });
-
 	}
 	if (m_type == ICE_CREAM) //INCREASE SCORE BY 25
 	{
 		m_powerUPSprite.setTextureRect({ 11 * 48,0,48,48 });
-
 	}
 }
 

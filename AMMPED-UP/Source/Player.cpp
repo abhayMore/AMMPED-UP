@@ -2,8 +2,8 @@
 #include <iostream>
 
 Player::Player() :
-	m_playerPosition({ 16,16 }),
-	m_velocity(100),
+	m_playerPosition({ 32,32 }),
+	m_velocity(150),
 	m_playerUpWalkAnimation(m_playerSprite),
 	m_playerDownWalkAnimation(m_playerSprite),
 	m_playerLeftWalkAnimation(m_playerSprite),
@@ -20,6 +20,7 @@ void Player::init(const sf::Texture& texture)
 {
 	m_playerSprite.setTexture(texture);
 	m_playerSprite.setTextureRect(sf::IntRect(96, 0, 16, 16));
+	m_playerSprite.setScale({ 2,2 });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.001)) });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.001)) });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.001)) });
@@ -81,20 +82,20 @@ sf::Vector2f Player::getPosition()
 
 bool Player::playerBombCollision(sf::Vector2f bombPos)
 {
-	if (bombPos.x - 16 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
+	if (bombPos.x - 32 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
 	{
 		return true;
 	}
-	else if (bombPos.x == m_playerPosition.x && bombPos.y + 16 == m_playerPosition.y)
+	else if (bombPos.x == m_playerPosition.x && bombPos.y + 32 == m_playerPosition.y)
 	{
 		return true;
 	}
-	else if (bombPos.x + 16 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
+	else if (bombPos.x + 32 == m_playerPosition.x && bombPos.y == m_playerPosition.y)
 	{
 		return true;
 
 	}
-	else if (bombPos.x == m_playerPosition.x && bombPos.y - 16 == m_playerPosition.y)
+	else if (bombPos.x == m_playerPosition.x && bombPos.y - 32 == m_playerPosition.y)
 	{
 		return true;
 	}

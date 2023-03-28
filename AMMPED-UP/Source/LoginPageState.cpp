@@ -22,6 +22,7 @@ void LoginPageState::init()
     m_loginBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
     m_loginBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
     m_loginBackground.setOrigin(sf::Vector2f(m_loginBackground.getTexture()->getSize().x / 2, m_loginBackground.getTexture()->getSize().y / 2));
+    m_loginBackground.setScale({ 2,2 });
 
 	//SIGN IN TITLE
     m_signInTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));

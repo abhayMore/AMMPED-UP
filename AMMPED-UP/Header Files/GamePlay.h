@@ -130,6 +130,7 @@ private:
 
 	sf::Text m_livesText;
 	int m_lives;
+	sf::Sprite m_livesHeartUI;
 
 	bool m_isPaused;
 

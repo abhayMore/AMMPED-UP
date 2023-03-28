@@ -13,7 +13,7 @@ private:
 	sf::Text m_gameTitle;
 	sf::Text m_logoutExit;
 	sf::Text m_logout;
-	sf::Sprite m_menuBackground;
+	sf::Sprite m_exitBackground;
 
 	bool m_isLogoutExitButtonSelected;
 	bool m_isLogoutExitButtonPressed;

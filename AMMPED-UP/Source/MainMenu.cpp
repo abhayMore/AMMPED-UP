@@ -34,41 +34,46 @@ void MainMenu::init()
 	m_menuBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
 	m_menuBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
 	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
-
+	m_menuBackground.setScale({ 2,2 });
 	//GAME TITLE
 	m_gameTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_gameTitle.setString("AMMPED-UP");
-	m_gameTitle.setCharacterSize(50);
+	m_gameTitle.setCharacterSize(120);
 	m_gameTitle.setOrigin(m_gameTitle.getLocalBounds().width / 2, m_gameTitle.getLocalBounds().height / 2);
-	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f) ;
+	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 300.0f) ;
+	m_gameTitle.setOutlineThickness(1);
 
 	//PLAY BUTTON
 	m_playButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_playButton.setString("Play");
-	m_playButton.setCharacterSize(35);
+	m_playButton.setCharacterSize(50);
 	m_playButton.setOrigin(m_playButton.getLocalBounds().width / 2, m_playButton.getLocalBounds().height / 2);
-	m_playButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-	
+	m_playButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 100.0f);
+	m_playButton.setOutlineThickness(1);
+
 	//LEADERSHIP BUTTON
 	m_leadershipButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_leadershipButton.setString("Leadership");
-	m_leadershipButton.setCharacterSize(35);
+	m_leadershipButton.setCharacterSize(50);
 	m_leadershipButton.setOrigin(m_leadershipButton.getLocalBounds().width / 2, m_leadershipButton.getLocalBounds().height / 2);
-	m_leadershipButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
+	m_leadershipButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
+	m_leadershipButton.setOutlineThickness(1);
 
 	//OPTIONS BUTTON
 	m_optionsButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_optionsButton.setString("Options");
-	m_optionsButton.setCharacterSize(35);
+	m_optionsButton.setCharacterSize(50);
 	m_optionsButton.setOrigin(m_optionsButton.getLocalBounds().width / 2, m_optionsButton.getLocalBounds().height / 2);
-	m_optionsButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 75.0f);
+	m_optionsButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 50.0f);
+	m_optionsButton.setOutlineThickness(1);
 
 	//EXIT BUTTON
 	m_exitButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_exitButton.setString("Exit");
-	m_exitButton.setCharacterSize(35);
+	m_exitButton.setCharacterSize(50);
 	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
 	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 125.0f);
+	m_exitButton.setOutlineThickness(1);
 }
 
 void MainMenu::processInput()

@@ -25,9 +25,10 @@ void ExitState::init()
 
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
-	m_menuBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_menuBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
+	m_exitBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
+	m_exitBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
+	m_exitBackground.setOrigin(sf::Vector2f(m_exitBackground.getTexture()->getSize().x / 2, m_exitBackground.getTexture()->getSize().y / 2));
+	m_exitBackground.setScale({ 2,2 });
 
 	//LOGOUT AND EXIT BUTTON
 	m_logoutExit.setFont(m_context->m_assets->getFont(MAIN_FONT));
@@ -134,7 +135,7 @@ void ExitState::update(sf::Time deltaTime)
 void ExitState::draw()
 {
 	m_context->m_window->clear();
-	m_context->m_window->draw(m_menuBackground);
+	m_context->m_window->draw(m_exitBackground);
 	m_context->m_window->draw(m_gameTitle);
 	m_context->m_window->draw(m_logoutExit);
 	m_context->m_window->draw(m_logout);

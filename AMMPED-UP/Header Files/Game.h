@@ -31,7 +31,8 @@ enum AssetID
 	EXPLOSION_END,
 	ENEMY1,
 	ENEMY2,
-	ENEMY3
+	ENEMY3,
+	HEART_UI
 };
  
 struct Context

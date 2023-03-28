@@ -32,11 +32,13 @@ void LoginState::init()
 	m_gameLogo.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f);
 	m_gameLogo.setOrigin(sf::Vector2f(m_gameLogo.getTexture()->getSize().x / 2, m_gameLogo.getTexture()->getSize().y / 2 ));
 	m_gameLogo.setScale({0.5,0.5}); 
+
 	//LOGIN BACKGROUND
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/login.png");
 	m_loginBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
 	m_loginBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
 	m_loginBackground.setOrigin(sf::Vector2f(m_loginBackground.getTexture()->getSize().x / 2, m_loginBackground.getTexture()->getSize().y / 2));
+	m_loginBackground.setScale({ 2,2 });
 
 	//LOGIN BUTTON
 	m_loginButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
