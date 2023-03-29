@@ -53,9 +53,7 @@ void GamePlay::init()
 	m_context->m_assets->addTextures(BOMB_TRIGGER, "Resources/assets/bombTileset.png");
 	m_context->m_assets->addTextures(POWERUPS, "Resources/assets/PowerUps.png");
 
-	m_context->m_assets->addTextures(EXPLOSION_CENTER, "Resources/assets/ExplosionCenter.png");
-	m_context->m_assets->addTextures(EXPLOSION_SIDE, "Resources/assets/ExplosionSide.png");
-	m_context->m_assets->addTextures(EXPLOSION_END, "Resources/assets/ExplosionEnd.png");
+	m_context->m_assets->addTextures(EXPLOSION_SPRITE, "Resources/assets/explosionSprite.png");
 
 	//GAME MAP
 	//m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -405,104 +403,130 @@ void GamePlay::update(sf::Time deltaTime)
 				m_player.m_bomb.setPosition(sf::Vector2f(1280, 960));
 				for (auto& explosionSprite : m_explosions)
 				{
-					if (m_player.playerCollisionIsOn(explosionSprite))
+					std::cout << explosionSprite.getPosition().x << ' ' << explosionSprite.getPosition().y << std::endl;
+					if (checkCollision3(explosionSprite.getPosition()))
 					{
+						m_damageCounter = true;
 						m_player.setHealth(m_player.getHealth() - 20);
-						std::cout << "True" << std::endl;
-						if(progressBar->getValue() <= 0)
+						if (progressBar->getValue() <= 0)
+						{
 							m_lives--;
+							m_player.setHealth(100);
+							m_livesText.setString(std::to_string(m_lives));
+						}
 						break;
 					}
 				}
-
 				m_player.m_isBombPlaced = false;
 			}
 		}
-		// explosion clear
+		//PLAYER DAMAGE EFFEFCT - > BLINK EFFECT
+		if (m_damageCounter)
+		{
+			m_playerDamageCounterTime += deltaTime;
+		
+			if (m_playerDamageCounterTime.asSeconds() > 0.2f)
+			{
+				if (m_player.getAlpha() == 255)
+				{
+					m_player.setPlayerColor(sf::Color(255, 255, 255, 0));
+				}
+				else
+				{
+					m_player.setPlayerColor(sf::Color(255, 255, 255, 255));
+				}
+
+				if (m_playerDamageCounterTime.asSeconds() >= 1.0f)
+				{
+					m_damageCounter = false;
+					m_player.setPlayerColor(sf::Color(255, 255, 255, 255));
+					m_playerDamageCounterTime = sf::Time::Zero;
+
+				}
+			}
+		}
+		// GETS RID OF THE EXPLOSION
 		if (blastBool)
 		{
 			blastTime += deltaTime;
+
+			if (blastTime.asSeconds() > 0.25)
+			{
+				blastBool = false;
+				m_explosions.clear();
+				blastTime = sf::Time::Zero;
+			}
 		}
-		if (blastTime.asSeconds() > 0.25)
+
+		//CHANGE DIRECTION AFTER PARTICULAR AMOUNT OF TIME
+		if (m_changeDirectionTime.asSeconds() >= 4.0)
 		{
-			blastBool = false;
-			m_explosions.clear();
-			blastTime = sf::Time::Zero;
+			enemyDirectionAI1 = m_directions[ReturnIntRandom(0, 3)];
+			enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
+			enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
+			enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
+			enemyDirectionAI5 = m_directions[ReturnIntRandom(2, 3)];
+			enemyDirectionAI6 = m_directions[ReturnIntRandom(0, 1)];
+			m_changeDirectionTime = sf::Time::Zero;
 		}
 
-		//if (m_elaspedTimeForEnemy.asSeconds() > 0.4)
+		if (checkCollision2(m_enemyAI1.getPosition()))
 		{
-			if (m_changeDirectionTime.asSeconds() >= 4.0)
-			{
-				enemyDirectionAI1 = m_directions[ReturnIntRandom(0, 3)];
-				enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
-				enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
-				enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
-				enemyDirectionAI5 = m_directions[ReturnIntRandom(2, 3)];
-				enemyDirectionAI6 = m_directions[ReturnIntRandom(0, 1)];
-
-				m_changeDirectionTime = sf::Time::Zero;
-			}
-			if (checkCollision2(m_enemyAI1.getPosition()))
-			{
-				m_enemyAI1.setPosition(enemyPrevPosition1);
-				enemyDirectionAI1 = -enemyDirectionAI1;
-			}
-
-			if (checkCollision2(m_enemyAI2.getPosition()))
-			{
-				m_enemyAI2.setPosition(enemyPrevPosition2);
-				enemyDirectionAI2 = -enemyDirectionAI2;
-			}
-
-			if (checkCollision2(m_enemyAI3.getPosition()))
-			{
-				m_enemyAI3.setPosition(enemyPrevPosition3);
-				enemyDirectionAI3 = -enemyDirectionAI3;
-			}
-
-			if (checkCollision2(m_enemyAI4.getPosition()))
-			{
-				m_enemyAI4.setPosition(enemyPrevPosition4);
-				enemyDirectionAI4 = -enemyDirectionAI4;
-			}
-			if (checkCollision2(m_enemyAI5.getPosition()))
-			{
-				m_enemyAI5.setPosition(enemyPrevPosition5);
-				enemyDirectionAI5 = -enemyDirectionAI5;
-			}
-			if (checkCollision2(m_enemyAI6.getPosition()))
-			{
-				m_enemyAI6.setPosition(enemyPrevPosition6);
-				enemyDirectionAI6 = -enemyDirectionAI6;
-			}
-			m_enemyAI1.update(enemyDirectionAI1, deltaTime);
-			m_enemyAI2.update(enemyDirectionAI2, deltaTime);
-			m_enemyAI3.update(enemyDirectionAI3, deltaTime);
-			m_enemyAI4.update(enemyDirectionAI4, deltaTime);
-			m_enemyAI5.update(enemyDirectionAI5, deltaTime);
-			m_enemyAI6.update(enemyDirectionAI6, deltaTime);
-
-			m_elaspedTimeForEnemy = sf::Time::Zero;
+			m_enemyAI1.setPosition(enemyPrevPosition1);
+			enemyDirectionAI1 = -enemyDirectionAI1;
 		}
+		if (checkCollision2(m_enemyAI2.getPosition()))
+		{
+			m_enemyAI2.setPosition(enemyPrevPosition2);
+			enemyDirectionAI2 = -enemyDirectionAI2;
+		}
+		if (checkCollision2(m_enemyAI3.getPosition()))
+		{
+			m_enemyAI3.setPosition(enemyPrevPosition3);
+			enemyDirectionAI3 = -enemyDirectionAI3;
+		}
+		if (checkCollision2(m_enemyAI4.getPosition()))
+		{
+			m_enemyAI4.setPosition(enemyPrevPosition4);
+			enemyDirectionAI4 = -enemyDirectionAI4;
+		}
+		if (checkCollision2(m_enemyAI5.getPosition()))
+		{
+			m_enemyAI5.setPosition(enemyPrevPosition5);
+			enemyDirectionAI5 = -enemyDirectionAI5;
+		}
+		if (checkCollision2(m_enemyAI6.getPosition()))
+		{
+			m_enemyAI6.setPosition(enemyPrevPosition6);
+			enemyDirectionAI6 = -enemyDirectionAI6;
+		}
+		m_enemyAI1.update(enemyDirectionAI1, deltaTime);
+		m_enemyAI2.update(enemyDirectionAI2, deltaTime);
+		m_enemyAI3.update(enemyDirectionAI3, deltaTime);
+		m_enemyAI4.update(enemyDirectionAI4, deltaTime);
+		m_enemyAI5.update(enemyDirectionAI5, deltaTime);
+		m_enemyAI6.update(enemyDirectionAI6, deltaTime);
 
+		m_elaspedTimeForEnemy = sf::Time::Zero;
 		
 
+		
+		//PREVIOUS POSITION OF AI IS UPDATE TO CURRENT FOR COLLISION DETECTION
 		enemyPrevPosition1 = m_enemyAI1.getPosition();
 		enemyPrevPosition2 = m_enemyAI2.getPosition();
 		enemyPrevPosition3 = m_enemyAI3.getPosition();
 		enemyPrevPosition4 = m_enemyAI4.getPosition();
 		enemyPrevPosition5 = m_enemyAI5.getPosition();
 		enemyPrevPosition6 = m_enemyAI6.getPosition();
+
+		//THINGS TO BE UPDATED IN THE END
 		if (m_lives <= 0 || m_time < 0)
 		{
 			m_context->m_states->add(std::make_unique<GameOver>(m_context));
 		}
-
 		m_scoreText.setString("Score : " + std::to_string(m_score));
 		m_livesText.setString(std::to_string(m_lives));
 		progressBar->setValue(m_player.getHealth());
-
 	}
 }
 
@@ -668,11 +692,10 @@ bool GamePlay::checkCollision1(sf::Vector2f pos)
 			}
 		}
 	}
-
 	return false;
 }
-
-bool GamePlay::checkCollision2(sf::Vector2f pos) //FOR ENEMY AI
+//COLLISION FOR ENEMY AI WITH WALLS
+bool GamePlay::checkCollision2(sf::Vector2f pos) 
 {
 	for (int i = 0; i < 30; i++)
 	{
@@ -690,6 +713,20 @@ bool GamePlay::checkCollision2(sf::Vector2f pos) //FOR ENEMY AI
 	}
 	return false;
 }
+
+//PLAYER COLLISION WITH BOMB EXPLOSIONS 
+bool GamePlay::checkCollision3(sf::Vector2f pos)
+{
+	if (m_player.getPosition().x + 28	> pos.x + 6 &&
+		m_player.getPosition().x 	<= pos.x + 26 &&
+		m_player.getPosition().y + 28	> pos.y + 6&&
+		m_player.getPosition().y 	<= pos.y + 26)
+	{
+		return true;
+	}
+	return false;
+}
+
 
 bool GamePlay::checkCollision(sf::Vector2f pos)
 {
@@ -780,7 +817,8 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 	int y = pos.y / 32;
 
 	sf::Sprite center;
-	center.setTexture(m_context->m_assets->getTexture(EXPLOSION_CENTER));
+	center.setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
+	center.setTextureRect({ 0,0,16,16 });
 	center.setPosition(pos);
 	center.setScale({ 2,2 });
 	m_explosions.push_back(center);
@@ -788,7 +826,7 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 	sf::Sprite end[4];
 	for (int i = 0; i < 4; i++)
 	{
-		end[i].setTexture(m_context->m_assets->getTexture(EXPLOSION_END));
+		end[i].setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
 		end[i].setScale({ 2,2 });
 	}
 
@@ -798,13 +836,10 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		if (collisionMap[y - i][x] == BREAKABLE_TILE)
 		{
 			collisionMap[y - i][x] = EMPTY_TILE;
+			end[0].setTextureRect({ 16,0,16,16 });
 			end[0].setPosition(sf::Vector2f(pos.x, pos.y - 32 * i));
-			end[0].setScale({ 2,2 });
-
 			m_explosions.push_back(end[0]);
-			std::cout << "broken" << std::endl;
 			explodeTileCount += 1;
-
 			break;
 		}
 		else if (collisionMap[y - i][x] == HORIZONTAL_WALL_TILE || collisionMap[y - i][x] == VERTICAL_WALL_TILE || collisionMap[y - i][x] == COLUMN_WALL1 || collisionMap[y - i][x] == COLUMN_WALL2 || collisionMap[y - i][x] == COLUMN_WALL3 || collisionMap[y - i][x] == COLUMN_WALL4 || collisionMap[y - i][x] == INNER_COMPARTMENT_WALL_TILE)
@@ -812,22 +847,17 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		else if (collisionMap[y - i][x] == EMPTY_TILE && i !=radius)
 		{
 			sf::Sprite sprite1;
-			sprite1.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+			sprite1.setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
+			sprite1.setTextureRect({ 80,0,16,16 });
 			sprite1.setScale({ 2,2 });
 			sprite1.setPosition(sf::Vector2f(pos.x, pos.y - 32 * i));
 			m_explosions.push_back(sprite1);
-			std::cout << "upward loop 2nd last if" << i << std::endl;
-
-
 		}
 		else if (collisionMap[y - i][x] == EMPTY_TILE && i == radius)
 		{
-			end[0].setPosition(sf::Vector2f(pos.x, pos.y - 32 * radius));
-			end[0].setScale({ 2,2 });
+			end[0].setTextureRect({ 16,0,16,16 });
+			end[0].setPosition(sf::Vector2f(pos.x, pos.y - 32 * i));
 			m_explosions.push_back(end[0]);
-			std::cout << "upward loop last if" << i << std::endl;
-
-
 		}
 	}
 	//DOWNWARD
@@ -836,19 +866,10 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		if (collisionMap[y + i][x] == BREAKABLE_TILE)
 		{
 			collisionMap[y + i][x] = EMPTY_TILE;
-			end[1].setPosition(sf::Vector2f(pos.x, pos.y + 32 * i));
-			end[1].setScale({ 2,2 });
-
-			end[1].setOrigin(16, 16);
-			end[1].setRotation(180.0f);
-			end[1].setOrigin(0, 0);
-			end[1].setPosition(end[1].getPosition() + sf::Vector2f(32, 32));
+			end[1].setTextureRect({ 64,0,16,16 });
+			end[1].setPosition(sf::Vector2f(pos.x, pos.y + (32 * i)));
 			m_explosions.push_back(end[1]);
-			std::cout << "broken" << std::endl;
-
 			explodeTileCount += 1;
-
-
 			break;
 		}
 		else if (collisionMap[y + i][x] == HORIZONTAL_WALL_TILE || collisionMap[y + i][x] == VERTICAL_WALL_TILE || collisionMap[y + i][x] == COLUMN_WALL1 || collisionMap[y + i][x] == COLUMN_WALL2 || collisionMap[y + i][x] == COLUMN_WALL3 || collisionMap[y + i][x] == COLUMN_WALL4 || collisionMap[y + i][x] == INNER_COMPARTMENT_WALL_TILE)
@@ -856,20 +877,16 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		else if (collisionMap[y + i][x] == EMPTY_TILE && i != radius)
 		{
 			sf::Sprite sprite2;
-			sprite2.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+			sprite2.setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
+			sprite2.setTextureRect({112,0,16,16});
 			sprite2.setPosition(sf::Vector2f(pos.x, pos.y + 32 * i));
 			sprite2.setScale({ 2,2 });
 			m_explosions.push_back(sprite2);
-
 		}
 		else if (collisionMap[y + i][x] == EMPTY_TILE && i == radius)
 		{
+			end[1].setTextureRect({ 64,0,16,16 });
 			end[1].setPosition(sf::Vector2f(pos.x, pos.y + 32 * i));
-			end[1].setScale({ 2,2 });
-			end[1].setOrigin(16, 16);
-			end[1].setRotation(180.0f);
-			end[1].setOrigin(0, 0);
-			end[1].setPosition(end[1].getPosition() + sf::Vector2f(32, 32));
 			m_explosions.push_back(end[1]);
 
 		}
@@ -877,18 +894,13 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 	//LEFTWARD
 	for (int i = 1; i <= radius; i++)
 	{
-		if (collisionMap[y ][x - i] == BREAKABLE_TILE)
+		if (collisionMap[y][x - i] == BREAKABLE_TILE)
 		{
 			collisionMap[y][x - i] = EMPTY_TILE;
+			end[2].setTextureRect({ 32,0,16,16 });
 			end[2].setPosition(sf::Vector2f(pos.x - 32 * i, pos.y));
-			end[2].setOrigin(16, 16);
-			end[2].setRotation(-90.0f);
-			end[2].setOrigin(0, 0);
-			end[2].setPosition(end[2].getPosition() + sf::Vector2f(0, 32));
 			m_explosions.push_back(end[2]);
-			std::cout << "broken" << std::endl;
 			explodeTileCount += 1;
-
 			break;
 		}
 		else if (collisionMap[y][x - i] == HORIZONTAL_WALL_TILE || collisionMap[y][x - i] == VERTICAL_WALL_TILE || collisionMap[y][x - i] == COLUMN_WALL1 || collisionMap[y][x - i] == COLUMN_WALL2 || collisionMap[y][x - i] == COLUMN_WALL3 || collisionMap[y][x - i] == COLUMN_WALL4 || collisionMap[y][x - i] == INNER_COMPARTMENT_WALL_TILE)
@@ -896,26 +908,18 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		else if (collisionMap[y][x - i] == EMPTY_TILE && i != radius)
 		{
 			sf::Sprite sprite3;
-			sprite3.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+			sprite3.setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
+			sprite3.setTextureRect({96, 0, 16, 16});
 			sprite3.setPosition(sf::Vector2f(pos.x - 32 * i, pos.y));
 			sprite3.setScale({ 2,2 });
 
-			sprite3.setOrigin(16,16);
-			sprite3.setRotation(-90);
-			sprite3.setOrigin(0, 0);
-			sprite3.setPosition(sprite3.getPosition() + sf::Vector2f(0, 32));
 			m_explosions.push_back(sprite3);
-
 		}
 		else if (collisionMap[y][x - i] == EMPTY_TILE && i == radius)
 		{
-			end[2].setPosition(sf::Vector2f(pos.x - 32 * i, pos.y));
-			end[2].setOrigin(16, 16);
-			end[2].setRotation(-90.0f);
-			end[2].setOrigin(0, 0);
-			end[2].setPosition(end[2].getPosition() + sf::Vector2f(0, 32));
+			end[2].setTextureRect({ 32,0,16,16 });
+			end[2].setPosition(sf::Vector2f(pos.x - 32 * i , pos.y));
 			m_explosions.push_back(end[2]);
-
 		}
 	}
 
@@ -926,15 +930,9 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		{
 			collisionMap[y][x + i] = EMPTY_TILE;
 			end[3].setPosition(sf::Vector2f(pos.x + 32 * i, pos.y));
-			end[3].setOrigin(16,16);
-			end[3].setRotation(90.0f);
-			end[3].setOrigin(0, 0);
-			end[3].setPosition(end[3].getPosition() + sf::Vector2f(32, 0));
+			end[3].setTextureRect({48,0,16,16});
 			m_explosions.push_back(end[3]);
-			std::cout << "broken" << std::endl;
-
 			explodeTileCount += 1;
-
 			break;
 		}
 		else if (collisionMap[y][x + i] == HORIZONTAL_WALL_TILE || collisionMap[y][x + i] == VERTICAL_WALL_TILE || collisionMap[y][x + i] == COLUMN_WALL1 || collisionMap[y][x + i] == COLUMN_WALL2 || collisionMap[y][x + i] == COLUMN_WALL3 || collisionMap[y][x + i] == COLUMN_WALL4 || collisionMap[y][x + i] == INNER_COMPARTMENT_WALL_TILE)
@@ -942,25 +940,18 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		else if (collisionMap[y][x + i] == EMPTY_TILE && i != radius)
 		{
 			sf::Sprite sprite4;
-			sprite4.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
+			sprite4.setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
+			sprite4.setTextureRect({ 128,0,16,16 });
+			sprite4.setScale({ 2,2 });
 			sprite4.setPosition(sf::Vector2f(pos.x + 32 * i, pos.y));
-			sprite4.setScale({ 2, 2 });
-			sprite4.setOrigin(16, 16);
-			sprite4.setRotation(90);
-			sprite4.setOrigin(0, 0);
-			sprite4.setPosition(sprite4.getPosition() + sf::Vector2f(32, 0));
 			m_explosions.push_back(sprite4);
 
 		}
 		else if (collisionMap[y][x + i] == EMPTY_TILE && i == radius)
 		{
+			end[3].setTextureRect({ 48,0,16,16 });
 			end[3].setPosition(sf::Vector2f(pos.x + 32 * i, pos.y));
-			end[3].setOrigin(16, 16);
-			end[3].setRotation(90.0f);
-			end[3].setOrigin(0, 0);
-			end[3].setPosition(end[3].getPosition() + sf::Vector2f(32, 0));
 			m_explosions.push_back(end[3]);
-
 		}
 	}
 

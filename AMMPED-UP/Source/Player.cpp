@@ -9,7 +9,8 @@ Player::Player() :
 	m_playerLeftWalkAnimation(m_playerSprite),
 	m_playerRightWalkAnimation(m_playerSprite),
 	m_isBombPlaced(false),
-	m_health(100)
+	m_health(100),
+	m_playerColor(sf::Color(255,255,255,255))
 {
 }
 
@@ -22,6 +23,7 @@ void Player::init(const sf::Texture& texture)
 	m_playerSprite.setTexture(texture);
 	m_playerSprite.setTextureRect(sf::IntRect(96, 0, 16, 16));
 	m_playerSprite.setScale({ 2,2 });
+	m_playerSprite.setColor(m_playerColor);
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.001)) });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.001)) });
 	m_playerUpWalkAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.001)) });
@@ -122,6 +124,23 @@ bool Player::playerCollisionIsOn(sf::Sprite& bombSprite)
 {
 
 	return bombSprite.getGlobalBounds().intersects(m_playerSprite.getGlobalBounds());
+}
+
+void Player::setPlayerColor(sf::Color color)
+{
+	m_playerColor = color;
+	m_playerSprite.setColor(color);
+
+}
+
+sf::Color Player::getColor()
+{
+	return sf::Color(m_playerColor);
+}
+
+int Player::getAlpha()
+{
+	return m_playerColor.a;
 }
 
 void Player::setPosition(sf::Vector2f pos)

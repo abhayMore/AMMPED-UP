@@ -134,9 +134,8 @@ private:
 	sf::Text m_livesText;
 	int m_lives;
 	sf::Sprite m_livesHeartUI;
-	tgui::ProgressBar::Ptr progressBar;
-	//tgui::Theme theme{}
 	tgui::Gui gui;
+	tgui::ProgressBar::Ptr progressBar;
 
 
 	bool m_isPaused;
@@ -147,6 +146,9 @@ private:
 	std::vector<sf::Sprite> m_explosions;
 
 	
+	//PLAYER DAMAGE TIMER 
+	sf::Time m_playerDamageCounterTime;
+	bool m_damageCounter;
 
 	//used for explosions remove
 	sf::Time blastTime;
@@ -172,9 +174,13 @@ public:
 
 	bool checkCollision1(sf::Vector2f pos);
 	bool checkCollision2(sf::Vector2f pos);
+	bool checkCollision3(sf::Vector2f pos);
+
 	bool checkCollision(sf::Vector2f pos);
 	void applyPowerUPEffect(PowerUPType powerUPType);
 	int removeWalls(sf::Vector2f pos, int radius); //returns count of removed walls
-	void explosions(sf::Vector2f bombPos, int radius);
+	
+	//REMOVE LATER
+	//void explosions(sf::Vector2f bombPos, int radius);
 	void takeScreenshot(const std::string& filename);
 };

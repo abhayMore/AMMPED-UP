@@ -21,6 +21,7 @@ private:
 	Animation m_playerLeftWalkAnimation;
 	Animation m_playerRightWalkAnimation;
 	int m_health;
+	sf::Color m_playerColor;
 
 public:
 	Player();
@@ -47,8 +48,9 @@ public:
 	void setHealth(int health);
 	bool playerBombCollision(sf::Vector2f bombPos);
 	bool playerCollisionIsOn(sf::Sprite& bombSprite);
-
-
+	void setPlayerColor(sf::Color color);
+	sf::Color getColor();
+	int getAlpha();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
