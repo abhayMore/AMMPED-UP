@@ -16,6 +16,7 @@ private:
 	sf::Sprite m_playerSprite;
 	sf::Vector2f m_playerPosition;
 	float m_velocity;
+	sf::Vector2f m_previousPosition;
 	Animation m_playerUpWalkAnimation;
 	Animation m_playerDownWalkAnimation;
 	Animation m_playerLeftWalkAnimation;
@@ -32,9 +33,6 @@ public:
 	sf::Vector2f m_bombPos;
 	void init(const sf::Texture& texture);
 	void update(const sf::Vector2f& direction, sf::Time deltatime);
-	bool isOn(const sf::Sprite& other) const;
-	void grow(const sf::Vector2f& direction);
-	bool isSelfIntersecting() ;
 	void setPosition(sf::Vector2f pos);
 	void setVelocity(float vel);
 	float getVelocity();
@@ -51,6 +49,10 @@ public:
 	void setPlayerColor(sf::Color color);
 	sf::Color getColor();
 	int getAlpha();
+
+	sf::Vector2f getPreviousPosition();
+	void setPreviousPosition(sf::Vector2f prevpos);
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 

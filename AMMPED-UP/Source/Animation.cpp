@@ -5,6 +5,13 @@ Animation::Animation(sf::Sprite& target) : m_target(target)
 	progress = totalLength = sf::Time(sf::seconds(0));
 }
 
+Animation::Animation(const Animation& other) : m_target(other.m_target)
+{
+	progress = other.progress;
+	totalLength = other.totalLength;
+	m_frames = other.m_frames;
+}
+
 Animation::~Animation()
 {
 }

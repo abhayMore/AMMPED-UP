@@ -22,7 +22,7 @@ void PowerUP::init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType typ
 
 	}if (m_type == SPEED) //INCREASE SPEED BY 10
 	{
-		m_powerUPSprite.setTextureRect({ 2 * 48,0,48,48 });
+		m_powerUPSprite.setTextureRect({ 1 * 48,0,48,48 });
 
 	}if (m_type == LIVES) //INCREASE ONE LIFE
 	{
@@ -46,7 +46,7 @@ void PowerUP::init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType typ
 	}
 }
 
-void PowerUP::update(const sf::Vector2f pos, sf::Time deltatime)
+void PowerUP::update(sf::Time deltatime)
 {
 
 }
@@ -61,15 +61,13 @@ void PowerUP::setPosition(sf::Vector2f pos)
 	m_powerUPPosition = pos;
 }
 
-bool PowerUP::playerIsOnPowerUP(sf::Sprite& other)
+bool PowerUP::playerIsOnPowerUP(sf::Vector2f pos)
 {
-	if (getPosition().x + 14 > other.getPosition().x + 3 &&
-		getPosition().x + 1 <= other.getPosition().x + 14 &&
-		getPosition().y + 14 > other.getPosition().y + 3  &&
-		getPosition().y + 1 <= other.getPosition().y + 14)
+	if (getPosition().x + 14 > pos.x + 3 &&
+		getPosition().x + 1 <= pos.x + 14 &&
+		getPosition().y + 14 > pos.y + 3  &&
+		getPosition().y + 1 <= pos.y + 14)
 		return true;
-
-		
 	return false;
 }
 

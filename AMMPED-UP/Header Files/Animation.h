@@ -18,7 +18,12 @@ private:
 
 public:
 	Animation(sf::Sprite& target);
+	Animation(const Animation& other);
 	virtual ~Animation();
+	//bool operator!=(const Animation& other);
+
+	//Animation& operator=(const Animation& other);
+
 	void addFrame(Frame&& frame);
 	void update(sf::Time elapsed);
 	const sf::Time getLength() const;

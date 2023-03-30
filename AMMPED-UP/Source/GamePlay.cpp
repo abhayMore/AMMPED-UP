@@ -13,7 +13,13 @@ int ReturnIntRandom(int lower, int upper)
 {
 	return (rand() % (upper - lower + 1)) + lower;
 }
-
+Enemy& getEnemyValue(std::list<Enemy>& _list, int _i) {
+	std::list<Enemy>::iterator it = _list.begin();
+	for (int i = 0; i < _i; i++) {
+		++it;
+	}
+	return *it;
+}
 
 GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	//m_enemyAI1(openSpaces[ReturnIntRandom(0,openSpaces.size()-1)]),
@@ -24,10 +30,10 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_lives(3),
 	m_isPaused(false),
 	m_inGame(m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK)),
-	gui(*m_context->m_window)
+	gui(*m_context->m_window),
+	m_enemies(6),
+	m_coins(75)
 {
-
-
 	srand(time(nullptr));
 }
 
@@ -39,6 +45,8 @@ GamePlay::~GamePlay()
 void GamePlay::init()
 {
 	// LOADING TEXTURES OF GAMEPLAY STATE
+	m_context->m_assets->addTextures(GAME_BACKGROUND, "Resources/assets/bombmap1.png");
+
 	m_context->m_assets->addTextures(PLAYER, "Resources/assets/yellowPlayer.png");
 	m_context->m_assets->addTextures(ENEMY1, "Resources/assets/enemy1.png");
 	m_context->m_assets->addTextures(ENEMY2, "Resources/assets/enemy2.png");
@@ -51,13 +59,18 @@ void GamePlay::init()
 	m_context->m_assets->addTextures(HEART_UI, "Resources/assets/heart.png");
 
 	m_context->m_assets->addTextures(BOMB_TRIGGER, "Resources/assets/bombTileset.png");
+	m_context->m_assets->addTextures(COIN, "Resources/assets/Coins.png");
+
 	m_context->m_assets->addTextures(POWERUPS, "Resources/assets/PowerUps.png");
 
 	m_context->m_assets->addTextures(EXPLOSION_SPRITE, "Resources/assets/explosionSprite.png");
 
+	
+
+
 	//GAME MAP
 	//m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
-	m_gameMap.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
+	m_gameMap.setTexture(m_context->m_assets->getTexture(GAME_BACKGROUND));
 	m_gameMap.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
 	m_gameMap.setOrigin(sf::Vector2f(m_gameMap.getTexture()->getSize().x / 2, m_gameMap.getTexture()->getSize().y / 2));
 	m_gameMap.setScale({ 2,2 });
@@ -148,17 +161,7 @@ void GamePlay::init()
 		}
 	}
 
-	
-
-	m_directions = { sf::Vector2f(0,-1), sf::Vector2f(0,1), sf::Vector2f(-1,0), sf::Vector2f(1,0) };
-	enemyDirectionAI1 = m_directions[ReturnIntRandom(0, 3)];
-	enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
-	enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
-	enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
-	enemyDirectionAI5 = m_directions[ReturnIntRandom(2, 3)];
-	enemyDirectionAI6 = m_directions[ReturnIntRandom(0, 1)];
-
-	//OPEN SPACES AVAILABLE
+	//OPEN & BREAKABLE TILE SPACES AVAILABLE
 	for (int i = 0; i < 30; i++)
 	{
 		for (int j = 0; j < 40; j++)
@@ -177,29 +180,39 @@ void GamePlay::init()
 	// PLAYER INIT
 	m_player.init(m_context->m_assets->getTexture(PLAYER));
 	m_player.m_bomb.init(m_context->m_assets->getTexture(BOMB_TRIGGER));
-	prevPosiition = m_player.getPosition();
 
 	//AI INIT
-	m_enemyAI1.setPosition(sf::Vector2f(240* 2, 176* 2));
-	m_enemyAI2.setPosition(sf::Vector2f(384* 2, 288* 2));
-	m_enemyAI3.setPosition(sf::Vector2f(560* 2, 208* 2));
-	m_enemyAI4.setPosition(sf::Vector2f(304* 2, 448* 2));
-	m_enemyAI5.setPosition(sf::Vector2f(256* 2,  16* 2));
-	m_enemyAI6.setPosition(sf::Vector2f(96* 2 , 192* 2));
+	m_directions = { sf::Vector2f(0,-1), sf::Vector2f(0,1), sf::Vector2f(-1,0), sf::Vector2f(1,0) };
 
-	enemyPrevPosition1 = m_enemyAI1.getPosition();
-	enemyPrevPosition2 = m_enemyAI2.getPosition();
-	enemyPrevPosition3 = m_enemyAI3.getPosition();
-	enemyPrevPosition4 = m_enemyAI4.getPosition();
-	enemyPrevPosition5 = m_enemyAI5.getPosition();
-	enemyPrevPosition6 = m_enemyAI6.getPosition();
+	getEnemyValue(m_enemies, 0).setDirection(m_directions[ReturnIntRandom(0, 3)]);
+	getEnemyValue(m_enemies, 1).setDirection(m_directions[ReturnIntRandom(0, 3)]);
+	getEnemyValue(m_enemies, 2).setDirection(m_directions[ReturnIntRandom(0, 1)]);
+	getEnemyValue(m_enemies, 3).setDirection(m_directions[ReturnIntRandom(2, 3)]);
+	getEnemyValue(m_enemies, 4).setDirection(m_directions[ReturnIntRandom(2, 3)]);
+	getEnemyValue(m_enemies, 5).setDirection(m_directions[ReturnIntRandom(0, 1)]);
+	
 
-	m_enemyAI1.init(m_context->m_assets->getTexture(ENEMY1));
-	m_enemyAI2.init(m_context->m_assets->getTexture(ENEMY1));
-	m_enemyAI3.init(m_context->m_assets->getTexture(ENEMY2));
-	m_enemyAI4.init(m_context->m_assets->getTexture(ENEMY2));
-	m_enemyAI5.init(m_context->m_assets->getTexture(ENEMY3));
-	m_enemyAI6.init(m_context->m_assets->getTexture(ENEMY3));
+	getEnemyValue(m_enemies, 0).setPosition(sf::Vector2f(240 * 2, 176 * 2));
+	getEnemyValue(m_enemies, 1).setPosition(sf::Vector2f(384 * 2, 288 * 2));
+	getEnemyValue(m_enemies, 2).setPosition(sf::Vector2f(560 * 2, 208 * 2));
+	getEnemyValue(m_enemies, 3).setPosition(sf::Vector2f(304 * 2, 448 * 2));
+	getEnemyValue(m_enemies, 4).setPosition(sf::Vector2f(256 * 2, 16 * 2));
+	getEnemyValue(m_enemies, 5).setPosition(sf::Vector2f(96 * 2, 192 * 2));
+
+	getEnemyValue(m_enemies, 0).setPreviousPosition(getEnemyValue(m_enemies, 0).getPosition());
+	getEnemyValue(m_enemies, 1).setPreviousPosition(getEnemyValue(m_enemies, 1).getPosition());
+	getEnemyValue(m_enemies, 2).setPreviousPosition(getEnemyValue(m_enemies, 2).getPosition());
+	getEnemyValue(m_enemies, 3).setPreviousPosition(getEnemyValue(m_enemies, 3).getPosition());
+	getEnemyValue(m_enemies, 4).setPreviousPosition(getEnemyValue(m_enemies, 4).getPosition());
+	getEnemyValue(m_enemies, 5).setPreviousPosition(getEnemyValue(m_enemies, 5).getPosition());
+	
+	getEnemyValue(m_enemies, 0).init(m_context->m_assets->getTexture(ENEMY1));
+	getEnemyValue(m_enemies, 1).init(m_context->m_assets->getTexture(ENEMY1));
+	getEnemyValue(m_enemies, 2).init(m_context->m_assets->getTexture(ENEMY2));
+	getEnemyValue(m_enemies, 3).init(m_context->m_assets->getTexture(ENEMY2));
+	getEnemyValue(m_enemies, 4).init(m_context->m_assets->getTexture(ENEMY3));
+	getEnemyValue(m_enemies, 5).init(m_context->m_assets->getTexture(ENEMY3));
+	
 
 	// SCORE INIT
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
@@ -236,18 +249,47 @@ void GamePlay::init()
 	gui.add(progressBar);
 
 	// POWER UP INIT
+	std::vector<bool> selectedIndicesPowerUP(powerUPSpaces.size(), false);
 	for (int i = 0; i < powerUPSpaces.size()/3; i++)
 	{
 		PowerUPType type = static_cast<PowerUPType>(ReturnIntRandom(0, static_cast<int>(ICE_CREAM)));
-		sf::Vector2f pos = powerUPSpaces[ReturnIntRandom(0, powerUPSpaces.size() - 1)];
+		int randomIndex;
+		do {
+			randomIndex = ReturnIntRandom(0, powerUPSpaces.size() - 1);
+		} while (selectedIndicesPowerUP[randomIndex]);
+		selectedIndicesPowerUP[randomIndex] = true;
+		sf::Vector2f pos = powerUPSpaces[randomIndex];
 		PowerUP powerup;
 		powerup.init(m_context->m_assets->getTexture(POWERUPS), pos, type);
 		m_powerUPs.push_back(powerup);
 	}
+	//COINS INIT
+	std::vector<bool> selectedIndicesCoins(openSpaces.size(), false);
+	for (auto& i: m_coins)
+	{
+		int randomIndex;
+		do {
+			randomIndex = ReturnIntRandom(0, openSpaces.size() - 1);
+		} while (selectedIndicesCoins[randomIndex]);
+		selectedIndicesCoins[randomIndex] = true;
+		sf::Vector2f pos = openSpaces[randomIndex];
+		i.init(m_context->m_assets->getTexture(COIN));
+		i.setPosition(sf::Vector2f(pos));
+	}
 
 	// SOUND EFFECT SETTINGS
-	m_foodEatSfx.setBuffer(m_context->m_assets->getSoundEffect(FOOD_SFX));
-	m_foodEatSfx.setVolume(20);
+
+	m_coinEatSfx.setBuffer(m_context->m_assets->getSoundEffect(COIN_SFX));
+	m_coinEatSfx.setVolume(20);
+	
+	m_blastSFX.setBuffer(m_context->m_assets->getSoundEffect(BLAST_SFX));
+	m_blastSFX.setVolume(80);
+
+	m_damageSFX.setBuffer(m_context->m_assets->getSoundEffect(DAMAGE_SFX));
+	m_damageSFX.setVolume(100);
+
+	m_enemyDeathSFX.setBuffer(m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX));
+	m_enemyDeathSFX.setVolume(100);
 	//takeScreenshot("../Resources/assets/");
 }
 
@@ -360,17 +402,56 @@ void GamePlay::update(sf::Time deltaTime)
 	//std::cout << sf::Mouse::getPosition(*m_context->m_window).x / 16 << ' ' << sf::Mouse::getPosition(*m_context->m_window).y / 16 << std::endl;
 	if (!m_isPaused)
 	{
+		//ELASPED TIME FOR VARIOUS OPERATIONS
 		m_changeDirectionTime += deltaTime;
 		m_elapsedTime += deltaTime;
 		m_elaspedTimeForEnemy += deltaTime;
 
+		//COIN ANIMATION UPDATE
+		for (auto it = m_coins.begin(); it != m_coins.end(); it++)
+		{
+			it->update(deltaTime);
+		}
+
+		//PLAYER UPDATE AND COLLISION WITH WALLS
 		m_player.update(m_playerDirection, deltaTime);
 		if (checkCollision1(m_player.getPosition()))
-			m_player.setPosition(prevPosiition);
-		prevPosiition = m_player.getPosition();
+		{
+			m_player.setPosition(m_player.getPreviousPosition());
+		}
+		m_player.setPreviousPosition(m_player.getPosition());
 
+		//COLLISION OF PLAYER WITH ENEMIES
+		if (!m_inVulnerability)
+		{
+			for (auto& it : m_enemies)
+			{
+				if (checkCollision4(it.getPosition()))
+				{
+					m_damageSFX.play();
+					m_damageCounter = true;
+					std::cout << m_player.getHealth() << std::endl;
+					m_player.setHealth(m_player.getHealth() - 20);
+					m_inVulnerability = true;
+					break;
+				}
+			}
+		}
+
+		//COINS COLLECTING
+		for (auto it = m_coins.begin(); it != m_coins.end(); ++it) {
+			if ((*it).playerIsOnCoin(m_player.getSprite())) {
+				m_coinEatSfx.play();
+				m_score += 5;
+				it = m_coins.erase(it);
+				if (it == m_coins.end()) {
+					break;
+				}
+			}
+		}
+		//POWERUP COLLISION AND EFFECT APPLYING (CURRENT NUMBER OF POWERUP = 7)
 		for(auto it = m_powerUPs.begin(); it != m_powerUPs.end(); ++it) {
-			if ((*it).playerIsOnPowerUP(m_player.getSprite())) {
+			if ((*it).playerIsOnPowerUP(m_player.getPosition())) {
 				applyPowerUPEffect(it->getType());
 				it = m_powerUPs.erase(it);
 				if (it == m_powerUPs.end()) {
@@ -379,12 +460,7 @@ void GamePlay::update(sf::Time deltaTime)
 			}
 		}
 
-		if (m_elapsedTime.asSeconds() > 1.0)
-		{
-			m_time--;
-			m_timerText.setString("Time : " + std::to_string(m_time));
-			m_elapsedTime = sf::Time::Zero;
-		}
+		//BOMB PLACEMENT & EXPLOSIONS
 		if (m_player.m_isBombPlaced)
 		{
 			sf::Vector2i bombPos = sf::Vector2i((int)((m_player.m_bombPos.x + 8)/ 32) * 32, (int)( (m_player.m_bombPos.y +8) / 32) * 32);
@@ -392,29 +468,44 @@ void GamePlay::update(sf::Time deltaTime)
 
 			if (m_player.m_bomb.isBlasted())
 			{
+				m_blastSFX.play();
+
 				int tempWall = removeWalls(m_player.m_bomb.getPosition(), m_radius);
 				if(tempWall >=1)
-				m_score += tempWall * 5;
+					m_score += tempWall * 5;
 
-				//explosions(m_player.m_bomb.getPosition(), 1);
 				blastBool = true;
 				m_player.m_isBombPlaced = false;
 				m_player.m_bomb.setIsBlasted(false);
 				m_player.m_bomb.setPosition(sf::Vector2f(1280, 960));
+
+				//COLLISION FOR PLAYER IN EXPLOSION OR NOT
 				for (auto& explosionSprite : m_explosions)
 				{
-					std::cout << explosionSprite.getPosition().x << ' ' << explosionSprite.getPosition().y << std::endl;
 					if (checkCollision3(explosionSprite.getPosition()))
 					{
+						m_damageSFX.play();
 						m_damageCounter = true;
 						m_player.setHealth(m_player.getHealth() - 20);
-						if (progressBar->getValue() <= 0)
-						{
-							m_lives--;
-							m_player.setHealth(100);
-							m_livesText.setString(std::to_string(m_lives));
-						}
+						
 						break;
+					}
+				}
+				
+				//COLLISION OF EXPLOSIONS WITH ENEMIES
+				for (auto it = m_enemies.begin(); it!=m_enemies.end(); it++)
+				{
+					for (auto& explosionSprite : m_explosions)
+					{
+							if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
+							{
+								m_enemyDeathSFX.play();
+								it = m_enemies.erase(it);
+								if (it == m_enemies.end()) {
+									break;
+								}
+								break;
+							}
 					}
 				}
 				m_player.m_isBombPlaced = false;
@@ -441,7 +532,6 @@ void GamePlay::update(sf::Time deltaTime)
 					m_damageCounter = false;
 					m_player.setPlayerColor(sf::Color(255, 255, 255, 255));
 					m_playerDamageCounterTime = sf::Time::Zero;
-
 				}
 			}
 		}
@@ -458,68 +548,54 @@ void GamePlay::update(sf::Time deltaTime)
 			}
 		}
 
-		//CHANGE DIRECTION AFTER PARTICULAR AMOUNT OF TIME
+		//CHANGE DIRECTION OF ENEMIES AFTER PARTICULAR AMOUNT OF TIME
 		if (m_changeDirectionTime.asSeconds() >= 4.0)
 		{
-			enemyDirectionAI1 = m_directions[ReturnIntRandom(0, 3)];
-			enemyDirectionAI2 = m_directions[ReturnIntRandom(0, 3)];
-			enemyDirectionAI3 = m_directions[ReturnIntRandom(0, 1)];
-			enemyDirectionAI4 = m_directions[ReturnIntRandom(2, 3)];
-			enemyDirectionAI5 = m_directions[ReturnIntRandom(2, 3)];
-			enemyDirectionAI6 = m_directions[ReturnIntRandom(0, 1)];
+			for (auto it = m_enemies.begin(); it != m_enemies.end(); ++it)
+			{
+				it->setDirection(m_directions[ReturnIntRandom(0, 3)]);
+				
+			}
 			m_changeDirectionTime = sf::Time::Zero;
 		}
-
-		if (checkCollision2(m_enemyAI1.getPosition()))
+		//COLLISION OF ENEMIES WITH WALLS
+		for (auto it = m_enemies.begin(); it != m_enemies.end(); ++it)
 		{
-			m_enemyAI1.setPosition(enemyPrevPosition1);
-			enemyDirectionAI1 = -enemyDirectionAI1;
+			if (checkCollision2(it->getPosition()))
+			{
+				it->setPosition(it->getPreviousPosition());
+				it->setDirection(-it->getDirection());
+			}
+			it->update(it->getDirection(), deltaTime);
+			//PREVIOUS POSITION OF AI IS UPDATED TO CURRENT FOR COLLISION DETECTION
+			it->setPreviousPosition(it->getPosition());
 		}
-		if (checkCollision2(m_enemyAI2.getPosition()))
-		{
-			m_enemyAI2.setPosition(enemyPrevPosition2);
-			enemyDirectionAI2 = -enemyDirectionAI2;
-		}
-		if (checkCollision2(m_enemyAI3.getPosition()))
-		{
-			m_enemyAI3.setPosition(enemyPrevPosition3);
-			enemyDirectionAI3 = -enemyDirectionAI3;
-		}
-		if (checkCollision2(m_enemyAI4.getPosition()))
-		{
-			m_enemyAI4.setPosition(enemyPrevPosition4);
-			enemyDirectionAI4 = -enemyDirectionAI4;
-		}
-		if (checkCollision2(m_enemyAI5.getPosition()))
-		{
-			m_enemyAI5.setPosition(enemyPrevPosition5);
-			enemyDirectionAI5 = -enemyDirectionAI5;
-		}
-		if (checkCollision2(m_enemyAI6.getPosition()))
-		{
-			m_enemyAI6.setPosition(enemyPrevPosition6);
-			enemyDirectionAI6 = -enemyDirectionAI6;
-		}
-		m_enemyAI1.update(enemyDirectionAI1, deltaTime);
-		m_enemyAI2.update(enemyDirectionAI2, deltaTime);
-		m_enemyAI3.update(enemyDirectionAI3, deltaTime);
-		m_enemyAI4.update(enemyDirectionAI4, deltaTime);
-		m_enemyAI5.update(enemyDirectionAI5, deltaTime);
-		m_enemyAI6.update(enemyDirectionAI6, deltaTime);
-
 		m_elaspedTimeForEnemy = sf::Time::Zero;
-		
 
-		
-		//PREVIOUS POSITION OF AI IS UPDATE TO CURRENT FOR COLLISION DETECTION
-		enemyPrevPosition1 = m_enemyAI1.getPosition();
-		enemyPrevPosition2 = m_enemyAI2.getPosition();
-		enemyPrevPosition3 = m_enemyAI3.getPosition();
-		enemyPrevPosition4 = m_enemyAI4.getPosition();
-		enemyPrevPosition5 = m_enemyAI5.getPosition();
-		enemyPrevPosition6 = m_enemyAI6.getPosition();
 
 		//THINGS TO BE UPDATED IN THE END
+		if (m_inVulnerability)
+		{
+			m_inVulnerabilityTime += deltaTime;
+			if (m_inVulnerabilityTime.asSeconds() >= 1.5f)
+			{
+				m_inVulnerability = false;
+				m_inVulnerabilityTime = sf::Time::Zero;
+			}
+
+		}
+		if (m_elapsedTime.asSeconds() > 1.0)
+		{
+			m_time--;
+			m_timerText.setString("Time : " + std::to_string(m_time));
+			m_elapsedTime = sf::Time::Zero;
+		}
+		if (progressBar->getValue() <= 0)
+		{
+			m_lives--;
+			m_player.setHealth(100);
+			m_livesText.setString(std::to_string(m_lives));
+		}
 		if (m_lives <= 0 || m_time < 0)
 		{
 			m_context->m_states->add(std::make_unique<GameOver>(m_context));
@@ -533,10 +609,10 @@ void GamePlay::update(sf::Time deltaTime)
 void GamePlay::draw()
 {
 	m_context->m_window->clear();
+	
 	//DRAW GAME MAP
 	m_context->m_window->draw(m_gameMap);
 
-	// use std::vector<std::pair<sf::Sprite, int>> breakableTiles
 	m_breakableWalls.clear();
 	for (int i = 0; i < 30; i++)
 	{
@@ -558,6 +634,10 @@ void GamePlay::draw()
 		{
 			m_context->m_window->draw(powerup);
 		}
+	}
+	for (auto& coin : m_coins)
+	{
+		m_context->m_window->draw(coin);
 	}
 
 	//DRAW BREAKABLE WALLS
@@ -595,7 +675,11 @@ void GamePlay::draw()
 			m_context->m_window->draw(powerup);
 		}
 	}
-
+	//DRAW COINS
+	for (auto it = m_coins.begin(); it!= m_coins.end(); it++)
+	{
+		m_context->m_window->draw(*it);
+	}
 	//DRAW BOMB
 	if(m_player.m_isBombPlaced) m_context->m_window->draw(m_player.m_bomb);
 
@@ -608,14 +692,14 @@ void GamePlay::draw()
 
 	//PLAYER AND ENEMIES
 	m_context->m_window->draw(m_player);
-	m_context->m_window->draw(m_enemyAI1);
-	m_context->m_window->draw(m_enemyAI2);
-	m_context->m_window->draw(m_enemyAI3);
-	m_context->m_window->draw(m_enemyAI4);
-	m_context->m_window->draw(m_enemyAI5);
-	m_context->m_window->draw(m_enemyAI6);
+	for (auto it = m_enemies.begin(); it!= m_enemies.end(); ++it)
+	{
+		m_context->m_window->draw(*it);
+	}
+	
 
 	//SCORE, TEXT & LIVES
+	
 	m_context->m_window->draw(m_scoreText);
 	m_context->m_window->draw(m_timerText);
 	m_context->m_window->draw(m_livesHeartUI);
@@ -683,9 +767,9 @@ bool GamePlay::checkCollision1(sf::Vector2f pos)
 		{
 			if (collisionMap[i][j] == HORIZONTAL_WALL_TILE || collisionMap[i][j] == VERTICAL_WALL_TILE || collisionMap[i][j] == COLUMN_WALL1 || collisionMap[i][j] == COLUMN_WALL2 || collisionMap[i][j] == COLUMN_WALL3 || collisionMap[i][j] == COLUMN_WALL4 || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL_TILE)
 			{
-				if (pos.x + 32 > j * 32 &&
+				if (pos.x + 28 > j * 32 + 1 &&
 					pos.x + 1 <= j * 32 + 28 &&
-					pos.y + 28 > i * 32 &&
+					pos.y + 28 > i * 32 + 1 &&
 					pos.y + 1 <= i * 32 + 28)
 				
 					return true;
@@ -721,6 +805,31 @@ bool GamePlay::checkCollision3(sf::Vector2f pos)
 		m_player.getPosition().x 	<= pos.x + 26 &&
 		m_player.getPosition().y + 28	> pos.y + 6&&
 		m_player.getPosition().y 	<= pos.y + 26)
+	{
+		return true;
+	}
+	return false;
+}
+
+//ENEMY AI AND PLAYER COLLISION
+bool GamePlay::checkCollision4(sf::Vector2f pos)
+{
+	if (m_player.getPosition().x + 28 > pos.x + 6 &&
+		m_player.getPosition().x <= pos.x + 26 &&
+		m_player.getPosition().y + 28 > pos.y + 6 &&
+		m_player.getPosition().y <= pos.y + 26)
+	{
+		return true;
+	}
+	return false;
+}
+//ENEMY AI & BOMB COLLISION
+bool GamePlay::checkCollision5(sf::Vector2f enemyPos, sf::Vector2f bombPos)
+{
+	if (bombPos.x + 28	>	enemyPos.x + 2 &&
+		bombPos.x + 1	<=	enemyPos.x + 28 &&
+		bombPos.y + 28	>	enemyPos.y + 2 &&
+		bombPos.y + 1	<=	enemyPos.y + 28)
 	{
 		return true;
 	}

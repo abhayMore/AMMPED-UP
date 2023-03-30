@@ -1,5 +1,5 @@
 #include "../Header Files/Enemy.h"
-
+#include <iostream>
 Enemy::Enemy() :
 	velocity(75),
 	m_direction(1,0),
@@ -18,13 +18,40 @@ Enemy::Enemy(sf::Vector2f pos) :
 	m_playerUpWalkAnimation(m_playerSprite),
 	m_playerDownWalkAnimation(m_playerSprite),
 	m_playerLeftWalkAnimation(m_playerSprite),
-	m_playerRightWalkAnimation(m_playerSprite)
+	m_playerRightWalkAnimation(m_playerSprite),
+	m_prevPosition(m_playerPosition)
 {
 }
 
 Enemy::~Enemy()
 {
 
+}
+
+Enemy::Enemy(const Enemy& other) : 
+	m_playerSprite(other.m_playerSprite),
+	m_playerPosition(other.m_playerPosition),
+	velocity(other.velocity),
+	m_direction(other.m_direction),
+	m_prevPosition(other.m_prevPosition),
+	m_playerUpWalkAnimation(other.m_playerUpWalkAnimation),
+	m_playerDownWalkAnimation(other.m_playerDownWalkAnimation),
+	m_playerLeftWalkAnimation(other.m_playerLeftWalkAnimation),
+	m_playerRightWalkAnimation(other.m_playerRightWalkAnimation)
+{
+	
+}
+
+Enemy& Enemy::operator=(const Enemy& other) 
+{
+	// TODO: insert return stat ement here
+
+	if (this != &other)
+	{
+	
+		*this = other;
+	}
+	return *this;
 }
 
 void Enemy::init(const sf::Texture& texture)
@@ -52,13 +79,16 @@ void Enemy::init(const sf::Texture& texture)
 	m_playerLeftWalkAnimation.addFrame({ sf::IntRect(208,0,16,16), sf::Time(sf::seconds(0.1)) });
 
 	m_playerSprite.setPosition(m_playerPosition);
-	m_direction = sf::Vector2f(1, 0);
+	//m_direction = sf::Vector2f(1, 0);
+
+	m_prevPosition = m_playerPosition;
 
 }
 
 void Enemy::update(const sf::Vector2f& direction, sf::Time deltaTime)
 {
 	m_direction = direction;
+
 	if (m_direction == sf::Vector2f(0, -1))
 	{
 		m_playerUpWalkAnimation.update(deltaTime);
@@ -80,20 +110,6 @@ void Enemy::update(const sf::Vector2f& direction, sf::Time deltaTime)
 	m_playerSprite.setPosition(m_playerPosition);
 }
 
-bool Enemy::isOn(const sf::Sprite& other) const
-{
-	return other.getGlobalBounds().intersects(m_playerSprite.getGlobalBounds());
-}
-
-void Enemy::grow(const sf::Vector2f& direction)
-{
-}
-
-bool Enemy::isSelfIntersecting()
-{
-	return false;
-}
-
 void Enemy::setPosition(sf::Vector2f pos)
 {
 	m_playerPosition = pos;
@@ -109,12 +125,19 @@ void Enemy::setDirection(sf::Vector2f direction)
 	m_direction = direction;
 }
 
-bool Enemy::playerCollisionIsOn(sf::Sprite& sprite)
+sf::Vector2f Enemy::getPreviousPosition()
 {
-	return false;
+	return sf::Vector2f(m_prevPosition);
 }
 
-void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Enemy::setPreviousPosition(sf::Vector2f prevpos)
+{
+	m_prevPosition = prevpos;
+}
+
+
+
+void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const 
 {
 	target.draw(m_playerSprite);
 }

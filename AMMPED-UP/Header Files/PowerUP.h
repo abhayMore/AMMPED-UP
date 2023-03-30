@@ -28,10 +28,10 @@ private:
 public:
 	PowerUP();
 	void init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType type);
-	void update(const sf::Vector2f pos, sf::Time deltatime);
+	void update(sf::Time deltatime);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void setPosition(sf::Vector2f pos);
-	bool playerIsOnPowerUP(sf::Sprite& other);
+	bool playerIsOnPowerUP(sf::Vector2f pos);
 	PowerUPType getType();
 
 	sf::Vector2f getPosition();

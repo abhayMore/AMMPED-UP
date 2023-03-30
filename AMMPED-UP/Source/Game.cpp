@@ -12,8 +12,14 @@ Game::Game() : m_context(std::make_shared<Context>())
     //m_context->m_window->setKeyRepeatEnabled(true);
 
     //LOAD GAME RELATED SOUNDEFFECTS
-    m_context->m_assets->addSoundEffects(FOOD_SFX, "Resources/assets/music/assets_audio_Simple Coin 006.wav");
+    m_context->m_assets->addSoundEffects(COIN_SFX, "Resources/assets/music/assets_audio_Simple Coin 006.wav");
     m_context->m_assets->addSoundEffects(DEATH_SFX, "Resources/assets/music/assets_audio_Death 002.wav");
+    m_context->m_assets->addSoundEffects(DAMAGE_SFX, "Resources/assets/music/ouch.wav");
+    m_context->m_assets->addSoundEffects(BLAST_SFX, "Resources/assets/music/blast.wav");
+    m_context->m_assets->addSoundEffects(ENEMY_DEATH_SFX, "Resources/assets/music/monster-4.wav");
+
+
+    
     m_context->m_assets->addSoundTrack(MAIN_SOUND_TRACK, "Resources/assets/music/forest.wav", true);
     m_context->m_assets->addSoundTrack(IN_GAME_SOUND_TRACK, "Resources/assets/music/assets_audio_Spinning out.ogg", true);
 

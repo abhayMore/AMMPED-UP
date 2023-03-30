@@ -22,6 +22,7 @@
     <ClCompile Include="Source\Animation.cpp" />
     <ClCompile Include="Source\AssetManager.cpp" />
     <ClCompile Include="Source\Bomb.cpp" />
+    <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\ExitState.cpp" />
     <ClCompile Include="Source\Game.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Header Files\AssetManager.h" />
     <ClInclude Include="Header Files\Bomb.h" />
     <ClInclude Include="Header Files\Button.h" />
+    <ClInclude Include="Header Files\Coin.h" />
     <ClInclude Include="Header Files\Enemy.h" />
     <ClInclude Include="Header Files\ExitState.h" />
     <ClInclude Include="Header Files\Game.h" />

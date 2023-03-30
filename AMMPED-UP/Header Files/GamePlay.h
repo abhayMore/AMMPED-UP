@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include <array>
 #include <utility>
 
@@ -14,6 +15,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "PowerUP.h"
+#include "Coin.h"
 
 enum CMapTile
 {
@@ -31,46 +33,21 @@ enum CMapTile
 
 };
 
+
+
 class GamePlay : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
 	Player m_player;
-
-	Enemy m_enemyAI1; // RANDOM AI
-	Enemy m_enemyAI2; // RANDOM AI
-	Enemy m_enemyAI3; // RANDOM AI HORIZONTAL
-	Enemy m_enemyAI4; // RANDOM AI HORIZONTAL
-	Enemy m_enemyAI5; 
-	Enemy m_enemyAI6;
-
-	sf::Vector2f enemyAI1Dir;
-	sf::Vector2f enemyAI2Dir;
-	sf::Vector2f enemyAI3Dir;
-	sf::Vector2f enemyAI4Dir;
-	sf::Vector2f enemyAI5Dir;
-	sf::Vector2f enemyAI6Dir;
-
-	sf::Vector2f enemyDirectionAI1;
-	sf::Vector2f enemyDirectionAI2;
-	sf::Vector2f enemyDirectionAI3;
-	sf::Vector2f enemyDirectionAI4;
-	sf::Vector2f enemyDirectionAI5;
-	sf::Vector2f enemyDirectionAI6;
-
-	sf::Vector2f enemyPrevPosition1;
-	sf::Vector2f enemyPrevPosition2;
-	sf::Vector2f enemyPrevPosition3;
-	sf::Vector2f enemyPrevPosition4;
-	sf::Vector2f enemyPrevPosition5;
-	sf::Vector2f enemyPrevPosition6;
-
+	std::list<Enemy> m_enemies;
 
 	sf::Time m_changeDirectionTime;
 	sf::Time m_elaspedTimeForEnemy;
+	sf::Time m_inVulnerabilityTime;
+	bool m_inVulnerability = false;
 
-	std::vector<std::pair<sf::Sprite, int>> pairTile;
-
+	//WALLS
 	std::vector<sf::Sprite> m_breakableWalls;
 	std::vector<sf::Sprite> m_VWalls;
 	std::vector<sf::Sprite> m_HWalls;
@@ -137,12 +114,21 @@ private:
 	tgui::Gui gui;
 	tgui::ProgressBar::Ptr progressBar;
 
-
+	bool is_removed = false;;
 	bool m_isPaused;
 
-	sf::Sound m_foodEatSfx;
-	sf::Music& m_inGame;
+	//COINS
+	std::list<Coin> m_coins;
 
+	//SFX and MUSIC
+	sf::Sound m_damageSFX;
+	sf::Sound m_blastSFX;
+	sf::Sound m_coinEatSfx;
+	sf::Music& m_inGame;
+	sf::Sound m_enemyDeathSFX;
+
+
+	//EXPLOSIONS 
 	std::vector<sf::Sprite> m_explosions;
 
 	
@@ -154,7 +140,6 @@ private:
 	sf::Time blastTime;
 	bool blastBool;
 	int m_radius = 1;
-	sf::Vector2f prevPosiition;
 
 	//DEBUGGING TOOL INFO
 	bool showPowerUP = false;
@@ -175,6 +160,8 @@ public:
 	bool checkCollision1(sf::Vector2f pos);
 	bool checkCollision2(sf::Vector2f pos);
 	bool checkCollision3(sf::Vector2f pos);
+	bool checkCollision4(sf::Vector2f pos);
+	bool checkCollision5(sf::Vector2f enemyPos, sf::Vector2f bombPos);
 
 	bool checkCollision(sf::Vector2f pos);
 	void applyPowerUPEffect(PowerUPType powerUPType);

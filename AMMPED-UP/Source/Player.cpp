@@ -10,7 +10,8 @@ Player::Player() :
 	m_playerRightWalkAnimation(m_playerSprite),
 	m_isBombPlaced(false),
 	m_health(100),
-	m_playerColor(sf::Color(255,255,255,255))
+	m_playerColor(sf::Color(255,255,255,255)),
+	m_previousPosition(m_playerPosition)
 {
 }
 
@@ -43,6 +44,8 @@ void Player::init(const sf::Texture& texture)
 	m_playerLeftWalkAnimation.addFrame({ sf::IntRect(208,0,16,16), sf::Time(sf::seconds(0.001)) });
 
 	m_playerSprite.setPosition(m_playerPosition);
+	m_previousPosition = m_playerPosition;
+
 
 }
 
@@ -68,15 +71,6 @@ void Player::update(const sf::Vector2f& direction, sf::Time deltaTime)
 	m_playerSprite.setPosition(m_playerPosition);
 }
 
-bool Player::isOn(const sf::Sprite& other) const
-{
-	return m_playerSprite.getGlobalBounds().intersects(other.getGlobalBounds());
-}
-
-void Player::grow(const sf::Vector2f& direction)
-{
-	
-}
 
 sf::Vector2f Player::getPosition()
 {
@@ -143,6 +137,16 @@ int Player::getAlpha()
 	return m_playerColor.a;
 }
 
+sf::Vector2f Player::getPreviousPosition()
+{
+	return sf::Vector2f(m_previousPosition);
+}
+
+void Player::setPreviousPosition(sf::Vector2f prevpos)
+{
+	m_previousPosition = prevpos;
+}
+
 void Player::setPosition(sf::Vector2f pos)
 {
 	m_playerPosition = pos;
@@ -172,11 +176,6 @@ sf::Sprite& Player::getSprite()
 {
 	// TODO: insert return statement here
 	return m_playerSprite;
-}
-
-bool Player::isSelfIntersecting()
-{
-	return 1;
 }
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
