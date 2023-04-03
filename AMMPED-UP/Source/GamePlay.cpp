@@ -13,16 +13,13 @@ int ReturnIntRandom(int lower, int upper)
 {
 	return (rand() % (upper - lower + 1)) + lower;
 }
-Enemy& getEnemyValue(std::list<Enemy>& _list, int _i) {
-	std::list<Enemy>::iterator it = _list.begin();
-	for (int i = 0; i < _i; i++) {
-		++it;
-	}
+Enemy& getEnemyValue(std::list<Enemy>& _list, int _index) {
+	auto it = _list.begin();
+	std::advance(it, _index);
 	return *it;
 }
 
 GamePlay::GamePlay(std::shared_ptr<Context>& context) :
-	//m_enemyAI1(openSpaces[ReturnIntRandom(0,openSpaces.size()-1)]),
 	m_context(context),
 	m_playerDirection(0.0f, 0.0f),
 	m_elapsedTime(sf::Time::Zero),
@@ -57,16 +54,10 @@ void GamePlay::init()
 	m_context->m_assets->addTextures(INNER_COMPARTMENT_WALL_TEXTURE, "Resources/assets/innerWall.png");
 	m_context->m_assets->addTextures(COLUMN_WALL_TEXTURE, "Resources/assets/columnWall.png");
 	m_context->m_assets->addTextures(HEART_UI, "Resources/assets/heart.png");
-
 	m_context->m_assets->addTextures(BOMB_TRIGGER, "Resources/assets/bombTileset.png");
 	m_context->m_assets->addTextures(COIN, "Resources/assets/Coins.png");
-
 	m_context->m_assets->addTextures(POWERUPS, "Resources/assets/PowerUps.png");
-
 	m_context->m_assets->addTextures(EXPLOSION_SPRITE, "Resources/assets/explosionSprite.png");
-
-	
-
 
 	//GAME MAP
 	//m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -191,7 +182,6 @@ void GamePlay::init()
 	getEnemyValue(m_enemies, 4).setDirection(m_directions[ReturnIntRandom(2, 3)]);
 	getEnemyValue(m_enemies, 5).setDirection(m_directions[ReturnIntRandom(0, 1)]);
 	
-
 	getEnemyValue(m_enemies, 0).setPosition(sf::Vector2f(240 * 2, 176 * 2));
 	getEnemyValue(m_enemies, 1).setPosition(sf::Vector2f(384 * 2, 288 * 2));
 	getEnemyValue(m_enemies, 2).setPosition(sf::Vector2f(560 * 2, 208 * 2));
@@ -245,6 +235,8 @@ void GamePlay::init()
 	progressBar = tgui::ProgressBar::create();
 	progressBar->setPosition(m_context->m_window->getSize().x - 205, 5);
 	progressBar->setSize(200, 20);
+	progressBar->setMinimum(0);
+	progressBar->setMaximum(100);
 	progressBar->setValue(m_player.getHealth());
 	gui.add(progressBar);
 
@@ -263,6 +255,7 @@ void GamePlay::init()
 		powerup.init(m_context->m_assets->getTexture(POWERUPS), pos, type);
 		m_powerUPs.push_back(powerup);
 	}
+	
 	//COINS INIT
 	std::vector<bool> selectedIndicesCoins(openSpaces.size(), false);
 	for (auto& i: m_coins)
@@ -278,7 +271,6 @@ void GamePlay::init()
 	}
 
 	// SOUND EFFECT SETTINGS
-
 	m_coinEatSfx.setBuffer(m_context->m_assets->getSoundEffect(COIN_SFX));
 	m_coinEatSfx.setVolume(20);
 	
@@ -405,7 +397,6 @@ void GamePlay::update(sf::Time deltaTime)
 		//ELASPED TIME FOR VARIOUS OPERATIONS
 		m_changeDirectionTime += deltaTime;
 		m_elapsedTime += deltaTime;
-		m_elaspedTimeForEnemy += deltaTime;
 
 		//COIN ANIMATION UPDATE
 		for (auto it = m_coins.begin(); it != m_coins.end(); it++)
@@ -469,10 +460,11 @@ void GamePlay::update(sf::Time deltaTime)
 			if (m_player.m_bomb.isBlasted())
 			{
 				m_blastSFX.play();
-
 				int tempWall = removeWalls(m_player.m_bomb.getPosition(), m_radius);
-				if(tempWall >=1)
+				if (tempWall >= 1)
+				{
 					m_score += tempWall * 5;
+				}
 
 				blastBool = true;
 				m_player.m_isBombPlaced = false;
@@ -487,7 +479,6 @@ void GamePlay::update(sf::Time deltaTime)
 						m_damageSFX.play();
 						m_damageCounter = true;
 						m_player.setHealth(m_player.getHealth() - 20);
-						
 						break;
 					}
 				}
@@ -497,15 +488,16 @@ void GamePlay::update(sf::Time deltaTime)
 				{
 					for (auto& explosionSprite : m_explosions)
 					{
-							if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
+						if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
+						{
+							m_enemyDeathSFX.play();
+							it = m_enemies.erase(it);
+							if (it == m_enemies.end()) 
 							{
-								m_enemyDeathSFX.play();
-								it = m_enemies.erase(it);
-								if (it == m_enemies.end()) {
-									break;
-								}
 								break;
 							}
+							break;
+						}
 					}
 				}
 				m_player.m_isBombPlaced = false;
@@ -526,7 +518,6 @@ void GamePlay::update(sf::Time deltaTime)
 				{
 					m_player.setPlayerColor(sf::Color(255, 255, 255, 255));
 				}
-
 				if (m_playerDamageCounterTime.asSeconds() >= 1.0f)
 				{
 					m_damageCounter = false;
@@ -539,7 +530,6 @@ void GamePlay::update(sf::Time deltaTime)
 		if (blastBool)
 		{
 			blastTime += deltaTime;
-
 			if (blastTime.asSeconds() > 0.25)
 			{
 				blastBool = false;
@@ -570,8 +560,6 @@ void GamePlay::update(sf::Time deltaTime)
 			//PREVIOUS POSITION OF AI IS UPDATED TO CURRENT FOR COLLISION DETECTION
 			it->setPreviousPosition(it->getPosition());
 		}
-		m_elaspedTimeForEnemy = sf::Time::Zero;
-
 
 		//THINGS TO BE UPDATED IN THE END
 		if (m_inVulnerability)
@@ -582,7 +570,6 @@ void GamePlay::update(sf::Time deltaTime)
 				m_inVulnerability = false;
 				m_inVulnerabilityTime = sf::Time::Zero;
 			}
-
 		}
 		if (m_elapsedTime.asSeconds() > 1.0)
 		{
@@ -613,6 +600,7 @@ void GamePlay::draw()
 	//DRAW GAME MAP
 	m_context->m_window->draw(m_gameMap);
 
+	//CLEAR BREAKABLE VECTOR TO ADD ONLY TILES THAT ARE YET TO BREAK SO IT WILL DRAW ONLY THOSE
 	m_breakableWalls.clear();
 	for (int i = 0; i < 30; i++)
 	{
@@ -697,13 +685,10 @@ void GamePlay::draw()
 		m_context->m_window->draw(*it);
 	}
 	
-
 	//SCORE, TEXT & LIVES
-	
 	m_context->m_window->draw(m_scoreText);
 	m_context->m_window->draw(m_timerText);
 	m_context->m_window->draw(m_livesHeartUI);
-
 	m_context->m_window->draw(m_livesText);
 	gui.draw();
 	m_context->m_window->display();
@@ -721,7 +706,7 @@ void GamePlay::start()
 	m_inGame.play();
 }
 
-//FOR PLAYER COLLISION WITH WALLS
+//COLLISION FOR PLAYER WITH WALLS
 bool GamePlay::checkCollision1(sf::Vector2f pos) 
 {
 	/*for (auto& walls : m_breakableWalls)
@@ -771,7 +756,6 @@ bool GamePlay::checkCollision1(sf::Vector2f pos)
 					pos.x + 1 <= j * 32 + 28 &&
 					pos.y + 28 > i * 32 + 1 &&
 					pos.y + 1 <= i * 32 + 28)
-				
 					return true;
 			}
 		}
@@ -787,10 +771,10 @@ bool GamePlay::checkCollision2(sf::Vector2f pos)
 		{
 			if (collisionMap[i][j] == HORIZONTAL_WALL_TILE || collisionMap[i][j] == VERTICAL_WALL_TILE || collisionMap[i][j] == COLUMN_WALL1 || collisionMap[i][j] == COLUMN_WALL2 || collisionMap[i][j] == COLUMN_WALL3 || collisionMap[i][j] == COLUMN_WALL4 || collisionMap[i][j] == BREAKABLE_TILE || collisionMap[i][j] == INNER_COMPARTMENT_WALL_TILE)
 			{
-				if (pos.x + 28 > j * 32 &&
-					pos.x + 1 <= j * 32 + 28 &&
-					pos.y + 28 > i * 32 &&
-					pos.y + 1 <= i * 32 + 28)
+				if (pos.x + 30 > j * 32 &&
+					pos.x + 1 <= j * 32 + 32 &&
+					pos.y + 30 > i * 32 &&
+					pos.y + 1 <= i * 32 + 32)
 					return true;
 			}
 		}
@@ -867,7 +851,7 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 	{
 	case HEART:
 	{
-		m_player.setHealth(100);
+		m_player.setHealth(progressBar->getMaximum());
 	}
 		break;
 	case TIMER:
@@ -902,17 +886,16 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 		break;
 	case ICE_CREAM:
 		{
-			std::cout << "icecream" << std::endl;
-
 			m_score += 25;
 			m_scoreText.setString("Score : " + std::to_string(m_score));
-
 		}
 		break;
 	case APPLE:
 	{
-		std::cout << "Apple" << std::endl;
-		m_player.setHealth(m_player.getHealth() + 10);
+		if (m_player.getHealth() < progressBar->getMaximum())
+		{
+			m_player.setHealth(m_player.getHealth() + 10);
+		}
 	}
 	default:
 		break;
@@ -938,7 +921,6 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 		end[i].setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));
 		end[i].setScale({ 2,2 });
 	}
-
 	//UPWARD
 	for (int i = 1; i <= radius; i++)
 	{
@@ -997,7 +979,6 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			end[1].setTextureRect({ 64,0,16,16 });
 			end[1].setPosition(sf::Vector2f(pos.x, pos.y + 32 * i));
 			m_explosions.push_back(end[1]);
-
 		}
 	}
 	//LEFTWARD
@@ -1021,7 +1002,6 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			sprite3.setTextureRect({96, 0, 16, 16});
 			sprite3.setPosition(sf::Vector2f(pos.x - 32 * i, pos.y));
 			sprite3.setScale({ 2,2 });
-
 			m_explosions.push_back(sprite3);
 		}
 		else if (collisionMap[y][x - i] == EMPTY_TILE && i == radius)
@@ -1031,7 +1011,6 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			m_explosions.push_back(end[2]);
 		}
 	}
-
 	//RIGHTWARD
 	for (int i = 1; i <= radius; i++)
 	{
@@ -1054,7 +1033,6 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			sprite4.setScale({ 2,2 });
 			sprite4.setPosition(sf::Vector2f(pos.x + 32 * i, pos.y));
 			m_explosions.push_back(sprite4);
-
 		}
 		else if (collisionMap[y][x + i] == EMPTY_TILE && i == radius)
 		{
@@ -1063,7 +1041,6 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 			m_explosions.push_back(end[3]);
 		}
 	}
-
 	return explodeTileCount;
 }
 //REMOVE LATER

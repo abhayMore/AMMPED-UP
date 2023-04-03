@@ -2,6 +2,7 @@
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/LoginState.h"
+#include "../Header Files/MainMenu.h"
 
 #include <memory>
 
@@ -127,7 +128,9 @@ void ExitState::update(sf::Time deltaTime)
 	{
 		//GOTO LOGIN STATE
 		m_bgm.stop();
+		//GO TO LOGIN STATE
 		m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 
 	}
 }

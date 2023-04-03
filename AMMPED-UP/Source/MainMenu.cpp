@@ -35,6 +35,7 @@ void MainMenu::init()
 	m_menuBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
 	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
 	m_menuBackground.setScale({ 2,2 });
+	
 	//GAME TITLE
 	m_gameTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_gameTitle.setString("AMMPED-UP");

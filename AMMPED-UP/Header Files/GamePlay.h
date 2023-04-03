@@ -43,7 +43,6 @@ private:
 	std::list<Enemy> m_enemies;
 
 	sf::Time m_changeDirectionTime;
-	sf::Time m_elaspedTimeForEnemy;
 	sf::Time m_inVulnerabilityTime;
 	bool m_inVulnerability = false;
 
@@ -114,7 +113,6 @@ private:
 	tgui::Gui gui;
 	tgui::ProgressBar::Ptr progressBar;
 
-	bool is_removed = false;;
 	bool m_isPaused;
 
 	//COINS
@@ -167,7 +165,6 @@ public:
 	void applyPowerUPEffect(PowerUPType powerUPType);
 	int removeWalls(sf::Vector2f pos, int radius); //returns count of removed walls
 	
-	//REMOVE LATER
-	//void explosions(sf::Vector2f bombPos, int radius);
+	
 	void takeScreenshot(const std::string& filename);
 };
