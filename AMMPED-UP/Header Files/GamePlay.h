@@ -150,21 +150,20 @@ public:
 	void processInput() override;
 	void update(sf::Time deltaTime) override;
 
-	void draw() override;
-
 	void pause() override;
 	void start() override;
 
+	//Why so many funtions? every function has its own offsets depending upon what they are colliding to
 	bool checkCollision1(sf::Vector2f pos);
 	bool checkCollision2(sf::Vector2f pos);
 	bool checkCollision3(sf::Vector2f pos);
 	bool checkCollision4(sf::Vector2f pos);
-	bool checkCollision5(sf::Vector2f enemyPos, sf::Vector2f bombPos);
+	bool checkCollision5(sf::Vector2f enemyPos, sf::Vector2f bombPos);	
 
-	bool checkCollision(sf::Vector2f pos);
-	void applyPowerUPEffect(PowerUPType powerUPType);
-	int removeWalls(sf::Vector2f pos, int radius); //returns count of removed walls
+	bool checkCollision(sf::Vector2f pos);								//Index based tile collision 
+	void applyPowerUPEffect(PowerUPType powerUPType);					//aplies the powerup to the players' attributes
+	int removeWalls(sf::Vector2f pos, int radius);						//Returns count of removed walls for score update
 	
-	
+	void draw() override;
 	void takeScreenshot(const std::string& filename);
 };

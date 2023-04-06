@@ -560,8 +560,12 @@ void GamePlay::update(sf::Time deltaTime)
 			//PREVIOUS POSITION OF AI IS UPDATED TO CURRENT FOR COLLISION DETECTION
 			it->setPreviousPosition(it->getPosition());
 		}
-
-		//THINGS TO BE UPDATED IN THE END
+		
+		////THINGS TO BE UPDATED IN THE END////
+		
+		//STOP/DELAY THE ENEMY-PLAYER COLLISION FOR SOME TIME
+		//IF REMOVED WILL RESULT INTO LOSING HEALTH AND DYING IN AN INSTANT 
+		//DUE TO MULTIPLE COLLISIONS WITH ENEMY AT THE SAME TIME
 		if (m_inVulnerability)
 		{
 			m_inVulnerabilityTime += deltaTime;
