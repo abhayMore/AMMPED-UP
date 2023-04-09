@@ -391,7 +391,6 @@ void GamePlay::processInput()
 
 void GamePlay::update(sf::Time deltaTime)
 {
-	//std::cout << sf::Mouse::getPosition(*m_context->m_window).x / 16 << ' ' << sf::Mouse::getPosition(*m_context->m_window).y / 16 << std::endl;
 	if (!m_isPaused)
 	{
 		//ELASPED TIME FOR VARIOUS OPERATIONS
@@ -824,7 +823,7 @@ bool GamePlay::checkCollision5(sf::Vector2f enemyPos, sf::Vector2f bombPos)
 	return false;
 }
 
-
+// INDEX BASED TILE COLLISION FOR FRAMERATE DEPENDENT MOVEMENT
 bool GamePlay::checkCollision(sf::Vector2f pos)
 {
 	int i = pos.x / 32;
@@ -906,6 +905,7 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 	}
 }
 
+//REMOVES THE WALLS THAT ARE IN EXPLOSION RADIUS AND RETURNS THE NUMBER OF EXPLODED WALLS FOR SCORE CALCULATION
 int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 {
 	int explodeTileCount = 0;

@@ -5,14 +5,12 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include "Animation.h"
+
 class Bomb : public sf::Drawable
 {
 private:
 	sf::Sprite m_bomb;
-	//std::vector<sf::Sprite> m_bombExplode;
 	Animation m_bombTickAnimation;
-	//Animation m_bombExplodeAnimation;
-
 	int m_bombRadius;
 	bool m_blasted;
 	sf::Time m_bombTriggerTime;
