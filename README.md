@@ -21,11 +21,11 @@ Do the same step again for TGUI :
 Do the same step again for nlohmann/json :
 1. Download JSON for Moder C++ version 3.11.2(Download the "Source Code.zip") : https://github.com/nlohmann/json/releases.
 2. Extract the zip file and copy the folder which is named as json-3.11.2(The insides of the folder should look like the below image)
-![output](https://raw.githubusercontent.com/abhayMore/AMMPED-UP/master/ReadMeFiles/InsideJSON.jpg)
+![output](https://github.com/abhayMore/AMMPED-UP/blob/master/ReadMeFiles/InsideJSON.jpg)
 3. Paste it inside the Dependencies directory.(Made in previous step)
 5. You are done, open the solution file and run the Project.
 
 This is how it should look inside the repo with the Dependencies Folder & all the DLLs from SFML & TGUI.
-![output](https://raw.githubusercontent.com/abhayMore/AMMPED-UP/master/ReadMeFiles/Dependencies&Dlls.jpg)
+![output](https://github.com/abhayMore/AMMPED-UP/blob/master/ReadMeFiles/Dependencies&Dlls.jpg)
 This is how it should look inside the Dependencies Folder.
-![output](https://raw.githubusercontent.com/abhayMore/AMMPED-UP/master/ReadMeFiles/Content.jpg)
+![output](https://github.com/abhayMore/AMMPED-UP/blob/master/ReadMeFiles/Content.jpg)
