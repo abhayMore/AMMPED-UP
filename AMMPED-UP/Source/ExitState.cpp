@@ -121,7 +121,6 @@ void ExitState::update(sf::Time deltaTime)
 		m_bgm.stop();
 		//GO TO LOGIN STATE
 		m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 	}
 }
 
