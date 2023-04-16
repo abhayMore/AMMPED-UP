@@ -334,14 +334,14 @@ void GamePlay::processInput()
 				break;
 			}
 			//TEMPORARY DEBUGGIN TOOL
-			case sf::Keyboard::P :
+			/*case sf::Keyboard::P:
 			{
 				if (!showPowerUP)
 					showPowerUP = true;
 				else
 					showPowerUP = false;
 				break;
-			}
+			}*/
 			default:
 				break;
 			}
