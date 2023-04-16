@@ -96,10 +96,13 @@ private:
 	bool powerUpTime = false;
 
 	sf::Text m_timerText;
-	int m_time = 100;
+	int m_time = 200;
 
 	sf::Text m_scoreText;
 	int m_score;
+
+	std::string m_currentGameState; //WON, DIED, TIME's UP?
+	bool m_shiftToGameOver;
 
 	//PROGRESS BAR
 	sf::Text m_livesText;

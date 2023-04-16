@@ -28,6 +28,8 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_isPaused(false),
 	m_damageCounter(false),
 	blastBool(false),
+	m_shiftToGameOver(false),
+	m_currentGameState("Time's Up!!"),
 	m_inGame(m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK)),
 	gui(*m_context->m_window),
 	m_enemies(6),
@@ -582,9 +584,25 @@ void GamePlay::update(sf::Time deltaTime)
 			m_player.setHealth(100);
 			m_livesText.setString(std::to_string(m_lives));
 		}
-		if (m_lives <= 0 || m_time < 0)
+		if (m_lives <= 0 )
 		{
-			m_context->m_states->add(std::make_unique<GameOver>(m_context));
+			m_currentGameState = std::string("You Died!!");
+			m_shiftToGameOver = true;
+		}
+		if (m_time < 0)
+		{
+			m_currentGameState = std::string("Time's Up!!");
+			m_shiftToGameOver = true;
+		}
+		if (m_enemies.size() == 0)
+		{
+			m_currentGameState = std::string("You Won!!");
+			m_shiftToGameOver = true;
+		}
+		if (m_shiftToGameOver)
+		{
+			m_context->m_states->add(std::make_unique<GameOver>(m_context, m_currentGameState, m_score));
+			m_shiftToGameOver = false;
 		}
 		m_scoreText.setString("Score : " + std::to_string(m_score));
 		m_livesText.setString(std::to_string(m_lives));
