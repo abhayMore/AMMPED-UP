@@ -26,8 +26,8 @@ Game::Game() : m_context(std::make_shared<Context>())
     m_context->m_assets->addTextures(COLLEGE_SPLASH_SCREEN, "Resources/assets/F.jpg");
     m_context->m_assets->addTextures(MY_SPLASH_SCREEN, "Resources/assets/SplashScreenLogo.png");
 	//Add First State(SPLASHSCREEN STATE) to m_states here
-    //m_context->m_states->add(std::make_unique<SplashScreen>(m_context, std::vector<int>{COLLEGE_SPLASH_SCREEN,MY_SPLASH_SCREEN}));
-    m_context->m_states->add(std::make_unique<MainMenu>(m_context));
+    m_context->m_states->add(std::make_unique<SplashScreen>(m_context, std::vector<int>{MY_SPLASH_SCREEN}));
+    //m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 }
 
 Game::~Game() 

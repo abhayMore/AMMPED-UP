@@ -18,6 +18,19 @@ void SplashScreen::init()
 	m_background.setTexture(m_context->m_assets->getTexture(m_assetID[m_currentSplashScreen]));
 	m_background.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
 	m_background.setOrigin(sf::Vector2f(m_background.getTexture()->getSize().x / 2,m_background.getTexture()->getSize().y / 2 ));
+
+	for (auto id : m_assetID)
+	{
+		if (id == COLLEGE_SPLASH_SCREEN)
+		{
+			m_bgColor = sf::Color::White;
+		}
+		if (id == MY_SPLASH_SCREEN)
+		{
+			m_bgColor = sf::Color::Black;
+		}
+
+	}
 }	
 
 void SplashScreen::processInput()
@@ -44,9 +57,8 @@ void SplashScreen::update(sf::Time deltaTime)
 		}
 		else
 		{
-			m_context->m_states->add(std::make_unique<LoginState>(m_context));
+			m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 		}
-
 	}
 }
 
