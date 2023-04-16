@@ -417,7 +417,6 @@ void GamePlay::update(sf::Time deltaTime)
 				{
 					m_damageSFX.play();
 					m_damageCounter = true;
-					std::cout << m_player.getHealth() << std::endl;
 					m_player.setHealth(m_player.getHealth() - 20);
 					m_inVulnerability = true;
 					break;

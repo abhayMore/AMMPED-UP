@@ -48,7 +48,6 @@ void LoginPageState::init()
 	m_emailIDTitle.setCharacterSize(25);
 	m_emailIDTitle.setOrigin(m_emailIDTitle.getLocalBounds().width / 2, m_emailIDTitle.getLocalBounds().height / 2);
 	m_emailIDTitle.setPosition(m_context->m_window->getSize().x / 4 - m_emailIDTitle.getGlobalBounds().width / 2 + 7, m_context->m_window->getSize().y / 2 );
-    std::cout << m_context->m_window->getSize().y / 2;
 
 	//EMAIL TEXTBOX
     m_allTextBoxes[1] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
