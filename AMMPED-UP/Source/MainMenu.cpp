@@ -2,7 +2,6 @@
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/ExitState.h"
-
 #include <memory>
 
 MainMenu::MainMenu(std::shared_ptr<Context>& context) : 
@@ -22,7 +21,6 @@ MainMenu::MainMenu(std::shared_ptr<Context>& context) :
 
 MainMenu::~MainMenu()
 {
-
 }
 
 void MainMenu::init()
@@ -152,7 +150,6 @@ void MainMenu::processInput()
 					m_isOptionsButtonSelected = false;
 					m_isExitButtonSelected = false;
 				}
-				
 				break;
 			}
 			case sf::Keyboard::Return :
@@ -194,7 +191,6 @@ void MainMenu::update(sf::Time deltaTime)
 		m_leadershipButton.setFillColor(::sf::Color::White);
 		m_optionsButton.setFillColor(::sf::Color::White);
 		m_exitButton.setFillColor(::sf::Color::White);
-
 	}
 	else if (m_isLeadershipButtonSelected)
 	{
@@ -202,7 +198,6 @@ void MainMenu::update(sf::Time deltaTime)
 		m_leadershipButton.setFillColor(::sf::Color::Magenta);
 		m_optionsButton.setFillColor(::sf::Color::White);
 		m_exitButton.setFillColor(::sf::Color::White);
-
 	}
 	else if (m_isOptionsButtonSelected)
 	{
@@ -210,7 +205,6 @@ void MainMenu::update(sf::Time deltaTime)
 		m_leadershipButton.setFillColor(::sf::Color::White);
 		m_optionsButton.setFillColor(::sf::Color::Magenta);
 		m_exitButton.setFillColor(::sf::Color::White);
-
 	}
 	else 
 	{
@@ -218,7 +212,6 @@ void MainMenu::update(sf::Time deltaTime)
 		m_playButton.setFillColor(sf::Color::White);
 		m_leadershipButton.setFillColor(::sf::Color::White);
 		m_optionsButton.setFillColor(::sf::Color::White);
-
 	}
 
 	if (m_isPlayButtonPressed)
@@ -238,7 +231,6 @@ void MainMenu::update(sf::Time deltaTime)
 	{
 		m_context->m_states->add(std::make_unique<ExitState>(m_context), true);
 	}
-
 }
 
 void MainMenu::draw()
@@ -250,7 +242,6 @@ void MainMenu::draw()
 	m_context->m_window->draw(m_leadershipButton);
 	m_context->m_window->draw(m_optionsButton);
 	m_context->m_window->draw(m_exitButton);
-
 
 	m_context->m_window->display();
 }

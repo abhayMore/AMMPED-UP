@@ -1,13 +1,11 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
 #include <fstream>
-
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
 #include "Button.h"
 #include "TextBox.h"
-
 #include "nlohmann/json.hpp"
 
 struct account
@@ -15,7 +13,6 @@ struct account
 	std::string email;
 	std::string password;
 };
-
 
 struct loginInfo
 {
@@ -62,4 +59,3 @@ public:
 
 	void input();
 };
-

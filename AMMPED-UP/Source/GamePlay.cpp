@@ -26,6 +26,8 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_score(0),
 	m_lives(3),
 	m_isPaused(false),
+	m_damageCounter(false),
+	blastBool(false),
 	m_inGame(m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK)),
 	gui(*m_context->m_window),
 	m_enemies(6),
@@ -74,7 +76,6 @@ void GamePlay::init()
 
 			if (collisionMap[i][j] == BREAKABLE_TILE)
 			{
-
 				sf::Sprite breakabletile;
 				breakabletile.setTexture(m_context->m_assets->getTexture(BREAKABLE_WALL_TEXTURE));
 				breakabletile.setPosition(sf::Vector2f( j * 32, i * 32 ));
@@ -95,7 +96,6 @@ void GamePlay::init()
 
 			if (collisionMap[i][j] == HORIZONTAL_WALL_TILE)
 			{
-
 				sf::Sprite hWall;
 				hWall.setTexture(m_context->m_assets->getTexture(HORIZONTAL_WALL_TEXTURE));
 				hWall.setScale({ 2,2 });
@@ -104,7 +104,6 @@ void GamePlay::init()
 			}
 			if (collisionMap[i][j] == INNER_COMPARTMENT_WALL_TILE)
 			{
-
 				sf::Sprite iWall;
 				iWall.setTexture(m_context->m_assets->getTexture(INNER_COMPARTMENT_WALL_TEXTURE));
 				iWall.setScale({ 2,2 });
@@ -113,7 +112,6 @@ void GamePlay::init()
 			}
 			if (collisionMap[i][j] == COLUMN_WALL1)
 			{
-
 				sf::Sprite cWall1;
 				cWall1.setTexture(m_context->m_assets->getTexture(COLUMN_WALL_TEXTURE));
 				cWall1.setTextureRect({ 0,0,16,16 });
@@ -123,7 +121,6 @@ void GamePlay::init()
 			}
 			if (collisionMap[i][j] == COLUMN_WALL2)
 			{
-
 				sf::Sprite cWall2;
 				cWall2.setTexture(m_context->m_assets->getTexture(COLUMN_WALL_TEXTURE));
 				cWall2.setTextureRect({ 16,0,16,16 });

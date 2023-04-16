@@ -5,7 +5,6 @@
 #include "../Header Files/SplashScreen.h"
 #include "../Header Files/MainMenu.h"
 
-
 Game::Game() : m_context(std::make_shared<Context>())
 {
     //CREATE THE WINDOW
@@ -29,7 +28,6 @@ Game::Game() : m_context(std::make_shared<Context>())
 	//Add First State(SPLASHSCREEN STATE) to m_states here
     //m_context->m_states->add(std::make_unique<SplashScreen>(m_context, std::vector<int>{COLLEGE_SPLASH_SCREEN,MY_SPLASH_SCREEN}));
     m_context->m_states->add(std::make_unique<MainMenu>(m_context));
-
 }
 
 Game::~Game() 

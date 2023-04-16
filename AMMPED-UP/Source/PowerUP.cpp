@@ -20,19 +20,23 @@ void PowerUP::init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType typ
 	{
 		m_powerUPSprite.setTextureRect({ 18 * 48,0,48,48 });
 
-	}if (m_type == SPEED) //INCREASE SPEED BY 10
+	}
+	if (m_type == SPEED) //INCREASE SPEED BY 10
 	{
 		m_powerUPSprite.setTextureRect({ 1 * 48,0,48,48 });
 
-	}if (m_type == LIVES) //INCREASE ONE LIFE
+	}
+	if (m_type == LIVES) //INCREASE ONE LIFE
 	{
 		m_powerUPSprite.setTextureRect({ 21 * 48,0,48,48 });
 
-	}if (m_type == EXPLOSION_RADIUS_INCREASE) //INCREASE EXPLOSION RADIUS BY 2
+	}
+	if (m_type == EXPLOSION_RADIUS_INCREASE) //INCREASE EXPLOSION RADIUS BY 2
 	{
 		m_powerUPSprite.setTextureRect({ 3 * 48,0,48,48 });
 
-	}if (m_type == EXPLOSION_RADIUS_DECREASE) //DECREASE EXPLOSION RADIUS BY 2
+	}
+	if (m_type == EXPLOSION_RADIUS_DECREASE) //DECREASE EXPLOSION RADIUS BY 2
 	{
 		m_powerUPSprite.setTextureRect({ 2 * 48,0,48,48 });
 	}
@@ -48,7 +52,6 @@ void PowerUP::init(const sf::Texture& texture, sf::Vector2f pos, PowerUPType typ
 
 void PowerUP::update(sf::Time deltatime)
 {
-
 }
 
 void PowerUP::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -65,9 +68,11 @@ bool PowerUP::playerIsOnPowerUP(sf::Vector2f pos)
 {
 	if (getPosition().x + 14 > pos.x + 3 &&
 		getPosition().x + 1 <= pos.x + 14 &&
-		getPosition().y + 14 > pos.y + 3  &&
+		getPosition().y + 14 > pos.y + 3 &&
 		getPosition().y + 1 <= pos.y + 14)
+	{
 		return true;
+	}
 	return false;
 }
 

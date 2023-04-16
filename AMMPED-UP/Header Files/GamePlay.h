@@ -30,10 +30,7 @@ enum CMapTile
 	COLUMN_WALL2 = 62,
 	COLUMN_WALL3 = 63,
 	COLUMN_WALL4 = 64
-
 };
-
-
 
 class GamePlay : public am::State
 {
@@ -98,13 +95,11 @@ private:
 	std::list<PowerUP> m_powerUPs;
 	bool powerUpTime = false;
 
-
 	sf::Text m_timerText;
 	int m_time = 100;
 
 	sf::Text m_scoreText;
 	int m_score;
-
 
 	//PROGRESS BAR
 	sf::Text m_livesText;
@@ -125,11 +120,9 @@ private:
 	sf::Music& m_inGame;
 	sf::Sound m_enemyDeathSFX;
 
-
 	//EXPLOSIONS 
 	std::vector<sf::Sprite> m_explosions;
 
-	
 	//PLAYER DAMAGE TIMER 
 	sf::Time m_playerDamageCounterTime;
 	bool m_damageCounter;

@@ -84,7 +84,6 @@ public:
 			}
 			textbox.setString(newT);
 		}
-
 	}
 
 	bool getSelected()
@@ -143,7 +142,6 @@ public:
 			return true;
 		}
 		return false;
-
 	}
 
 private:
@@ -159,7 +157,6 @@ private:
 		if (charTyped != DELETE_KEY && charTyped != ENTER_KEY && charTyped != ESCAPE_KEY)
 		{
 			text << static_cast<char>(charTyped);
-
 		}
 		else if (charTyped == DELETE_KEY)
 		{
@@ -182,7 +179,6 @@ private:
 		}
 		text.str("");
 		text << newT;
-
 		textbox.setString(text.str() + "_");
 	}
 };

@@ -3,7 +3,6 @@
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/LoginState.h"
 #include "../Header Files/MainMenu.h"
-
 #include <memory>
 
 ExitState::ExitState(std::shared_ptr<Context>& context) :
@@ -38,16 +37,12 @@ void ExitState::init()
 	m_logoutExit.setOrigin(m_logoutExit.getLocalBounds().width / 2, m_logoutExit.getLocalBounds().height / 2);
 	m_logoutExit.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
 	
-
 	//LOGOUT BUTTON
 	m_logout.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_logout.setString("Logout");
 	m_logout.setCharacterSize(35);
 	m_logout.setOrigin(m_logout.getLocalBounds().width / 2, m_logout.getLocalBounds().height / 2);
 	m_logout.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
-	
-
-	
 }
 
 void ExitState::processInput()
@@ -107,13 +102,11 @@ void ExitState::update(sf::Time deltaTime)
 	{
 		m_logoutExit.setFillColor(sf::Color::Magenta);
 		m_logout.setFillColor(::sf::Color::White);
-
 	}
 	else
 	{
 		m_logout.setFillColor(::sf::Color::Magenta);
 		m_logoutExit.setFillColor(sf::Color::White);
-
 	}
 
 	if (m_isLogoutExitButtonPressed)
@@ -121,8 +114,6 @@ void ExitState::update(sf::Time deltaTime)
 		//TODO
 		//Close
 		m_context->m_window->close();
-
-
 	}
 	else if (m_isLogoutButtonPressed)
 	{
@@ -131,7 +122,6 @@ void ExitState::update(sf::Time deltaTime)
 		//GO TO LOGIN STATE
 		m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
 		m_context->m_states->add(std::make_unique<MainMenu>(m_context));
-
 	}
 }
 

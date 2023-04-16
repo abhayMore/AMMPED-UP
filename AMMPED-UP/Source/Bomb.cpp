@@ -1,5 +1,4 @@
 #include "../Header Files/Bomb.h"
-#include <iostream>
 Bomb::Bomb() :m_bombTickAnimation(m_bomb), m_bombRadius(1), m_blasted(false)
 {
 }
@@ -28,7 +27,6 @@ void Bomb::update(const sf::Vector2f pos, sf::Time deltatime)
 	{
 		m_blasted = true;
 		m_bombTriggerTime = sf::Time::Zero;
-
 	}
 }
 
@@ -40,14 +38,12 @@ bool Bomb::isBlasted()
 void Bomb::setIsBlasted(bool isBlasted)
 {
 	m_blasted = isBlasted;
-
 }
 
 void Bomb::setPosition(sf::Vector2f pos)
 {
 	m_bombPosition = pos;
 	m_bomb.setPosition(m_bombPosition);
-
 }
 
 sf::Vector2f Bomb::getPosition()

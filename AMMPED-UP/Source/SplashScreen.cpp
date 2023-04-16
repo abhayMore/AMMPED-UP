@@ -2,7 +2,6 @@
 #include "../Header Files/LoginState.h"
 #include "../Header Files/MainMenu.h"
 #include <SFML/System/Sleep.hpp>
-
 #include "SFML/Window/Event.hpp"
 
 SplashScreen::SplashScreen(std::shared_ptr<Context>& context, std::vector<int> assetID):
@@ -16,7 +15,6 @@ SplashScreen::~SplashScreen()
 
 void SplashScreen::init()
 {
-
 	m_background.setTexture(m_context->m_assets->getTexture(m_assetID[m_currentSplashScreen]));
 	m_background.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
 	m_background.setOrigin(sf::Vector2f(m_background.getTexture()->getSize().x / 2,m_background.getTexture()->getSize().y / 2 ));

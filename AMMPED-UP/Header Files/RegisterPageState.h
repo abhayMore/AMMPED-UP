@@ -8,7 +8,6 @@
 #include "TextBox.h"
 #include "nlohmann/json.hpp"
 
-
 struct scn3
 {
 	bool email = false;
@@ -16,8 +15,6 @@ struct scn3
 	bool password = false;
 	bool confirmPassword = false;
 };
-
-
 
 class RegisterPageState : public am::State
 {

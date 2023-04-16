@@ -38,11 +38,9 @@ void GameOver::init()
 	m_exitButton.setCharacterSize(35);
 	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
 	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
-
 	
 	m_deathSfx.setBuffer(m_context->m_assets->getSoundEffect(DEATH_SFX));
 	m_deathSfx.setVolume(10);
-
 }
 
 void GameOver::processInput()
@@ -102,13 +100,11 @@ void GameOver::update(sf::Time deltaTime)
 	{
 		m_retryButton.setFillColor(sf::Color::Magenta);
 		m_exitButton.setFillColor(::sf::Color::White);
-
 	}
 	else
 	{
 		m_exitButton.setFillColor(::sf::Color::Magenta);
 		m_retryButton.setFillColor(sf::Color::White);
-
 	}
 
 	if (m_isRetryButtonPressed)

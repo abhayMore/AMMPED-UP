@@ -1,5 +1,4 @@
 #include "../Header Files/Coin.h"
-#include <iostream>
 Coin::Coin() :m_coinAnimation(m_coin)
 {
 }
@@ -20,7 +19,9 @@ bool Coin::playerIsOnCoin(sf::Sprite& other)
 		getPosition().x + 1 <= other.getPosition().x + 14 &&
 		getPosition().y + 14 > other.getPosition().y + 3 &&
 		getPosition().y + 1 <= other.getPosition().y + 14)
+	{
 		return true;
+	}
 	return false;
 }
 
@@ -33,7 +34,6 @@ void Coin::setPosition(sf::Vector2f pos)
 {
 	m_coinPosition = pos;
 	m_coin.setPosition(m_coinPosition + sf::Vector2f(8,8));
-
 }
 
 sf::Vector2f Coin::getPosition()

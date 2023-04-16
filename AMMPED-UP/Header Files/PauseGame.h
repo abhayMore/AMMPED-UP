@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
@@ -22,8 +21,6 @@ private:
 
 	bool m_isMainMenuButtonSelected;
 	bool m_isMainMenuButtonPressed;
-
-
 	sf::Music& m_bgm;
 
 public:
@@ -37,4 +34,3 @@ public:
 	void draw() override;
 	void start();
 };
-

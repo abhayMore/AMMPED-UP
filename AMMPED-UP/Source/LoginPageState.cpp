@@ -1,13 +1,12 @@
 #include "../Header Files/LoginPageState.h"
 #include "../Header Files/MainMenu.h"
+
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
 	m_context(context)
 {
     file = std::ifstream("key.json");
     jsonFile = nlohmann::json::parse(file);
 }
-
-
 
 LoginPageState::~LoginPageState()
 {
@@ -43,7 +42,6 @@ void LoginPageState::init()
     m_allTextBoxes[0].setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_allTextBoxes[0].setPosition(sf::Vector2f( m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 50.0f ));
 
-
 	//EMAIL TITLE
 	m_emailIDTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
 	m_emailIDTitle.setString("Email");
@@ -73,7 +71,6 @@ void LoginPageState::init()
 	m_signInButton = Button("Sign In",{ 150,50 }, 35, sf::Color::Green, sf::Color::White);
 	m_signInButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_signInButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_signInButton.getButtonSize().x / 2, m_context->m_window->getSize().y - 50.0f - m_signInButton.getButtonSize().y / 2));
-
 }
 
 void LoginPageState::processInput()
@@ -95,7 +92,6 @@ void LoginPageState::processInput()
                 if(m_allTextBoxes[i].getSelected())
                     m_allTextBoxes[i].typedOn(event);
             }
-
             break;
         }
        
@@ -140,14 +136,12 @@ void LoginPageState::processInput()
                 m_allTextBoxes[0].setSelected(false);
                 m_allTextBoxes[1].setSelected(true);
                 m_allTextBoxes[2].setSelected(false);
-
             }
             else if (m_allTextBoxes[2].isMouseOver(*m_context->m_window))
             {
                 m_allTextBoxes[0].setSelected(false);
                 m_allTextBoxes[1].setSelected(false);
                 m_allTextBoxes[2].setSelected(true);
-
             }
         default:
             break;
@@ -178,7 +172,6 @@ void LoginPageState::draw()
     }
 	m_signInButton.Draw(*m_context->m_window);
 	m_context->m_window->display();
-
 }
 
 void LoginPageState::start()

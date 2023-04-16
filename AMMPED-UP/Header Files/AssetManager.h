@@ -3,7 +3,6 @@
 #include <memory>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
-
 #include "SFML/Audio/Music.hpp"
 #include "SFML/Audio/SoundBuffer.hpp"
 
@@ -17,7 +16,6 @@ namespace am
 
 		std::map<int, std::unique_ptr<sf::Music>> m_soundTracks;
 		std::map<int, std::unique_ptr<sf::SoundBuffer>> m_soundEffects;
-
 
 	public:
 		AssetManager();

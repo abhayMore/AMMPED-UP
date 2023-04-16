@@ -22,7 +22,6 @@ void am::AssetManager::addTextures(int id, const std::string& filePath, bool wan
 void am::AssetManager::addFont(int id, const std::string& filePath)
 {
 	auto font = std::make_unique<sf::Font>();
-
 	if (font->loadFromFile(filePath))
 	{
 		m_fonts[id] = std::move(font);
@@ -32,7 +31,6 @@ void am::AssetManager::addFont(int id, const std::string& filePath)
 void am::AssetManager::addSoundTrack(int id, const std::string& filePath, bool wantLooping)
 {
 	auto soundTrack = std::make_unique<sf::Music>();
-
 	if (soundTrack->openFromFile(filePath))
 	{
 		soundTrack->setLoop(wantLooping);
@@ -49,8 +47,6 @@ void am::AssetManager::addSoundEffects(int id, const std::string& filePath)
 	}
 }
 
-
-
 const sf::Texture& am::AssetManager::getTexture(int id) const
 {
 	// TODO: insert return statement here
@@ -61,7 +57,6 @@ const sf::Font& am::AssetManager::getFont(int id) const
 {
 	// TODO: insert return statement here
 	return *(m_fonts.at(id).get());
-
 }
 
 sf::Music& am::AssetManager::getSoundTrack(int id)

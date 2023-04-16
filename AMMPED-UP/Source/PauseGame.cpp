@@ -1,6 +1,5 @@
 #include "../Header Files/PauseGame.h"
 #include "../Header Files/MainMenu.h"
-
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include <memory>
@@ -144,7 +143,6 @@ void PauseGame::update(sf::Time deltaTime)
 		m_resumeButton.setFillColor(sf::Color::Magenta);
 		m_restartButton.setFillColor(::sf::Color::White);
 		m_mainMenuButton.setFillColor(::sf::Color::White);
-
 	}
 	else if (m_isRestartButtonSelected)
 	{
@@ -164,24 +162,20 @@ void PauseGame::update(sf::Time deltaTime)
 		//Go to Play State
 		m_bgm.stop();
 		m_context->m_states->popCurrent();
-
 	}
 	else if (m_isRestartButtonPressed)
 	{
 		m_bgm.stop();
 		m_context->m_states->popCurrent();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
-
 	}
 	else if (m_isMainMenuButtonPressed)
 	{
 		m_bgm.stop();
 		m_context->m_states->popCurrent();
 		m_context->m_states->popCurrent();
-
 		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
 	}
-
 }
 
 void PauseGame::draw()

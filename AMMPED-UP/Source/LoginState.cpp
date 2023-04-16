@@ -1,11 +1,9 @@
 #include "../Header Files/LoginState.h"
 #include "../Header Files/MainMenu.h"
-
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/LoginPageState.h"
 #include "../Header Files/RegisterPageState.h"
-
 #include <memory>
 
 LoginState::LoginState(std::shared_ptr<Context>& context) :
@@ -54,16 +52,12 @@ void LoginState::init()
 	m_registerButton.setOrigin(m_registerButton.getLocalBounds().width / 2, m_registerButton.getLocalBounds().height / 2);
 	m_registerButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
 	
-
 	//EXIT BUTTON
 	m_exitButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_exitButton.setString("Exit");
 	m_exitButton.setCharacterSize(35);
 	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
 	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
-	
-
-	
 }
 
 void LoginState::processInput()
@@ -97,10 +91,8 @@ void LoginState::processInput()
 					m_isRegisterButtonSelected = false;
 					m_isExitButtonSelected = true;
 				}
-
 				break;
 			}
-			
 			case sf::Keyboard::Down :
 			{
 				if (!m_isRegisterButtonSelected && !m_isExitButtonSelected)
@@ -156,14 +148,12 @@ void LoginState::update(sf::Time deltaTime)
 		m_loginButton.setFillColor(sf::Color::Magenta);
 		m_registerButton.setFillColor(::sf::Color::White);
 		m_exitButton.setFillColor(::sf::Color::White);
-
 	}
 	else if(m_isRegisterButtonSelected)
 	{
 		m_loginButton.setFillColor(sf::Color::White);
 		m_registerButton.setFillColor(::sf::Color::Magenta);
 		m_exitButton.setFillColor(::sf::Color::White);
-
 	}
 	else
 	{
@@ -171,21 +161,16 @@ void LoginState::update(sf::Time deltaTime)
 		m_registerButton.setFillColor(::sf::Color::White);
 		m_exitButton.setFillColor(::sf::Color::Magenta);
 	}
-
 	if (m_isLoginButtonPressed)
 	{
 		//TODO
 		//Go to Play State
 		m_context->m_states->add(std::make_unique<LoginPageState>(m_context), true);
-
 		//m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
-
 	}
 	else if (m_isRegisterButtonPressed)
 	{
 		m_context->m_states->add(std::make_unique<RegisterPageState>(m_context), true);
-
-
 	}
 	else if (m_isExitButtonPressed)
 	{

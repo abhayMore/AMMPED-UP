@@ -12,8 +12,6 @@ public:
 		text.setString(t);
 		text.setFillColor(textColor);
 		text.setCharacterSize(charSize);
-
-
 		button.setSize(size);
 		button.setFillColor(bgColor);
 	}
@@ -21,7 +19,6 @@ public:
 	void setFont(const sf::Font& font)
 	{
 		text.setFont(font);
-
 	}
 
 	sf::Vector2f getButtonSize()
@@ -38,7 +35,6 @@ public:
 	void setTextColor(sf::Color color)
 	{
 		text.setFillColor(color);
-
 	}
 
 	void setPosition(sf::Vector2f pos)
@@ -71,12 +67,9 @@ public:
 			return true;
 		}
 		return false;
-
 	}
 
 private:
 	sf::RectangleShape button;
 	sf::Text text;
-
-
 };

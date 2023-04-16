@@ -1,5 +1,4 @@
 #pragma once
-
 #include <memory>
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "AssetManager.h"
@@ -65,4 +64,3 @@ public:
 
 	void run();
 };
-

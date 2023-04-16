@@ -2,7 +2,6 @@
 #include "SFML/System/Time.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Audio/Sound.hpp"
-
 #include "State.h"
 #include "Game.h"
 
@@ -30,4 +29,3 @@ public:
 
 	void draw() override;
 };
-

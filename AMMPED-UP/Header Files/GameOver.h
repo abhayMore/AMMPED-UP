@@ -1,7 +1,6 @@
 #pragma once
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Audio/Sound.hpp"
-
 #include "State.h"
 #include "Game.h"
 
@@ -29,9 +28,6 @@ public:
 	void init() override;
 	void processInput() override;
 	void update(sf::Time deltaTime) override;
-
 	void draw() override;
-
 	void start() override;
-
 };

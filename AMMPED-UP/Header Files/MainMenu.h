@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
 #include "SFML/Graphics/Sprite.hpp"
-
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
@@ -33,7 +32,6 @@ private:
 
 	sf::Music& m_bgm;
 
-
 public:
 	MainMenu(std::shared_ptr<Context>& context);
 	~MainMenu();
@@ -45,6 +43,4 @@ public:
 	void draw() override;
 	void start();
 	void pause();
-
 };
-

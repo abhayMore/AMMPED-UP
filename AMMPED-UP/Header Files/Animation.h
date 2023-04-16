@@ -3,6 +3,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/System/Time.hpp"
 #include <vector>
+
 struct Frame {
 	sf::IntRect rect;
 	sf::Time duration;
@@ -28,4 +29,3 @@ public:
 	void update(sf::Time elapsed);
 	const sf::Time getLength() const;
 };
-
