@@ -7,9 +7,9 @@
 
 ExitState::ExitState(std::shared_ptr<Context>& context) :
 	m_context(context), 
-	m_isLogoutExitButtonSelected(true),
+	m_isLogoutExitButtonSelected(false),
 	m_isLogoutExitButtonPressed(false),
-	m_isLogoutSelected(false),
+	m_isLogoutSelected(true),
 	m_isLogoutButtonPressed(false),
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
@@ -35,14 +35,14 @@ void ExitState::init()
 	m_logoutExit.setString("Logout and Exit");
 	m_logoutExit.setCharacterSize(35);
 	m_logoutExit.setOrigin(m_logoutExit.getLocalBounds().width / 2, m_logoutExit.getLocalBounds().height / 2);
-	m_logoutExit.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
+	m_logoutExit.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
 	
 	//LOGOUT BUTTON
 	m_logout.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_logout.setString("Logout");
 	m_logout.setCharacterSize(35);
 	m_logout.setOrigin(m_logout.getLocalBounds().width / 2, m_logout.getLocalBounds().height / 2);
-	m_logout.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
+	m_logout.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
 }
 
 void ExitState::processInput()
@@ -58,20 +58,19 @@ void ExitState::processInput()
 			{
 			case sf::Keyboard::Up:
 			{
-				if (!m_isLogoutExitButtonSelected)
-				{
-					m_isLogoutExitButtonSelected = true;
-					m_isLogoutSelected = false;
-				}
-				break;
-			}
-			
-			case sf::Keyboard::Down :
-			{
 				if (!m_isLogoutSelected)
 				{
 					m_isLogoutExitButtonSelected = false;
 					m_isLogoutSelected = true;
+				}
+				break;
+			}
+			case sf::Keyboard::Down :
+			{
+				if (!m_isLogoutExitButtonSelected)
+				{
+					m_isLogoutExitButtonSelected = true;
+					m_isLogoutSelected = false;
 				}
 				break;
 			}
@@ -108,7 +107,6 @@ void ExitState::update(sf::Time deltaTime)
 		m_logout.setFillColor(::sf::Color::Magenta);
 		m_logoutExit.setFillColor(sf::Color::White);
 	}
-
 	if (m_isLogoutExitButtonPressed)
 	{
 		//TODO
