@@ -6,11 +6,11 @@
 #include "State.h"
 #include "Game.h"
 
-class MainMenu : public am::State
+class OptionsState : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
-	sf::Text m_gameTitle;
+	sf::Text m_optionsTitle;
 	sf::Text m_playButton;
 	sf::Text m_exitButton;
 	sf::Sprite m_menuBackground;
@@ -25,8 +25,8 @@ private:
 
 
 public:
-	MainMenu(std::shared_ptr<Context>& context);
-	~MainMenu();
+	OptionsState(std::shared_ptr<Context>& context);
+	~OptionsState();
 
 	void init() override;
 	void processInput() override;

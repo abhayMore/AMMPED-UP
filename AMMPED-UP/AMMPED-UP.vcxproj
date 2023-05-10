@@ -28,17 +28,17 @@
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\GameOver.cpp" />
     <ClCompile Include="Source\GamePlay.cpp" />
+    <ClCompile Include="Source\LeaderBoard.cpp" />
     <ClCompile Include="Source\LoginPageState.cpp" />
     <ClCompile Include="Source\LoginState.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\MainMenu.cpp" />
-    <ClCompile Include="Source\MusicPlayer.cpp" />
+    <ClCompile Include="Source\OptionsState.cpp" />
     <ClCompile Include="Source\PauseGame.cpp" />
     <ClCompile Include="Source\PlayerEntity.cpp" />
     <ClCompile Include="Source\PowerUP.cpp" />
     <ClCompile Include="Source\RegisterPageState.cpp" />
     <ClCompile Include="Source\Player.cpp" />
-    <ClCompile Include="Source\SoundPlayer.cpp" />
     <ClCompile Include="Source\SplashScreen.cpp" />
     <ClCompile Include="Source\StateManager.cpp" />
   </ItemGroup>
@@ -53,21 +53,20 @@
     <ClInclude Include="Header Files\Game.h" />
     <ClInclude Include="Header Files\GameOver.h" />
     <ClInclude Include="Header Files\GamePlay.h" />
+    <ClInclude Include="Header Files\LeaderBoard.h" />
     <ClInclude Include="Header Files\LoginPageState.h" />
     <ClInclude Include="Header Files\LoginState.h" />
     <ClInclude Include="Header Files\MainMenu.h" />
-    <ClInclude Include="Header Files\MusicPlayer.h" />
+    <ClInclude Include="Header Files\OptionsState.h" />
     <ClInclude Include="Header Files\PauseGame.h" />
     <ClInclude Include="Header Files\PlayerEntity.h" />
     <ClInclude Include="Header Files\PowerUP.h" />
-    <ClInclude Include="Header Files\RegisterPageState.h" />
     <ClInclude Include="Header Files\Player.h" />
-    <ClInclude Include="Header Files\SoundPlayer.h" />
+    <ClInclude Include="Header Files\RegisterPageState.h" />
     <ClInclude Include="Header Files\SplashScreen.h" />
     <ClInclude Include="Header Files\State.h" />
     <ClInclude Include="Header Files\StateManager.h" />
     <ClInclude Include="Header Files\TextBox.h" />
-    <ClInclude Include="json-3.11.2\include\nlohmann\json.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

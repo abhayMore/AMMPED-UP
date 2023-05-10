@@ -1,7 +1,7 @@
 #include "../Header Files/GameOver.h"
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
-#include "../Header Files/ExitState.h"
+#include "../Header Files/MainMenu.h"
 
 GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState, int score) :
 	m_context(context),
@@ -140,7 +140,7 @@ void GameOver::update(sf::Time deltaTime)
 	}
 	else if (m_isExitButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<ExitState>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context, " ", m_score), true);
 
 	}
 }

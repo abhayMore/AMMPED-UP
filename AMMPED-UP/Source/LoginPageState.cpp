@@ -4,6 +4,7 @@
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
 	m_context(context)
 {
+
     file = std::ifstream("key.json");
     jsonFile = nlohmann::json::parse(file);
 }
@@ -112,7 +113,7 @@ void LoginPageState::processInput()
                 m_signInButton.setTextColor(sf::Color::White);
                 if (verified)
                 {
-                    m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+                    m_context->m_states->add(std::make_unique<MainMenu>(m_context, jsonFile["username"], 0), true);
                 }
                 else
                 {

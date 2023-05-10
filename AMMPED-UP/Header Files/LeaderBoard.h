@@ -6,27 +6,25 @@
 #include "State.h"
 #include "Game.h"
 
-class MainMenu : public am::State
+class Leaderboard : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
 	sf::Text m_gameTitle;
-	sf::Text m_playButton;
-	sf::Text m_exitButton;
 	sf::Sprite m_menuBackground;
-
-	bool m_isPlayButtonSelected;
-	bool m_isPlayButtonPressed;
-
-	bool m_isExitButtonSelected;
 	bool m_isExitButtonPressed;
+	
+	sf::Text m_name;
+	sf::Text m_scoreText;
 
+	
+	std::string m_username;
+	int m_finalScore;
 	sf::Music& m_bgm;
 
-
 public:
-	MainMenu(std::shared_ptr<Context>& context);
-	~MainMenu();
+	Leaderboard(std::shared_ptr<Context>& context, std::string UID, int score);
+	~Leaderboard();
 
 	void init() override;
 	void processInput() override;
