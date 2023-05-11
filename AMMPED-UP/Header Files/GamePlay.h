@@ -11,6 +11,7 @@
 #include "TGUI/TGUI.hpp"
 
 #include "Game.h"
+#include "ScoreManager.h"
 #include "State.h"
 #include "Player.h"
 #include "Enemy.h"
@@ -99,7 +100,8 @@ private:
 	int m_time = 200;
 
 	sf::Text m_scoreText;
-	int m_score;
+	int m_currentScore;
+	ScoreManager* m_scoreManager;
 
 	std::string m_currentGameState; //WON, DIED, TIME's UP?
 	bool m_shiftToGameOver;

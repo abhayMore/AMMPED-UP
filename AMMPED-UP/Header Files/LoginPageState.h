@@ -40,7 +40,9 @@ private:
 	Button m_signInButton;
 	account acc[100];
 
-	std::ifstream file;
+	std::ifstream inputFile;
+	std::ofstream outputFile;
+	bool fileEmpty = false;
 	nlohmann::json jsonFile;
 
 	bool verified = false;

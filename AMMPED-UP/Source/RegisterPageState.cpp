@@ -4,7 +4,13 @@
 RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
 	m_context(context)
 {
-    file = std::ofstream("key.json");
+    inputFile = std::ifstream("key.json");
+    if (inputFile.is_open() && inputFile.peek() != std::ifstream::traits_type::eof())
+    {
+        jsonFile = nlohmann::json::parse(inputFile);
+        inputFile.close();
+    }
+    outputFile = std::ofstream("key.json");
 }
 
 RegisterPageState::~RegisterPageState()
@@ -135,12 +141,20 @@ void RegisterPageState::processInput()
             if (m_registerButton.isMouseOver(*m_context->m_window))
             {
                 m_registerButton.setTextColor(sf::Color::White);
-                
+
                 m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
-                jsonFile["username"] = m_allTextBoxes[0].getText();
-                jsonFile["email"] = m_allTextBoxes[2].getText();
-                jsonFile["pwd"] = m_allTextBoxes[3].getText();
-                file << jsonFile;
+
+                nlohmann::json playerInfo;
+                playerInfo = {
+                    {"username",    m_allTextBoxes[0].getText()},
+                    {"email",       m_allTextBoxes[2].getText()},
+                    {"pwd",         m_allTextBoxes[3].getText()}
+                };
+                jsonFile.push_back(playerInfo);
+                outputFile << std::setw(4) << jsonFile << std::endl;
+                outputFile.close();
+
+                //file << jsonFile;
             }
             else
             {

@@ -2,11 +2,11 @@
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/MainMenu.h"
 
-Leaderboard::Leaderboard(std::shared_ptr<Context>& context, std::string UID, int score) :
+Leaderboard::Leaderboard(std::shared_ptr<Context>& context) :
 	m_context(context), 
 	m_isExitButtonPressed(false),
-	m_username(UID),
-	m_finalScore(score),
+	m_username("testing"),
+	m_finalScore(0),
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
 }
@@ -85,7 +85,7 @@ void Leaderboard::update(sf::Time deltaTime)
 	
 	if (m_isExitButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_username, m_finalScore), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
 	}
 }
 

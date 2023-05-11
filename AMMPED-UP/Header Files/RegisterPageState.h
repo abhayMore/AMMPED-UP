@@ -40,7 +40,8 @@ private:
 	//account acc[100];
 
 	//FILE
-	std::ofstream file;
+	std::ifstream inputFile;
+	std::ofstream outputFile;
 	nlohmann::json jsonFile;
 
 public:

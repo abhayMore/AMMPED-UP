@@ -6,7 +6,7 @@
 #include "../Header Files/ExitState.h"
 #include <memory>
 
-MainMenu::MainMenu(std::shared_ptr<Context>& context, std::string UID, int score) : 
+MainMenu::MainMenu(std::shared_ptr<Context>& context) : 
 	m_context(context), 
 	m_isPlayButtonSelected(true),
 	m_isPlayButtonPressed(false),
@@ -16,8 +16,6 @@ MainMenu::MainMenu(std::shared_ptr<Context>& context, std::string UID, int score
 	m_isOptionsButtonPressed(false),
 	m_isExitButtonSelected(false),
 	m_isExitButtonPressed(false),
-	m_username(UID),
-	m_score(score),
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
 }
@@ -226,7 +224,7 @@ void MainMenu::update(sf::Time deltaTime)
 	}
 	else if (m_isLeadershipButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<Leaderboard>(m_context, m_username, m_score), true);
+		m_context->m_states->add(std::make_unique<Leaderboard>(m_context), true);
 	}
 	else if (m_isOptionsButtonPressed)
 	{

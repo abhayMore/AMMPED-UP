@@ -4,9 +4,21 @@
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
 	m_context(context)
 {
+    inputFile = std::ifstream("key.json");
+    if (inputFile.is_open() && inputFile.peek() != std::ifstream::traits_type::eof())
+    {
+        jsonFile = nlohmann::json::parse(inputFile);
+        inputFile.close();
+        std::cout << "file has content" << std::endl;
 
-    file = std::ifstream("key.json");
-    jsonFile = nlohmann::json::parse(file);
+    }
+    else
+    {
+        std::cout << "file is empty" << std::endl;
+
+        fileEmpty = true;
+    }
+    outputFile = std::ofstream("key.json");
 }
 
 LoginPageState::~LoginPageState()
@@ -111,13 +123,21 @@ void LoginPageState::processInput()
             if (m_signInButton.isMouseOver(*m_context->m_window))
             {
                 m_signInButton.setTextColor(sf::Color::White);
-                if (verified)
+                if (fileEmpty == false)
                 {
-                    m_context->m_states->add(std::make_unique<MainMenu>(m_context, jsonFile["username"], 0), true);
+                    if (verified == true)
+                    {
+                        m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+                    }
+                    else
+                    {
+                        std::cout << "Error login, invalid username or password" << std::endl;
+                    }
                 }
                 else
                 {
-                    std::cout << "Error login, wrong info" << std::endl;
+                    std::cout << "Credentials not found, please register first" << std::endl;
+
                 }
             }
             else
@@ -151,9 +171,19 @@ void LoginPageState::processInput()
 
 void LoginPageState::update(sf::Time deltaTime)
 {
-    if (m_allTextBoxes[0].getText() == jsonFile["username"] && m_allTextBoxes[1].getText() == jsonFile["email"] && m_allTextBoxes[2].getText() == jsonFile["pwd"])
-    {
-        verified = true;
+    if (fileEmpty == false) {
+        for (const auto& person : jsonFile)
+        {
+            if (m_allTextBoxes[0].getText() == person["username"] &&
+                m_allTextBoxes[1].getText() == person["email"] &&
+                m_allTextBoxes[2].getText() == person["pwd"])
+            {
+                verified = true;
+                break;
+            }
+        }
+        outputFile << std::setw(4) << jsonFile << std::endl;
+        outputFile.close();
     }
 }
 

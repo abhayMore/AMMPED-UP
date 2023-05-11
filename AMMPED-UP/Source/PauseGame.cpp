@@ -174,7 +174,7 @@ void PauseGame::update(sf::Time deltaTime)
 		m_bgm.stop();
 		m_context->m_states->popCurrent();
 		m_context->m_states->popCurrent();
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context, " ", 0), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
 	}
 }
 

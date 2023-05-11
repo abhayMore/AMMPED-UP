@@ -3,16 +3,16 @@
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/MainMenu.h"
 
-GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState, int score) :
+GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) :
 	m_context(context),
 	m_currentGameState(currentState),
-	m_score(score),
 	m_isRetryButtonSelected(true),
 	m_isRetryButtonPressed(false),
 	m_isExitButtonSelected(false),
 	m_isExitButtonPressed(false),
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
+	m_finalScore = ScoreManager::getInstance();
 }
 
 GameOver::~GameOver()
@@ -44,7 +44,7 @@ void GameOver::init()
 
 	//SCORE TEXT AFTER GAME OVER
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_scoreText.setString("Score : " + std::to_string(m_score));
+	m_scoreText.setString("Score : " + std::to_string(m_finalScore->getScore()));
 	m_scoreText.setCharacterSize(35);
 	m_scoreText.setOrigin(m_scoreText.getLocalBounds().width / 2, m_scoreText.getLocalBounds().height / 2);
 	m_scoreText.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
@@ -135,12 +135,13 @@ void GameOver::update(sf::Time deltaTime)
 	{
 		//TODO
 		//Go to Play State
+		m_finalScore->setScore(0);
 		m_bgm.stop();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
 	}
 	else if (m_isExitButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context, " ", m_score), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
 
 	}
 }

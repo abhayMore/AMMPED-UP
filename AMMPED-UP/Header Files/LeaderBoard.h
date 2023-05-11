@@ -23,7 +23,7 @@ private:
 	sf::Music& m_bgm;
 
 public:
-	Leaderboard(std::shared_ptr<Context>& context, std::string UID, int score);
+	Leaderboard(std::shared_ptr<Context>& context);
 	~Leaderboard();
 
 	void init() override;

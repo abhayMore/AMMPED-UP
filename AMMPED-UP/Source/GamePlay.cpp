@@ -23,7 +23,7 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_context(context),
 	m_playerDirection(0.0f, 0.0f),
 	m_elapsedTime(sf::Time::Zero),
-	m_score(0),
+	m_currentScore(0),
 	m_lives(3),
 	m_isPaused(false),
 	m_damageCounter(false),
@@ -35,6 +35,8 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_enemies(6),
 	m_coins(75)
 {
+	m_scoreManager = ScoreManager::getInstance();
+
 	srand(time(nullptr));
 }
 
@@ -204,8 +206,9 @@ void GamePlay::init()
 	
 
 	// SCORE INIT
+	m_currentScore = m_scoreManager->getScore();
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_scoreText.setString("Score : " + std::to_string(m_score));
+	m_scoreText.setString("Score : " + std::to_string(m_currentScore));
 	m_scoreText.setPosition(2,-2);
 	m_scoreText.setCharacterSize(30);
 	m_scoreText.setFillColor(sf::Color::White);
@@ -430,7 +433,7 @@ void GamePlay::update(sf::Time deltaTime)
 		for (auto it = m_coins.begin(); it != m_coins.end(); ++it) {
 			if ((*it).playerIsOnCoin(m_player.getSprite())) {
 				m_coinEatSfx.play();
-				m_score += 5;
+				m_currentScore += 5;
 				it = m_coins.erase(it);
 				if (it == m_coins.end()) {
 					break;
@@ -460,7 +463,7 @@ void GamePlay::update(sf::Time deltaTime)
 				int tempWall = removeWalls(m_player.m_bomb.getPosition(), m_radius);
 				if (tempWall >= 1)
 				{
-					m_score += tempWall * 5;
+					m_currentScore += tempWall * 5;
 				}
 
 				blastBool = true;
@@ -601,10 +604,11 @@ void GamePlay::update(sf::Time deltaTime)
 		}
 		if (m_shiftToGameOver)
 		{
-			m_context->m_states->add(std::make_unique<GameOver>(m_context, m_currentGameState, m_score));
+			m_context->m_states->add(std::make_unique<GameOver>(m_context, m_currentGameState));
 			m_shiftToGameOver = false;
 		}
-		m_scoreText.setString("Score : " + std::to_string(m_score));
+		m_scoreManager->setScore(m_currentScore);
+		m_scoreText.setString("Score : " + std::to_string(m_scoreManager->getScore()));
 		m_livesText.setString(std::to_string(m_lives));
 		progressBar->setValue(m_player.getHealth());
 	}
@@ -903,8 +907,8 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 		break;
 	case ICE_CREAM:
 		{
-			m_score += 25;
-			m_scoreText.setString("Score : " + std::to_string(m_score));
+			m_currentScore += 25;
+			//m_scoreText.setString("Score : " + std::to_string(m_score));
 		}
 		break;
 	case APPLE:

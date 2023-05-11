@@ -4,6 +4,7 @@
 #include "SFML/Audio/Sound.hpp"
 #include "State.h"
 #include "Game.h"
+#include "ScoreManager.h"
 
 class GameOver : public am::State
 {
@@ -17,7 +18,7 @@ private:
 	sf::Text m_currentGameStateTitle;
 	std::string m_currentGameState; //WON, DIED, TIME's UP??
 	sf::Text m_scoreText;
-	int m_score;
+	ScoreManager *m_finalScore;
 
 	sf::Text m_retryButton;
 	sf::Text m_exitButton;
@@ -32,7 +33,7 @@ private:
 	sf::Music& m_bgm;
 
 public:
-	GameOver(std::shared_ptr<Context>& context, std::string currentState, int score);
+	GameOver(std::shared_ptr<Context>& context, std::string currentState);
 	~GameOver();
 
 	void init() override;

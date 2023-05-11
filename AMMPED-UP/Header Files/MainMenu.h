@@ -14,8 +14,7 @@ private:
 	sf::Text m_leadershipButton;
 	sf::Text m_optionsButton;
 	sf::Text m_exitButton;
-	std::string m_username;
-	int m_score;
+	
 
 	sf::Sprite m_menuBackground;
 
@@ -34,7 +33,7 @@ private:
 	sf::Music& m_bgm;
 
 public:
-	MainMenu(std::shared_ptr<Context>& context, std::string UID, int score);
+	MainMenu(std::shared_ptr<Context>& context);
 	~MainMenu();
 
 	void init() override;

@@ -39,6 +39,7 @@
     <ClCompile Include="Source\PowerUP.cpp" />
     <ClCompile Include="Source\RegisterPageState.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\ScoreManager.cpp" />
     <ClCompile Include="Source\SplashScreen.cpp" />
     <ClCompile Include="Source\StateManager.cpp" />
   </ItemGroup>
@@ -63,6 +64,7 @@
     <ClInclude Include="Header Files\PowerUP.h" />
     <ClInclude Include="Header Files\Player.h" />
     <ClInclude Include="Header Files\RegisterPageState.h" />
+    <ClInclude Include="Header Files\ScoreManager.h" />
     <ClInclude Include="Header Files\SplashScreen.h" />
     <ClInclude Include="Header Files\State.h" />
     <ClInclude Include="Header Files\StateManager.h" />

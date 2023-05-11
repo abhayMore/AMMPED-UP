@@ -1,1 +1,12 @@
-{"email":"a","pwd":"a","username":"a"}
+[
+    {
+        "email": "aby",
+        "pwd": "12345",
+        "username": "abhayMore"
+    },
+    {
+        "email": "more",
+        "pwd": "12345",
+        "username": "more"
+    }
+]
