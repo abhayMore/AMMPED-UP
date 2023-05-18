@@ -19,3 +19,13 @@ int ScoreManager::getScore() const
 {
 	return m_score;
 }
+
+void ScoreManager::setGameOverFlag(bool flag)
+{
+	gameOverFlag = flag;
+}
+
+bool ScoreManager::getGameOverFlag() const
+{
+	return gameOverFlag;
+}

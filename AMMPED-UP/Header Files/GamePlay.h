@@ -17,6 +17,7 @@
 #include "Enemy.h"
 #include "PowerUP.h"
 #include "Coin.h"
+#include "AudioManager.h"
 
 enum CMapTile
 {
@@ -107,6 +108,7 @@ private:
 	bool m_shiftToGameOver;
 
 	//PROGRESS BAR
+	tgui::Theme m_theme;
 	sf::Text m_livesText;
 	int m_lives;
 	sf::Sprite m_livesHeartUI;
@@ -119,11 +121,15 @@ private:
 	std::list<Coin> m_coins;
 
 	//SFX and MUSIC
-	sf::Sound m_damageSFX;
-	sf::Sound m_blastSFX;
-	sf::Sound m_coinEatSfx;
-	sf::Music& m_inGame;
-	sf::Sound m_enemyDeathSFX;
+
+	//sf::Sound m_damageSFX;
+	//sf::Sound m_blastSFX;
+	//sf::Sound m_coinEatSfx;
+	//sf::Sound m_enemyDeathSFX;
+	//sf::Music& m_inGame;
+
+	AudioManager* m_sound;
+
 
 	//EXPLOSIONS 
 	std::vector<sf::Sprite> m_explosions;

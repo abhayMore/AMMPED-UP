@@ -6,7 +6,7 @@
 #include "../Header Files/ExitState.h"
 #include <memory>
 
-MainMenu::MainMenu(std::shared_ptr<Context>& context) : 
+MainMenu::MainMenu(std::shared_ptr<Context>& context, float Overallvolume, float inGameMusicVolume, float SFXVolume) :
 	m_context(context), 
 	m_isPlayButtonSelected(true),
 	m_isPlayButtonPressed(false),
@@ -15,9 +15,20 @@ MainMenu::MainMenu(std::shared_ptr<Context>& context) :
 	m_isOptionsButtonSelected(false),
 	m_isOptionsButtonPressed(false),
 	m_isExitButtonSelected(false),
-	m_isExitButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
+	m_isExitButtonPressed(false)
 {
+	AudioManager& audioManager = AudioManager::getInstance(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK), 
+														m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
+														m_context->m_assets->getSoundEffect(DAMAGE_SFX),
+														m_context->m_assets->getSoundEffect(BLAST_SFX),
+														m_context->m_assets->getSoundEffect(COIN_SFX),
+														m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
+														);
+
+	m_bgm = &audioManager;
+	m_bgm->setOverallVolume(Overallvolume);
+	m_bgm->setInGameVolume(inGameMusicVolume);
+	m_bgm->setSFXVolume(SFXVolume);
 }
 
 MainMenu::~MainMenu()
@@ -74,6 +85,7 @@ void MainMenu::init()
 	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
 	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 125.0f);
 	m_exitButton.setOutlineThickness(1);
+	
 }
 
 void MainMenu::processInput()
@@ -219,7 +231,7 @@ void MainMenu::update(sf::Time deltaTime)
 	{
 		//TODO
 		//Go to Play State
-		m_bgm.stop();
+		m_bgm->stopMainMenuMusic();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
 	}
 	else if (m_isLeadershipButtonPressed)
@@ -229,12 +241,17 @@ void MainMenu::update(sf::Time deltaTime)
 	else if (m_isOptionsButtonPressed)
 	{
 		m_context->m_states->add(std::make_unique<OptionsState>(m_context), true);
-
 	}
 	else if (m_isExitButtonPressed)
 	{
 		m_context->m_states->add(std::make_unique<ExitState>(m_context), true);
 	}
+
+	if (m_bgm->isMenuMusicPlaying() == sf::SoundStream::Status::Stopped && !m_isPlayButtonPressed)
+	{
+		m_bgm->startMainMenuMusic();
+	}
+
 }
 
 void MainMenu::draw()
@@ -252,7 +269,7 @@ void MainMenu::draw()
 
 void MainMenu::start()
 {
-	m_bgm.play();
+	
 }
 
 void MainMenu::pause()

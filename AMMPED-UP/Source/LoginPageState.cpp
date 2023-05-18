@@ -1,5 +1,6 @@
 #include "../Header Files/LoginPageState.h"
 #include "../Header Files/MainMenu.h"
+#include "../Header Files/LoginState.h"
 
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
 	m_context(context)
@@ -9,16 +10,13 @@ LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
     {
         jsonFile = nlohmann::json::parse(inputFile);
         inputFile.close();
-        std::cout << "file has content" << std::endl;
-
     }
     else
     {
-        std::cout << "file is empty" << std::endl;
-
         fileEmpty = true;
     }
     outputFile = std::ofstream("key.json");
+    m_username = UserNameManager::getInstance();
 }
 
 LoginPageState::~LoginPageState()
@@ -45,44 +43,50 @@ void LoginPageState::init()
 
 	//USERNAME TITLE
 	m_userNameTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
-	m_userNameTitle.setString("Username");
+	m_userNameTitle.setString("Username OR Email ID");
 	m_userNameTitle.setCharacterSize(25);
 	m_userNameTitle.setOrigin(m_userNameTitle.getLocalBounds().width / 2, m_userNameTitle.getLocalBounds().height / 2);
-	m_userNameTitle.setPosition(m_context->m_window->getSize().x / 4 + 2, m_context->m_window->getSize().y / 2 - 80.0f);
+	m_userNameTitle.setPosition(m_context->m_window->getSize().x / 4 + 77, m_context->m_window->getSize().y / 2 - 80.0f);
 
 	//USERNAME TEXTBOX
     m_allTextBoxes[0] = Textbox({ 400,25 },20, sf::Color::Black, sf::Color::Transparent,sf::Color::White, true);
     m_allTextBoxes[0].setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_allTextBoxes[0].setPosition(sf::Vector2f( m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 50.0f ));
 
-	//EMAIL TITLE
-	m_emailIDTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
-	m_emailIDTitle.setString("Email");
-	m_emailIDTitle.setCharacterSize(25);
-	m_emailIDTitle.setOrigin(m_emailIDTitle.getLocalBounds().width / 2, m_emailIDTitle.getLocalBounds().height / 2);
-	m_emailIDTitle.setPosition(m_context->m_window->getSize().x / 4 - m_emailIDTitle.getGlobalBounds().width / 2 + 7, m_context->m_window->getSize().y / 2 );
-
-	//EMAIL TEXTBOX
-    m_allTextBoxes[1] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-    m_allTextBoxes[1].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_allTextBoxes[1].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 30.0f));
-
 	//PASSWORD TITTLE
 	m_passwordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
 	m_passwordTitle.setString("Password");
 	m_passwordTitle.setCharacterSize(25);
 	m_passwordTitle.setOrigin(m_passwordTitle.getLocalBounds().width / 2, m_passwordTitle.getLocalBounds().height / 2);
-	m_passwordTitle.setPosition(m_context->m_window->getSize().x / 4, m_context->m_window->getSize().y / 2 + 80.0f);
+	m_passwordTitle.setPosition(m_context->m_window->getSize().x / 4, m_context->m_window->getSize().y / 2);
 
 	//PASSWORD TEXTBOX
-    m_allTextBoxes[2] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-    m_allTextBoxes[2].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_allTextBoxes[2].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 110.0f));
+    m_allTextBoxes[1] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
+    m_allTextBoxes[1].setFont(m_context->m_assets->getFont(LOGIN_FONT));
+    m_allTextBoxes[1].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 30.0f));
 
 	//SIGN IN BUTTON
 	m_signInButton = Button("Sign In",{ 150,50 }, 35, sf::Color::Green, sf::Color::White);
 	m_signInButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_signInButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_signInButton.getButtonSize().x / 2, m_context->m_window->getSize().y - 50.0f - m_signInButton.getButtonSize().y / 2));
+	m_signInButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_signInButton.getButtonSize().x / 2 - 150, m_context->m_window->getSize().y - 200.0f - m_signInButton.getButtonSize().y / 2));
+    m_signInButton.setBackColor(sf::Color::Transparent);
+
+    //BACK BUTTON to transition to previous state ->LoginState
+    m_backButton = Button("Back", { 150,50 }, 35, sf::Color::Green, sf::Color::White);
+    m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
+    m_backButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_backButton.getButtonSize().x / 2 + 150, m_context->m_window->getSize().y - 200.0f - m_backButton.getButtonSize().y / 2));
+    m_backButton.setBackColor(sf::Color::Transparent);
+
+    //PROMPTS for exceptions at top left corner
+    m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
+    m_errorPrompt.setFillColor(sf::Color(255, 49, 49));
+    m_errorPrompt.setOutlineThickness(0.5);
+    m_errorPrompt.setOutlineColor(sf::Color::Black);
+    m_errorPrompt.setString("");
+    m_errorPrompt.setCharacterSize(20);
+    m_errorPrompt.setOrigin(m_errorPrompt.getLocalBounds().width / 2, m_errorPrompt.getLocalBounds().height / 2);
+    m_errorPrompt.setPosition(m_errorPrompt.getLocalBounds().width / 2 + 2, m_errorPrompt.getLocalBounds().height / 2 + 2);
+
 }
 
 void LoginPageState::processInput()
@@ -94,6 +98,8 @@ void LoginPageState::processInput()
         {
         case sf::Event::Closed:
         {
+            if (!fileEmpty)
+                writeToFile();
             m_context->m_window->close();
             break;
         }
@@ -106,7 +112,6 @@ void LoginPageState::processInput()
             }
             break;
         }
-       
         case sf::Event::MouseMoved:
         {
             if (m_signInButton.isMouseOver(*m_context->m_window))
@@ -117,51 +122,36 @@ void LoginPageState::processInput()
             {
                 m_signInButton.setTextColor(sf::Color::White);
             }
-            break;
-        }
-        case sf::Event::MouseButtonPressed:
-            if (m_signInButton.isMouseOver(*m_context->m_window))
+            if (m_backButton.isMouseOver(*m_context->m_window))
             {
-                m_signInButton.setTextColor(sf::Color::White);
-                if (fileEmpty == false)
-                {
-                    if (verified == true)
-                    {
-                        m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
-                    }
-                    else
-                    {
-                        std::cout << "Error login, invalid username or password" << std::endl;
-                    }
-                }
-                else
-                {
-                    std::cout << "Credentials not found, please register first" << std::endl;
-
-                }
+                m_backButton.setTextColor(sf::Color(190, 190, 190));
             }
             else
             {
-                m_signInButton.setTextColor(sf::Color::White);
+                m_backButton.setTextColor(sf::Color::White);
             }
-
+            break;
+        }
+        case sf::Event::MouseButtonPressed:
+            if (m_backButton.isMouseOver(*m_context->m_window))
+            {
+                m_backButton.setTextColor(sf::Color(190, 190, 190));
+                m_isBackButtonPressed = true;
+            }
+            if (m_signInButton.isMouseOver(*m_context->m_window))
+            {
+                m_signInButton.setTextColor(sf::Color::White);
+                m_isSignInButtonPressed = true;
+            }        
             if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
             {
                 m_allTextBoxes[0].setSelected(true);
                 m_allTextBoxes[1].setSelected(false);
-                m_allTextBoxes[2].setSelected(false);
             }
             else if (m_allTextBoxes[1].isMouseOver(*m_context->m_window))
             {
                 m_allTextBoxes[0].setSelected(false);
                 m_allTextBoxes[1].setSelected(true);
-                m_allTextBoxes[2].setSelected(false);
-            }
-            else if (m_allTextBoxes[2].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(false);
-                m_allTextBoxes[1].setSelected(false);
-                m_allTextBoxes[2].setSelected(true);
             }
         default:
             break;
@@ -171,19 +161,50 @@ void LoginPageState::processInput()
 
 void LoginPageState::update(sf::Time deltaTime)
 {
-    if (fileEmpty == false) {
-        for (const auto& person : jsonFile)
-        {
-            if (m_allTextBoxes[0].getText() == person["username"] &&
-                m_allTextBoxes[1].getText() == person["email"] &&
-                m_allTextBoxes[2].getText() == person["pwd"])
+    if (m_isSignInButtonPressed)
+    {
+        if (fileEmpty == false) {
+            for (const auto& person : jsonFile)
             {
-                verified = true;
-                break;
+                std::hash<std::string> pwd_hash;
+                auto hashedPWD = pwd_hash(m_allTextBoxes[1].getText());
+                if ((m_allTextBoxes[0].getText() == person["username"].get<std::string>() ||
+                    m_allTextBoxes[0].getText() == person["email"].get<std::string>()) &&
+                    hashedPWD == person["pwd"])
+                {
+                    verified = true;
+                    m_username->setUsername(m_allTextBoxes[0].getText());
+                    break;
+                }                                
             }
+            
         }
+        else
+        {
+            m_errorPrompt.setString("User not found, did you register?");
+            //std::cout << "User not found, did you register?" << std::endl;
+        }
+        if(fileEmpty == false && verified == false)
+        {
+            m_errorPrompt.setString("Error login, invalid username or password");
+            //std::cout << "Error login, invalid username or password" << std::endl;
+        }
+        m_isSignInButtonPressed = false;
+    }
+    if (verified == true)
+    {
+        m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+        verified = false;
         outputFile << std::setw(4) << jsonFile << std::endl;
         outputFile.close();
+    }
+    if (m_isBackButtonPressed)
+    {
+        if (fileEmpty == false)
+            writeToFile();
+        m_context->m_states->popCurrent();
+        m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
+        m_isBackButtonPressed = false;
     }
 }
 
@@ -195,12 +216,14 @@ void LoginPageState::draw()
     m_context->m_window->draw(m_userNameTitle);
     m_context->m_window->draw(m_emailIDTitle);
     m_context->m_window->draw(m_passwordTitle);
+    m_context->m_window->draw(m_errorPrompt);
 
-    for (int i = 0; i < sizeof(m_allTextBoxes)/sizeof(m_allTextBoxes[0]); i++)
+    for (int i = 0; i < 2; i++)
     {
         m_allTextBoxes[i].Draw(*m_context->m_window);
     }
 	m_signInButton.Draw(*m_context->m_window);
+    m_backButton.Draw(*m_context->m_window);
 	m_context->m_window->display();
 }
 
@@ -210,4 +233,10 @@ void LoginPageState::start()
 
 void LoginPageState::pause()
 {
+}
+
+void LoginPageState::writeToFile()
+{
+    outputFile << std::setw(4) << jsonFile << std::endl;
+    outputFile.close();
 }

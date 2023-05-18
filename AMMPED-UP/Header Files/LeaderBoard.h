@@ -1,10 +1,15 @@
 #pragma once
 #include <memory>
+#include <fstream>
 #include "SFML/Graphics/Sprite.hpp"
+#include "nlohmann/json.hpp"
 
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
+#include "ScoreManager.h"
 #include "Game.h"
+#include "UserNameManager.h"
+#include "AudioManager.h"
 
 class Leaderboard : public am::State
 {
@@ -14,13 +19,19 @@ private:
 	sf::Sprite m_menuBackground;
 	bool m_isExitButtonPressed;
 	
+	AudioManager* m_bgm;
+
 	sf::Text m_name;
 	sf::Text m_scoreText;
 
-	
-	std::string m_username;
-	int m_finalScore;
-	sf::Music& m_bgm;
+	UserNameManager* username;
+
+
+	std::ifstream inputFile;
+	std::ofstream outputFile;
+	nlohmann::json jsonFile;
+	bool isInputFileEmpty = false;
+	bool foundPlayerData = false;
 
 public:
 	Leaderboard(std::shared_ptr<Context>& context);
@@ -34,5 +45,6 @@ public:
 	void start();
 	void pause();
 
+	void writeToFile();
 };
 

@@ -30,19 +30,32 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	blastBool(false),
 	m_shiftToGameOver(false),
 	m_currentGameState("Time's Up!!"),
-	m_inGame(m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK)),
 	gui(*m_context->m_window),
 	m_enemies(6),
 	m_coins(75)
 {
 	m_scoreManager = ScoreManager::getInstance();
+	m_theme.load("Resources/Black.txt");
+
+
+	AudioManager& audioManager = AudioManager::getInstance(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
+		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
+		m_context->m_assets->getSoundEffect(DAMAGE_SFX),
+		m_context->m_assets->getSoundEffect(BLAST_SFX),
+		m_context->m_assets->getSoundEffect(COIN_SFX),
+		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
+	);
+
+	m_sound = &audioManager;
+	//m_sound->setSFXVolume();
 
 	srand(time(nullptr));
 }
 
 GamePlay::~GamePlay()
 {
-	m_inGame.stop();
+	m_sound->stopInGameMusic();
+
 }
 
 void GamePlay::init()
@@ -206,6 +219,7 @@ void GamePlay::init()
 	
 
 	// SCORE INIT
+	m_scoreManager->setScore(0);
 	m_currentScore = m_scoreManager->getScore();
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_scoreText.setString("Score : " + std::to_string(m_currentScore));
@@ -217,7 +231,7 @@ void GamePlay::init()
 	// TIMER INIT
 	m_timerText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_timerText.setString("Time : " + std::to_string(m_time));
-	m_timerText.setPosition(m_context->m_window->getSize().x/2, -2);
+	m_timerText.setPosition(m_context->m_window->getSize().x/2 - m_timerText.getLocalBounds().width / 2, -2);
 	m_timerText.setCharacterSize(30);
 	m_timerText.setFillColor(sf::Color::White);
 	m_timerText.setOutlineThickness(1);
@@ -234,7 +248,9 @@ void GamePlay::init()
 	m_livesHeartUI.setPosition(m_context->m_window->getSize().x - 240, 0);
 	m_livesHeartUI.setScale({ 2,2 });
 
+	//HEALTH BAR
 	progressBar = tgui::ProgressBar::create();
+	progressBar->setRenderer(m_theme.getRenderer("ProgressBar"));
 	progressBar->setPosition(m_context->m_window->getSize().x - 205, 5);
 	progressBar->setSize(200, 20);
 	progressBar->setMinimum(0);
@@ -273,17 +289,17 @@ void GamePlay::init()
 	}
 
 	// SOUND EFFECT SETTINGS
-	m_coinEatSfx.setBuffer(m_context->m_assets->getSoundEffect(COIN_SFX));
-	m_coinEatSfx.setVolume(20);
+	//m_coinEatSfx.setBuffer(m_context->m_assets->getSoundEffect(COIN_SFX));
+	//m_coinEatSfx.setVolume(20);
 	
-	m_blastSFX.setBuffer(m_context->m_assets->getSoundEffect(BLAST_SFX));
-	m_blastSFX.setVolume(80);
+	//m_blastSFX.setBuffer(m_context->m_assets->getSoundEffect(BLAST_SFX));
+	//m_blastSFX.setVolume(80);
 
-	m_damageSFX.setBuffer(m_context->m_assets->getSoundEffect(DAMAGE_SFX));
-	m_damageSFX.setVolume(100);
+	//m_damageSFX.setBuffer(m_context->m_assets->getSoundEffect(DAMAGE_SFX));
+	//m_damageSFX.setVolume(100);
 
-	m_enemyDeathSFX.setBuffer(m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX));
-	m_enemyDeathSFX.setVolume(100);
+	//m_enemyDeathSFX.setBuffer(m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX));
+	//m_enemyDeathSFX.setVolume(100);
 	//takeScreenshot("../Resources/assets/");
 }
 
@@ -338,6 +354,12 @@ void GamePlay::processInput()
 				}
 				break;
 			}
+			/*case sf::Keyboard::Q:
+			{
+				m_shiftToGameOver = true;
+				m_currentGameState = std::string("You Won!!");
+				break;
+			}*/
 			//TEMPORARY DEBUGGIN TOOL
 			/*case sf::Keyboard::P:
 			{
@@ -420,7 +442,7 @@ void GamePlay::update(sf::Time deltaTime)
 			{
 				if (checkCollision4(it.getPosition()))
 				{
-					m_damageSFX.play();
+					m_sound->startSFXMusic(DAMAGE_SFX_SOUND);
 					m_damageCounter = true;
 					m_player.setHealth(m_player.getHealth() - 20);
 					m_inVulnerability = true;
@@ -432,7 +454,7 @@ void GamePlay::update(sf::Time deltaTime)
 		//COINS COLLECTING
 		for (auto it = m_coins.begin(); it != m_coins.end(); ++it) {
 			if ((*it).playerIsOnCoin(m_player.getSprite())) {
-				m_coinEatSfx.play();
+				m_sound->startSFXMusic(COIN_EAT_SFX_SOUND);
 				m_currentScore += 5;
 				it = m_coins.erase(it);
 				if (it == m_coins.end()) {
@@ -459,7 +481,7 @@ void GamePlay::update(sf::Time deltaTime)
 
 			if (m_player.m_bomb.isBlasted())
 			{
-				m_blastSFX.play();
+				m_sound->startSFXMusic(BLAST_SFX_SOUND);
 				int tempWall = removeWalls(m_player.m_bomb.getPosition(), m_radius);
 				if (tempWall >= 1)
 				{
@@ -476,7 +498,7 @@ void GamePlay::update(sf::Time deltaTime)
 				{
 					if (checkCollision3(explosionSprite.getPosition()))
 					{
-						m_damageSFX.play();
+						m_sound->startSFXMusic(DAMAGE_SFX_SOUND);
 						m_damageCounter = true;
 						m_player.setHealth(m_player.getHealth() - 20);
 						break;
@@ -490,7 +512,7 @@ void GamePlay::update(sf::Time deltaTime)
 					{
 						if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
 						{
-							m_enemyDeathSFX.play();
+							m_sound->startSFXMusic(ENEMY_DEATH_SFX_SOUND);
 							it = m_enemies.erase(it);
 							if (it == m_enemies.end()) 
 							{
@@ -696,7 +718,6 @@ void GamePlay::draw()
 	for (auto& explo : m_explosions)
 	{
 		m_context->m_window->draw(explo);
-
 	}
 
 	//PLAYER AND ENEMIES
@@ -718,13 +739,13 @@ void GamePlay::draw()
 void GamePlay::pause()
 {
 	m_isPaused = true;
-	m_inGame.stop();
+	m_sound->pauseInGameMusic();
 }
 
 void GamePlay::start()
 {
 	m_isPaused = false;
-	m_inGame.play();
+	m_sound->startInGameMusic();
 }
 
 //COLLISION FOR PLAYER WITH WALLS

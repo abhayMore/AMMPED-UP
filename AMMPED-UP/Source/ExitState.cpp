@@ -11,6 +11,8 @@ ExitState::ExitState(std::shared_ptr<Context>& context) :
 	m_isLogoutExitButtonPressed(false),
 	m_isLogoutSelected(true),
 	m_isLogoutButtonPressed(false),
+	m_isBackButtonSelected(false),
+	m_isBackButtonPressed(false),
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
 }
@@ -43,6 +45,13 @@ void ExitState::init()
 	m_logout.setCharacterSize(35);
 	m_logout.setOrigin(m_logout.getLocalBounds().width / 2, m_logout.getLocalBounds().height / 2);
 	m_logout.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
+	
+	//BACK BUTTON
+	m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
+	m_backButton.setString("Back");
+	m_backButton.setCharacterSize(35);
+	m_backButton.setOrigin(m_backButton.getLocalBounds().width / 2, m_backButton.getLocalBounds().height / 2);
+	m_backButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 +75.0f);
 }
 
 void ExitState::processInput()
@@ -58,34 +67,70 @@ void ExitState::processInput()
 			{
 			case sf::Keyboard::Up:
 			{
-				if (!m_isLogoutSelected)
+				if (!m_isLogoutExitButtonSelected && !m_isLogoutSelected)
 				{
-					m_isLogoutExitButtonSelected = false;
+					m_isLogoutSelected = false;
+					m_isLogoutExitButtonSelected = true;
+					m_isBackButtonSelected = false;
+				}
+				else if (!m_isLogoutSelected)
+				{
 					m_isLogoutSelected = true;
+					m_isLogoutExitButtonSelected = false;
+					m_isBackButtonSelected = false;
+				}
+				else if (!m_isBackButtonSelected && !m_isLogoutSelected)
+				{
+					m_isLogoutSelected = false;
+					m_isLogoutExitButtonSelected = false;
+					m_isBackButtonSelected = true;
 				}
 				break;
 			}
 			case sf::Keyboard::Down :
 			{
-				if (!m_isLogoutExitButtonSelected)
+				if (!m_isLogoutExitButtonSelected && !m_isBackButtonSelected)
 				{
-					m_isLogoutExitButtonSelected = true;
 					m_isLogoutSelected = false;
+					m_isLogoutExitButtonSelected = true;
+					m_isBackButtonSelected = false;
+				}
+				else if (!m_isBackButtonSelected)
+				{
+					m_isLogoutSelected = false;
+					m_isLogoutExitButtonSelected = false;
+					m_isBackButtonSelected = true;
+				}
+				else if (!m_isLogoutSelected && !m_isBackButtonSelected)
+				{
+					m_isLogoutSelected = true;
+					m_isLogoutExitButtonSelected = false;
+					m_isBackButtonSelected = false;
 				}
 				break;
 			}
 			case sf::Keyboard::Return :
 			{
-				m_isLogoutExitButtonPressed = false;
 				m_isLogoutButtonPressed = false;
-				if (m_isLogoutExitButtonSelected)
+				m_isLogoutExitButtonPressed = false;
+				m_isBackButtonPressed = false;
+				if (m_isLogoutSelected)
+				{
+					m_isLogoutButtonPressed = true;
+				}
+				else if (m_isLogoutExitButtonSelected)
 				{
 					m_isLogoutExitButtonPressed = true;
 				}
 				else
 				{
-					m_isLogoutButtonPressed = true;
+					m_isBackButtonPressed = true;
 				}
+				break;
+			}
+			case sf::Keyboard::Escape:
+			{
+				m_isBackButtonPressed = true;
 				break;
 			}
 			default:
@@ -97,15 +142,23 @@ void ExitState::processInput()
 
 void ExitState::update(sf::Time deltaTime)
 {
-	if (m_isLogoutExitButtonSelected)
+	if (m_isLogoutSelected)
 	{
-		m_logoutExit.setFillColor(sf::Color::Magenta);
-		m_logout.setFillColor(::sf::Color::White);
+		m_logout.setFillColor(sf::Color::Magenta);
+		m_logoutExit.setFillColor(::sf::Color::White);
+		m_backButton.setFillColor(::sf::Color::White);
+	}
+	else if (m_isLogoutExitButtonSelected)
+	{
+		m_logout.setFillColor(sf::Color::White);
+		m_logoutExit.setFillColor(::sf::Color::Magenta);
+		m_backButton.setFillColor(::sf::Color::White);
 	}
 	else
 	{
-		m_logout.setFillColor(::sf::Color::Magenta);
-		m_logoutExit.setFillColor(sf::Color::White);
+		m_logout.setFillColor(sf::Color::White);
+		m_logoutExit.setFillColor(::sf::Color::White);
+		m_backButton.setFillColor(::sf::Color::Magenta);
 	}
 	if (m_isLogoutExitButtonPressed)
 	{
@@ -120,6 +173,12 @@ void ExitState::update(sf::Time deltaTime)
 		//GO TO LOGIN STATE
 		m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
 	}
+	else if (m_isBackButtonPressed)
+	{
+		m_context->m_states->popCurrent();
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_isBackButtonPressed = false;
+	}
 }
 
 void ExitState::draw()
@@ -129,6 +188,7 @@ void ExitState::draw()
 	m_context->m_window->draw(m_gameTitle);
 	m_context->m_window->draw(m_logoutExit);
 	m_context->m_window->draw(m_logout);
+	m_context->m_window->draw(m_backButton);
 
 	m_context->m_window->display();
 }

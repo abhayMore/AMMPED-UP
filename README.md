@@ -1,5 +1,5 @@
 # AMMPED - UP
-A clone classic Bomberman game, made in C++, SFML & TGUI.
+Clone of the classic Bomberman game, made in C++, SFML & TGUI.
 
 v1.0 : https://youtu.be/dV3PnYL2-nw
 

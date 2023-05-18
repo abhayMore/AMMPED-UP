@@ -12,6 +12,7 @@ private:
 	sf::Text m_gameTitle;
 	sf::Text m_logoutExit;
 	sf::Text m_logout;
+	sf::Text m_backButton;
 	sf::Sprite m_exitBackground;
 
 	bool m_isLogoutExitButtonSelected;
@@ -19,6 +20,9 @@ private:
 
 	bool m_isLogoutSelected;
 	bool m_isLogoutButtonPressed;
+	
+	bool m_isBackButtonSelected;
+	bool m_isBackButtonPressed;
 
 	sf::Music& m_bgm;
 

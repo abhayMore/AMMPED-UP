@@ -10,6 +10,9 @@ RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
         jsonFile = nlohmann::json::parse(inputFile);
         inputFile.close();
     }
+    else {
+        isFileEmpty = true;
+    }
     outputFile = std::ofstream("key.json");
 }
 
@@ -97,9 +100,26 @@ void RegisterPageState::init()
 	m_allTextBoxes[4].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 150.0f));
 
 	//SIGN IN BUTTON
-	m_registerButton = Button("Register", { 200,40 }, 35, sf::Color::Green, sf::Color::White);
+	m_registerButton = Button("Register", { 200,40 }, 30, sf::Color::Green, sf::Color::White);
 	m_registerButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_registerButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_registerButton.getButtonSize().x / 2, m_context->m_window->getSize().y - 30.0f - m_registerButton.getButtonSize().y / 2));
+	m_registerButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_registerButton.getButtonSize().x / 2 - 150, m_context->m_window->getSize().y - 200.0f - m_registerButton.getButtonSize().y / 2));
+    m_registerButton.setBackColor(sf::Color::Transparent);
+
+    //BACK BUTTON to transition to previous state ->LoginState
+    m_backButton = Button("Back", { 200,40 }, 30, sf::Color::Green, sf::Color::White);
+    m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
+    m_backButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_backButton.getButtonSize().x / 2 + 150, m_context->m_window->getSize().y - 200.0f - m_backButton.getButtonSize().y / 2));
+    m_backButton.setBackColor(sf::Color::Transparent);
+
+    //PROMPTS for exceptions at top left corner
+    m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
+    m_errorPrompt.setFillColor(sf::Color(255, 49, 49));
+    m_errorPrompt.setOutlineThickness(0.5);
+    m_errorPrompt.setOutlineColor(sf::Color::Black);
+    m_errorPrompt.setString("");
+    m_errorPrompt.setCharacterSize(20);
+    m_errorPrompt.setOrigin(m_errorPrompt.getLocalBounds().width / 2, m_errorPrompt.getLocalBounds().height / 2);
+    m_errorPrompt.setPosition(m_errorPrompt.getLocalBounds().width / 2 + 2, m_errorPrompt.getLocalBounds().height / 2 + 2);
 }
 
 void RegisterPageState::processInput()
@@ -112,6 +132,8 @@ void RegisterPageState::processInput()
         case sf::Event::Closed:
         {
             m_context->m_window->close();
+            if(!isFileEmpty)
+                writeToFile();
             break;
         }
         case sf::Event::TextEntered:
@@ -121,7 +143,6 @@ void RegisterPageState::processInput()
                 if (m_allTextBoxes[i].getSelected())
                     m_allTextBoxes[i].typedOn(event);
             }
-
             break;
         }
 
@@ -135,32 +156,132 @@ void RegisterPageState::processInput()
             {
                 m_registerButton.setTextColor(sf::Color::White);
             }
-            break;
-        }
-        case sf::Event::MouseButtonPressed:
-            if (m_registerButton.isMouseOver(*m_context->m_window))
+            if (m_backButton.isMouseOver(*m_context->m_window))
             {
-                m_registerButton.setTextColor(sf::Color::White);
-
-                m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
-
-                nlohmann::json playerInfo;
-                playerInfo = {
-                    {"username",    m_allTextBoxes[0].getText()},
-                    {"email",       m_allTextBoxes[2].getText()},
-                    {"pwd",         m_allTextBoxes[3].getText()}
-                };
-                jsonFile.push_back(playerInfo);
-                outputFile << std::setw(4) << jsonFile << std::endl;
-                outputFile.close();
-
-                //file << jsonFile;
+                m_backButton.setTextColor(sf::Color(190, 190, 190));
             }
             else
             {
-                m_registerButton.setTextColor(sf::Color::White);
+                m_backButton.setTextColor(sf::Color::White);
             }
+            break;
+        }
+        case sf::Event::MouseButtonPressed:
+        {
+            if (m_backButton.isMouseOver(*m_context->m_window))
+            {
+                m_backButton.setTextColor(sf::Color(190, 190, 190));
+                m_isBackButtonPressed = true;
+            }
+            if (m_registerButton.isMouseOver(*m_context->m_window))
+            {
+                m_registerButton.setTextColor(sf::Color(190, 190, 190));
+                if (isFileEmpty == false)
+                {
+                    for (auto& person : jsonFile)
+                    {
+                        if (m_allTextBoxes[0].getText() == person["username"].get<std::string>())
+                        {
+                            isUsernameTaken = true;
+                            if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
+                            {
+                                isUserExists = true;
+                                break;
+                            }
+                        }
+                        else if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
+                        {
+                            isEmailRegistered = true;
+                        }
+                    }
 
+                    if (isUserExists)
+                    {
+                        m_errorPrompt.setString("User already exists. Please login!!");
+                        resetTextboxes();
+                    }
+                    else if (isUsernameTaken && !isEmailRegistered)
+                    {
+                        m_errorPrompt.setString("Username is already taken. Please choose another username!!");
+                        resetTextboxes();
+                    }
+                    else if (!isUsernameTaken && isEmailRegistered)
+                    {
+                        m_errorPrompt.setString("Email is already registered. Please use a different email!!");
+                        resetTextboxes();
+                    }
+                    else if (!isUserExists && !isUsernameTaken && !isEmailRegistered)
+                    {
+                        if (!anyTextboxEmpty())
+                        {
+                            registerUser();
+                        }
+                    }
+                    /*
+                    std::cout << "entered for loop" << std::endl;
+
+                    if (m_allTextBoxes[0].getText() == person["username"].get<std::string>())
+                    {
+                        if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
+                        {
+                            //std::cout << "same username, different mail ID" << std::endl;
+                            //m_errorPrompt.setString("Username is already taken. Please choose another username!!");
+                            m_errorPrompt.setString("User already exists. Please login!!");
+                            resetTextboxes();
+                            break;
+                        }
+                        else if (m_allTextBoxes[2].getText() != person["email"].get<std::string>())
+                        {
+                            m_errorPrompt.setString("Username is already taken. Please choose another username!!");
+                            resetTextboxes();
+                            break;
+                        }
+                    }
+                    else if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
+                    {
+                        m_errorPrompt.setString("Email is already registered. Please use a different email!!");
+                        resetTextboxes();
+                        break;
+                    }
+                    else if()
+
+
+                    else if (m_allTextBoxes[2].getText() == person["email"].get<std::string>() &&
+                        m_allTextBoxes[0].getText() != person["username"].get<std::string>()
+                        )
+                    {
+                        m_errorPrompt.setString("Email is already registered. Please use a different email!!");
+                        resetTextboxes();
+                        break;
+                    }
+                    else if (m_allTextBoxes[0].getText() == person["username"].get<std::string>() &&
+                        m_allTextBoxes[2].getText() == person["email"].get<std::string>())
+                    {
+                        m_errorPrompt.setString("User already exists. Please login!!");
+                        resetTextboxes();
+                        break;
+                    }
+                    else if ((person["username"].get<std::string>() != m_allTextBoxes[0].getText()) && (person["email"].get<std::string>() != m_allTextBoxes[2].getText()))
+                    {
+                        if (!anyTextboxEmpty())
+                        {
+                            std::cout << "file not empty, and registered" << std::endl;
+                            registerUser();
+                        }
+                        break;
+                    }*/
+                    isUsernameTaken = false;
+                    isEmailRegistered = false;
+                    isUserExists = false;
+                }
+                else
+                {
+                    if (!anyTextboxEmpty())
+                    {
+                        registerUser();
+                    }
+                }
+            }
             if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
             {
                 m_allTextBoxes[0].setSelected(true);
@@ -168,7 +289,6 @@ void RegisterPageState::processInput()
                 m_allTextBoxes[2].setSelected(false);
                 m_allTextBoxes[3].setSelected(false);
                 m_allTextBoxes[4].setSelected(false);
-
             }
             else if (m_allTextBoxes[1].isMouseOver(*m_context->m_window))
             {
@@ -177,7 +297,6 @@ void RegisterPageState::processInput()
                 m_allTextBoxes[2].setSelected(false);
                 m_allTextBoxes[3].setSelected(false);
                 m_allTextBoxes[4].setSelected(false);
-
             }
             else if (m_allTextBoxes[2].isMouseOver(*m_context->m_window))
             {
@@ -186,7 +305,6 @@ void RegisterPageState::processInput()
                 m_allTextBoxes[2].setSelected(true);
                 m_allTextBoxes[3].setSelected(false);
                 m_allTextBoxes[4].setSelected(false);
-
             }
             else if (m_allTextBoxes[3].isMouseOver(*m_context->m_window))
             {
@@ -195,7 +313,6 @@ void RegisterPageState::processInput()
                 m_allTextBoxes[2].setSelected(false);
                 m_allTextBoxes[3].setSelected(true);
                 m_allTextBoxes[4].setSelected(false);
-
             }
             else if (m_allTextBoxes[4].isMouseOver(*m_context->m_window))
             {
@@ -204,8 +321,9 @@ void RegisterPageState::processInput()
                 m_allTextBoxes[2].setSelected(false);
                 m_allTextBoxes[3].setSelected(false);
                 m_allTextBoxes[4].setSelected(true);
-
             }
+            break;
+        }
         default:
             break;
         }
@@ -214,7 +332,20 @@ void RegisterPageState::processInput()
 
 void RegisterPageState::update(sf::Time deltaTime)
 {
-    
+    if (registered)
+    {
+        writeToFile();
+        m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
+        registered = false;
+    }
+    if (m_isBackButtonPressed)
+    {
+        if(isFileEmpty == false)
+            writeToFile();
+        m_context->m_states->popCurrent();
+        m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
+        m_isBackButtonPressed = false;
+    }
 }
 
 void RegisterPageState::draw()
@@ -227,6 +358,7 @@ void RegisterPageState::draw()
     m_context->m_window->draw(m_confirmEmailIDTitle);
     m_context->m_window->draw(m_passwordTitle);
     m_context->m_window->draw(m_confirmPasswordTitle);
+    m_context->m_window->draw(m_errorPrompt);
 
 
     for (int i = 0; i < sizeof(m_allTextBoxes) / sizeof(m_allTextBoxes[0]); i++)
@@ -234,6 +366,7 @@ void RegisterPageState::draw()
         m_allTextBoxes[i].Draw(*m_context->m_window);
     }
     m_registerButton.Draw(*m_context->m_window);
+    m_backButton.Draw(*m_context->m_window);
     m_context->m_window->display();
 }
 
@@ -245,6 +378,41 @@ void RegisterPageState::pause()
 {
 }
 
-void RegisterPageState::input()
+void RegisterPageState::registerUser()
 {
+    std::hash<std::string> pwd_hash;
+    auto hashedPWD = pwd_hash(m_allTextBoxes[3].getText());
+    nlohmann::json playerInfo;
+    playerInfo = {
+        {"username",    m_allTextBoxes[0].getText()},
+        {"email",       m_allTextBoxes[2].getText()},
+        {"pwd",         hashedPWD}
+    };
+    jsonFile.push_back(playerInfo);
+    registered = true;
+    resetTextboxes();
+}
+
+void RegisterPageState::resetTextboxes()
+{
+    for (auto& textbox : m_allTextBoxes)
+    {
+        textbox.setString("");
+    }
+}
+
+bool RegisterPageState::anyTextboxEmpty()
+{
+    for (auto& textbox : m_allTextBoxes) {
+        if (textbox.getText() == "") {
+            return true;
+        }
+    }
+    return false;
+}
+
+void RegisterPageState::writeToFile()
+{
+    outputFile << std::setw(4) << jsonFile << std::endl;
+    outputFile.close();
 }

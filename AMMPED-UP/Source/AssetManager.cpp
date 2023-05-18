@@ -46,7 +46,6 @@ void am::AssetManager::addSoundEffects(int id, const std::string& filePath)
 		m_soundEffects[id] = std::move(soundBuffer);
 	}
 }
-
 const sf::Texture& am::AssetManager::getTexture(int id) const
 {
 	// TODO: insert return statement here

@@ -2,6 +2,7 @@
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/MainMenu.h"
+#include <iostream>
 
 GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) :
 	m_context(context),
@@ -13,6 +14,49 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
 	m_finalScore = ScoreManager::getInstance();
+	m_userName = UserNameManager::getInstance();
+
+
+	inputFile = std::ifstream("score.json");
+	isInputFileEmpty = (inputFile.peek() == std::ifstream::traits_type::eof());
+	if (!isInputFileEmpty)
+	{
+		jsonFile = nlohmann::json::parse(inputFile);
+		inputFile.close();
+		if (m_currentGameState == "You Won!!") {
+			for (auto& person : jsonFile)
+			{
+				if (m_userName->getUsername() == person["username"].get<std::string>())
+				{
+					foundPlayerData = true;
+					int currentScore = m_finalScore->getScore();
+					int playerScore = person["score"].get<int>();
+					
+					if (currentScore > playerScore)
+					{
+						person["score"] = currentScore;
+					}
+					else
+					{
+						m_finalScore->setScore(playerScore);
+					}
+					break;
+				}
+			}
+			
+		}
+		writeToFile();
+	}
+	if(isInputFileEmpty || foundPlayerData == false)
+	{
+		nlohmann::json playerInfo;
+		playerInfo = {
+			{"username",    m_userName->getUsername()},
+			{"score",       m_finalScore->getScore()}
+		};
+		jsonFile.push_back(playerInfo);
+		writeToFile();
+	}
 }
 
 GameOver::~GameOver()
@@ -44,7 +88,8 @@ void GameOver::init()
 
 	//SCORE TEXT AFTER GAME OVER
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_scoreText.setString("Score : " + std::to_string(m_finalScore->getScore()));
+	auto tempFinalScore = m_finalScore->getScore();
+	m_scoreText.setString("Score : " + std::to_string(tempFinalScore));
 	m_scoreText.setCharacterSize(35);
 	m_scoreText.setOrigin(m_scoreText.getLocalBounds().width / 2, m_scoreText.getLocalBounds().height / 2);
 	m_scoreText.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
@@ -65,6 +110,8 @@ void GameOver::init()
 	
 	m_deathSfx.setBuffer(m_context->m_assets->getSoundEffect(DEATH_SFX));
 	m_deathSfx.setVolume(10);
+
+	
 }
 
 void GameOver::processInput()
@@ -73,7 +120,11 @@ void GameOver::processInput()
 	while (m_context->m_window->pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
+		{
 			m_context->m_window->close();
+			if (!isInputFileEmpty)
+				writeToFile();
+		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
 			switch (event.key.code)
@@ -164,4 +215,11 @@ void GameOver::start()
 {
 	m_bgm.play();
 	m_deathSfx.play();
+}
+
+void GameOver::writeToFile()
+{
+	outputFile = std::ofstream("score.json");
+	outputFile << std::setw(4) << jsonFile << std::endl;
+	outputFile.close();
 }

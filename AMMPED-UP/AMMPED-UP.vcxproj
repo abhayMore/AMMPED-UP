@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Animation.cpp" />
     <ClCompile Include="Source\AssetManager.cpp" />
+    <ClCompile Include="Source\AudioManager.cpp" />
     <ClCompile Include="Source\Bomb.cpp" />
     <ClCompile Include="Source\Coin.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
@@ -42,10 +43,12 @@
     <ClCompile Include="Source\ScoreManager.cpp" />
     <ClCompile Include="Source\SplashScreen.cpp" />
     <ClCompile Include="Source\StateManager.cpp" />
+    <ClCompile Include="Source\UserNameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Animation.h" />
     <ClInclude Include="Header Files\AssetManager.h" />
+    <ClInclude Include="Header Files\AudioManager.h" />
     <ClInclude Include="Header Files\Bomb.h" />
     <ClInclude Include="Header Files\Button.h" />
     <ClInclude Include="Header Files\Coin.h" />
@@ -69,6 +72,7 @@
     <ClInclude Include="Header Files\State.h" />
     <ClInclude Include="Header Files\StateManager.h" />
     <ClInclude Include="Header Files\TextBox.h" />
+    <ClInclude Include="Header Files\UserNameManager.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -1,19 +1,57 @@
 #include "../Header Files/Leaderboard.h"
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/MainMenu.h"
-
+#include <iostream>>
 Leaderboard::Leaderboard(std::shared_ptr<Context>& context) :
 	m_context(context), 
-	m_isExitButtonPressed(false),
-	m_username("testing"),
-	m_finalScore(0),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
+	m_isExitButtonPressed(false)
 {
+	username = UserNameManager::getInstance();
+
+	inputFile = std::ifstream("score.json");
+	isInputFileEmpty = (inputFile.peek() == std::ifstream::traits_type::eof());
+	if (!isInputFileEmpty)
+	{
+		jsonFile = nlohmann::json::parse(inputFile);
+		inputFile.close();
+
+		for (auto& person : jsonFile)
+		{
+			if (person["username"].get<std::string>() == username->getUsername())
+			{
+				foundPlayerData = true;
+				int score = person["score"].get<int>();
+				m_scoreText.setString(std::to_string(score));
+				break;
+			}
+		}
+		writeToFile();
+	}
+	if(isInputFileEmpty || !foundPlayerData)
+	{
+		nlohmann::json playerInfo;
+		playerInfo = {
+			{"username",    username->getUsername()},
+			{"score",       0}
+		};
+		jsonFile.push_back(playerInfo);
+		m_scoreText.setString(std::to_string(0));
+		writeToFile();
+	}	
+
+	AudioManager& audioManager = AudioManager::getInstance(
+		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
+		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
+		m_context->m_assets->getSoundEffect(DAMAGE_SFX),
+		m_context->m_assets->getSoundEffect(BLAST_SFX),
+		m_context->m_assets->getSoundEffect(COIN_SFX),
+		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
+		);
+	m_bgm = &audioManager;
 }
 
 Leaderboard::~Leaderboard()
 {
-
 }
 
 void Leaderboard::init()
@@ -35,17 +73,15 @@ void Leaderboard::init()
 	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f) ;
 
 	m_name.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_name.setString(m_username);
+	m_name.setString(username->getUsername());
 	m_name.setCharacterSize(25);
 	m_name.setOrigin(m_name.getLocalBounds().width / 2, m_name.getLocalBounds().height / 2);
-	m_name.setPosition(m_context->m_window->getSize().x / 2 - 150, m_context->m_window->getSize().y / 2 - 100.0f);
+	m_name.setPosition(m_context->m_window->getSize().x / 2 - 150, m_context->m_window->getSize().y / 2 - 75.0f);
 
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_scoreText.setString(std::to_string(m_finalScore));
 	m_scoreText.setCharacterSize(25);
 	m_scoreText.setOrigin(m_name.getLocalBounds().width / 2, m_name.getLocalBounds().height / 2);
-	m_scoreText.setPosition(m_context->m_window->getSize().x / 2 + 150, m_context->m_window->getSize().y / 2 - 100.0f);
-
+	m_scoreText.setPosition(m_context->m_window->getSize().x / 2 + 150, m_context->m_window->getSize().y / 2 - 75.0f);
 }
 
 void Leaderboard::processInput()
@@ -54,7 +90,11 @@ void Leaderboard::processInput()
 	while (m_context->m_window->pollEvent(event))
 	{
 		if (event.type == sf::Event::Closed)
+		{
 			m_context->m_window->close();
+			if (!isInputFileEmpty)
+				writeToFile();
+		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
 			switch (event.key.code)
@@ -63,12 +103,11 @@ void Leaderboard::processInput()
 			{
 				break;
 			}
-			
-			case sf::Keyboard::Down :
+			case sf::Keyboard::Down:
 			{
 				break;
 			}
-			case sf::Keyboard::Escape :
+			case sf::Keyboard::Escape:
 			{
 				m_isExitButtonPressed = true;
 				break;
@@ -82,10 +121,9 @@ void Leaderboard::processInput()
 
 void Leaderboard::update(sf::Time deltaTime)
 {
-	
 	if (m_isExitButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
 	}
 }
 
@@ -102,9 +140,15 @@ void Leaderboard::draw()
 
 void Leaderboard::start()
 {
-	m_bgm.play();
 }
 
 void Leaderboard::pause()
 {
+}
+
+void Leaderboard::writeToFile()
+{
+	outputFile = std::ofstream("score.json");
+	outputFile << std::setw(4) << jsonFile << std::endl;
+	outputFile.close();
 }

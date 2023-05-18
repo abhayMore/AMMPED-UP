@@ -20,7 +20,6 @@ class RegisterPageState : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
-
 	sf::Sprite m_loginBackground;
 
 	//TITLES
@@ -34,16 +33,25 @@ private:
 	//TEXTBOXES
 	Textbox m_allTextBoxes[5]; //Username, EmailID, ConfirmEmailID, Password, ConfrimPassword
 
-	//REGISTER BUTTON
+	sf::Text m_errorPrompt;
+	//BUTTONS
 	Button m_registerButton;
-	
-	//account acc[100];
+	Button m_backButton;
+
+	//BOOLEANS
+	bool m_isBackButtonPressed = false;
+	bool registered = false;
+	bool isFileEmpty = false;
+
+	bool isUsernameTaken = false;
+	bool isEmailRegistered = false;
+	bool isUserExists = false;
 
 	//FILE
 	std::ifstream inputFile;
 	std::ofstream outputFile;
 	nlohmann::json jsonFile;
-
+	
 public:
 	RegisterPageState(std::shared_ptr<Context>& context);
 	~RegisterPageState();
@@ -56,5 +64,8 @@ public:
 	void start();
 	void pause();
 
-	void input();
+	void registerUser();
+	void resetTextboxes();
+	bool anyTextboxEmpty();
+	void writeToFile();
 };

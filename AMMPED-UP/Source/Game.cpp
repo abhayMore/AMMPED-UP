@@ -4,6 +4,7 @@
 #include "SFML/System/Time.hpp"
 #include "../Header Files/SplashScreen.h"
 #include "../Header Files/MainMenu.h"
+#include <iostream>
 
 Game::Game() : m_context(std::make_shared<Context>())
 {
@@ -13,6 +14,12 @@ Game::Game() : m_context(std::make_shared<Context>())
     //m_context->m_window->setKeyRepeatEnabled(true);
     m_context->m_window->setVerticalSyncEnabled(true);
 
+    //LOAD ICON
+    if (!m_icon.loadFromFile("Resources/assets/AppLogo.png"))
+    {
+        std::cout << "Game Logo Icon failed to load" << std::endl;
+    }
+    m_context->m_window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
     //LOAD GAME RELATED SOUNDEFFECTS
     m_context->m_assets->addSoundEffects(COIN_SFX, "Resources/assets/music/assets_audio_Simple Coin 006.wav");
     m_context->m_assets->addSoundEffects(DEATH_SFX, "Resources/assets/music/assets_audio_Death 002.wav");
@@ -23,10 +30,10 @@ Game::Game() : m_context(std::make_shared<Context>())
     m_context->m_assets->addSoundTrack(IN_GAME_SOUND_TRACK, "Resources/assets/music/assets_audio_Spinning out.ogg", true);
 
     //ADDING TWO SPLASH_SCREEN TEXTURES
-    m_context->m_assets->addTextures(COLLEGE_SPLASH_SCREEN, "Resources/assets/F.jpg");
+    m_context->m_assets->addTextures(COLLEGE_SPLASH_SCREEN, "Resources/assets/newLogo.png");
     m_context->m_assets->addTextures(MY_SPLASH_SCREEN, "Resources/assets/SplashScreenLogo.png");
 	//Add First State(SPLASHSCREEN STATE) to m_states here
-    m_context->m_states->add(std::make_unique<SplashScreen>(m_context, std::vector<int>{MY_SPLASH_SCREEN}));
+    m_context->m_states->add(std::make_unique<SplashScreen>(m_context, std::vector<int>{COLLEGE_SPLASH_SCREEN,MY_SPLASH_SCREEN}));
     //m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 }
 

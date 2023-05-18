@@ -57,7 +57,7 @@ class Game
 private:
 	std::shared_ptr<Context> m_context;
 	const sf::Time TIME_PER_FRAME = sf::seconds(1.0f / 60.0f);
-
+	sf::Image m_icon;
 public:
 	Game();
 	~Game();

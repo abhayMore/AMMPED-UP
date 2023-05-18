@@ -4,14 +4,24 @@
 #include "../Header Files/GamePlay.h"
 #include <memory>
 
-PauseGame::PauseGame(std::shared_ptr<Context>& context) : m_context(context), m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
-m_isResumeButtonSelected(true),
-m_isResumeButtonPressed(false),
-m_isRestartButtonSelected(false),
-m_isRestartButtonPressed(false),
-m_isMainMenuButtonSelected(false),
-m_isMainMenuButtonPressed(false)
+PauseGame::PauseGame(std::shared_ptr<Context>& context) : 
+	m_context(context), 
+	m_isResumeButtonSelected(true),
+	m_isResumeButtonPressed(false),
+	m_isRestartButtonSelected(false),
+	m_isRestartButtonPressed(false),
+	m_isMainMenuButtonSelected(false),
+	m_isMainMenuButtonPressed(false)
 {
+	AudioManager& audioManager = AudioManager::getInstance(
+		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
+		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
+		m_context->m_assets->getSoundEffect(DAMAGE_SFX),
+		m_context->m_assets->getSoundEffect(BLAST_SFX),
+		m_context->m_assets->getSoundEffect(COIN_SFX),
+		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
+	);
+	m_bgm = &audioManager;
 }
 
 PauseGame::~PauseGame()
@@ -39,7 +49,7 @@ void PauseGame::init()
 	m_restartButton.setCharacterSize(35);
 	m_restartButton.setOrigin(m_restartButton.getLocalBounds().width / 2, m_restartButton.getLocalBounds().height / 2);
 	m_restartButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-
+	
 	//MAINMENU TITLE
 	m_mainMenuButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_mainMenuButton.setString("Main Menu");
@@ -61,7 +71,7 @@ void PauseGame::processInput()
 			{
 			case sf::Keyboard::Escape:
 			{
-				m_bgm.stop();
+				m_bgm->stopMainMenuMusic();
 				m_context->m_states->popCurrent();
 				break;
 			}
@@ -160,21 +170,20 @@ void PauseGame::update(sf::Time deltaTime)
 	{
 		//TODO
 		//Go to Play State
-		m_bgm.stop();
+		m_bgm->stopMainMenuMusic();
 		m_context->m_states->popCurrent();
 	}
 	else if (m_isRestartButtonPressed)
 	{
-		m_bgm.stop();
+		m_bgm->stopMainMenuMusic();
 		m_context->m_states->popCurrent();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
 	}
 	else if (m_isMainMenuButtonPressed)
 	{
-		m_bgm.stop();
 		m_context->m_states->popCurrent();
 		m_context->m_states->popCurrent();
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
 	}
 }
 
@@ -191,5 +200,5 @@ void PauseGame::draw()
 
 void PauseGame::start()
 {
-	m_bgm.play();
+	m_bgm->startMainMenuMusic();
 }

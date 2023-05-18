@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Button.h"
 #include "TextBox.h"
+#include "UserNameManager.h"
 #include "nlohmann/json.hpp"
 
 struct account
@@ -34,18 +35,26 @@ private:
 	sf::Text m_passwordTitle;
 
 	//TEXTBOXES
-	Textbox m_allTextBoxes[3]; //Username, EmailID, Password
+	Textbox m_allTextBoxes[2]; //Username, EmailID, Password
+
+	sf::Text m_errorPrompt;
+
 
 	//SIGN IN BUTTON
 	Button m_signInButton;
-	account acc[100];
+	Button m_backButton;
 
+	bool m_isSignInButtonPressed = false;
+	bool m_isBackButtonPressed = false;
+	//FILE SYSTEM
 	std::ifstream inputFile;
 	std::ofstream outputFile;
 	bool fileEmpty = false;
 	nlohmann::json jsonFile;
 
 	bool verified = false;
+
+	UserNameManager* m_username;
 
 public:
 	LoginPageState(std::shared_ptr<Context>& context);
@@ -59,5 +68,5 @@ public:
 	void start();
 	void pause();
 
-	void input();
+	void writeToFile();
 };

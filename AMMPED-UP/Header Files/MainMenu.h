@@ -4,6 +4,7 @@
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
+#include "AudioManager.h"
 
 class MainMenu : public am::State
 {
@@ -30,10 +31,11 @@ private:
 	bool m_isExitButtonSelected;
 	bool m_isExitButtonPressed;
 
-	sf::Music& m_bgm;
+	//sf::Music& m_bgm;
+	AudioManager* m_bgm;
 
 public:
-	MainMenu(std::shared_ptr<Context>& context);
+	MainMenu(std::shared_ptr<Context>& context, float Overallvolume = 50, float inGameMusicVolume = 50, float SFXVolume = 50);
 	~MainMenu();
 
 	void init() override;

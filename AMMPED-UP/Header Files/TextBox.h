@@ -30,7 +30,11 @@ public:
 			textbox.setString("");
 		}
 	}
-
+	void setString(std::string str)
+	{
+		text.str("");
+		textbox.setString(str);
+	}
 	void setTextColor(sf::Color color)
 	{
 		textbox.setFillColor(color);
@@ -72,10 +76,14 @@ public:
 
 	void setSelected(bool sel)
 	{
-		isSelected = sel;
-		textbox.setString(textbox.getString() + "_");
-		if (!sel)
+		if (sel && !isSelected)
 		{
+			isSelected = sel;
+			textbox.setString(textbox.getString() + "_");
+		}
+		else if (!sel && isSelected)
+		{
+			isSelected = false;
 			std::string t = text.str();
 			std::string newT = "";
 			for (int i = 0; i < t.length(); i++)
@@ -91,7 +99,7 @@ public:
 		return isSelected;
 	}
 
-	std::string getText()
+	 std::string getText()
 	{
 		return text.str();
 	}

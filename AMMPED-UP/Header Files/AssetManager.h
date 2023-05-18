@@ -26,6 +26,7 @@ namespace am
 		void addSoundTrack(int id, const std::string& filePath, bool wantLooping = false);
 		void addSoundEffects(int id, const std::string& filePath);
 
+
 		const sf::Texture& getTexture(int id) const;
 		const sf::Font& getFont(int id) const;
 
