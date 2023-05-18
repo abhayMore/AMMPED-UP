@@ -226,7 +226,6 @@ void MainMenu::update(sf::Time deltaTime)
 		m_leadershipButton.setFillColor(::sf::Color::White);
 		m_optionsButton.setFillColor(::sf::Color::White);
 	}
-
 	if (m_isPlayButtonPressed)
 	{
 		//TODO
@@ -246,12 +245,10 @@ void MainMenu::update(sf::Time deltaTime)
 	{
 		m_context->m_states->add(std::make_unique<ExitState>(m_context), true);
 	}
-
 	if (m_bgm->isMenuMusicPlaying() == sf::SoundStream::Status::Stopped && !m_isPlayButtonPressed)
 	{
 		m_bgm->startMainMenuMusic();
 	}
-
 }
 
 void MainMenu::draw()
@@ -269,7 +266,6 @@ void MainMenu::draw()
 
 void MainMenu::start()
 {
-	
 }
 
 void MainMenu::pause()

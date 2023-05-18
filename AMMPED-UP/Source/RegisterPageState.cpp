@@ -217,59 +217,6 @@ void RegisterPageState::processInput()
                             registerUser();
                         }
                     }
-                    /*
-                    std::cout << "entered for loop" << std::endl;
-
-                    if (m_allTextBoxes[0].getText() == person["username"].get<std::string>())
-                    {
-                        if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
-                        {
-                            //std::cout << "same username, different mail ID" << std::endl;
-                            //m_errorPrompt.setString("Username is already taken. Please choose another username!!");
-                            m_errorPrompt.setString("User already exists. Please login!!");
-                            resetTextboxes();
-                            break;
-                        }
-                        else if (m_allTextBoxes[2].getText() != person["email"].get<std::string>())
-                        {
-                            m_errorPrompt.setString("Username is already taken. Please choose another username!!");
-                            resetTextboxes();
-                            break;
-                        }
-                    }
-                    else if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
-                    {
-                        m_errorPrompt.setString("Email is already registered. Please use a different email!!");
-                        resetTextboxes();
-                        break;
-                    }
-                    else if()
-
-
-                    else if (m_allTextBoxes[2].getText() == person["email"].get<std::string>() &&
-                        m_allTextBoxes[0].getText() != person["username"].get<std::string>()
-                        )
-                    {
-                        m_errorPrompt.setString("Email is already registered. Please use a different email!!");
-                        resetTextboxes();
-                        break;
-                    }
-                    else if (m_allTextBoxes[0].getText() == person["username"].get<std::string>() &&
-                        m_allTextBoxes[2].getText() == person["email"].get<std::string>())
-                    {
-                        m_errorPrompt.setString("User already exists. Please login!!");
-                        resetTextboxes();
-                        break;
-                    }
-                    else if ((person["username"].get<std::string>() != m_allTextBoxes[0].getText()) && (person["email"].get<std::string>() != m_allTextBoxes[2].getText()))
-                    {
-                        if (!anyTextboxEmpty())
-                        {
-                            std::cout << "file not empty, and registered" << std::endl;
-                            registerUser();
-                        }
-                        break;
-                    }*/
                     isUsernameTaken = false;
                     isEmailRegistered = false;
                     isUserExists = false;

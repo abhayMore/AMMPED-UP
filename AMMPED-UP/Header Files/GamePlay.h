@@ -120,16 +120,7 @@ private:
 	//COINS
 	std::list<Coin> m_coins;
 
-	//SFX and MUSIC
-
-	//sf::Sound m_damageSFX;
-	//sf::Sound m_blastSFX;
-	//sf::Sound m_coinEatSfx;
-	//sf::Sound m_enemyDeathSFX;
-	//sf::Music& m_inGame;
-
 	AudioManager* m_sound;
-
 
 	//EXPLOSIONS 
 	std::vector<sf::Sprite> m_explosions;

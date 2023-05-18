@@ -36,6 +36,5 @@ public:
 	void draw() override;
 	void start();
 	void pause();
-
 };
 

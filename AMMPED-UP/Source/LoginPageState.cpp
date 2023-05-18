@@ -86,7 +86,6 @@ void LoginPageState::init()
     m_errorPrompt.setCharacterSize(20);
     m_errorPrompt.setOrigin(m_errorPrompt.getLocalBounds().width / 2, m_errorPrompt.getLocalBounds().height / 2);
     m_errorPrompt.setPosition(m_errorPrompt.getLocalBounds().width / 2 + 2, m_errorPrompt.getLocalBounds().height / 2 + 2);
-
 }
 
 void LoginPageState::processInput()
@@ -177,17 +176,14 @@ void LoginPageState::update(sf::Time deltaTime)
                     break;
                 }                                
             }
-            
         }
         else
         {
             m_errorPrompt.setString("User not found, did you register?");
-            //std::cout << "User not found, did you register?" << std::endl;
         }
         if(fileEmpty == false && verified == false)
         {
             m_errorPrompt.setString("Error login, invalid username or password");
-            //std::cout << "Error login, invalid username or password" << std::endl;
         }
         m_isSignInButtonPressed = false;
     }

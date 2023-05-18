@@ -37,7 +37,6 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_scoreManager = ScoreManager::getInstance();
 	m_theme.load("Resources/Black.txt");
 
-
 	AudioManager& audioManager = AudioManager::getInstance(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
 		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
 		m_context->m_assets->getSoundEffect(DAMAGE_SFX),
@@ -45,10 +44,7 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 		m_context->m_assets->getSoundEffect(COIN_SFX),
 		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
 	);
-
 	m_sound = &audioManager;
-	//m_sound->setSFXVolume();
-
 	srand(time(nullptr));
 }
 
@@ -287,19 +283,6 @@ void GamePlay::init()
 		i.init(m_context->m_assets->getTexture(COIN));
 		i.setPosition(sf::Vector2f(pos));
 	}
-
-	// SOUND EFFECT SETTINGS
-	//m_coinEatSfx.setBuffer(m_context->m_assets->getSoundEffect(COIN_SFX));
-	//m_coinEatSfx.setVolume(20);
-	
-	//m_blastSFX.setBuffer(m_context->m_assets->getSoundEffect(BLAST_SFX));
-	//m_blastSFX.setVolume(80);
-
-	//m_damageSFX.setBuffer(m_context->m_assets->getSoundEffect(DAMAGE_SFX));
-	//m_damageSFX.setVolume(100);
-
-	//m_enemyDeathSFX.setBuffer(m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX));
-	//m_enemyDeathSFX.setVolume(100);
 	//takeScreenshot("../Resources/assets/");
 }
 
@@ -354,14 +337,14 @@ void GamePlay::processInput()
 				}
 				break;
 			}
+			//TEMPORARY DEBUGGIN TOOL
 			/*case sf::Keyboard::Q:
 			{
 				m_shiftToGameOver = true;
 				m_currentGameState = std::string("You Won!!");
 				break;
-			}*/
-			//TEMPORARY DEBUGGIN TOOL
-			/*case sf::Keyboard::P:
+			}
+			case sf::Keyboard::P:
 			{
 				if (!showPowerUP)
 					showPowerUP = true;
@@ -1086,76 +1069,3 @@ int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 	}
 	return explodeTileCount;
 }
-//REMOVE LATER
-/*
-void GamePlay::explosions(sf::Vector2f bombPos, int radius)
-{
-	sf::Sprite center;
-	center.setTexture(m_context->m_assets->getTexture(EXPLOSION_CENTER));
-	center.setPosition(bombPos);
-	m_explosions.push_back(center);
-
-	//i = 1 i < radius for middle piece
-	for (int i = 1; i < radius; i++)
-	{
-		sf::Sprite sprite1;
-		sprite1.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
-		sprite1.setPosition(sf::Vector2f(bombPos.x, bombPos.y - 16 * i));
-
-		sf::Sprite sprite2;
-		sprite2.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
-		sprite2.setPosition(sf::Vector2f(bombPos.x, bombPos.y + 16 * i));
-
-		sf::Sprite sprite3;
-		sprite3.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
-		sprite3.setPosition(sf::Vector2f(bombPos.x - 16 * i, bombPos.y));
-		sprite3.setOrigin(8, 8);
-		sprite3.setRotation(-90);
-		sprite3.setOrigin(0, 0);
-		sprite3.setPosition(sprite3.getPosition() + sf::Vector2f(0, 16));
-
-		sf::Sprite sprite4;
-		sprite4.setTexture(m_context->m_assets->getTexture(EXPLOSION_SIDE));
-		sprite4.setPosition(sf::Vector2f(bombPos.x + 16 * i, bombPos.y));
-		sprite4.setOrigin(8, 8);
-		sprite4.setRotation(90);
-		sprite4.setOrigin(0, 0);
-		sprite4.setPosition(sprite4.getPosition() + sf::Vector2f(16, 0));
-
-		m_explosions.push_back(sprite1);
-		m_explosions.push_back(sprite2);
-		m_explosions.push_back(sprite3);
-		m_explosions.push_back(sprite4);
-
-	}
-	sf::Sprite end[4];
-	for (int i = 0; i < 4; i++)
-	{
-		end[i].setTexture(m_context->m_assets->getTexture(EXPLOSION_END));
-	}
-
-	end[0].setPosition(sf::Vector2f(bombPos.x, bombPos.y - 16 * radius));
-
-	end[1].setPosition(sf::Vector2f(bombPos.x, bombPos.y + 16 * radius));
-	end[1].setOrigin(8, 8);
-	end[1].setRotation(180.0f);
-	end[1].setOrigin(0, 0);
-	end[1].setPosition(end[1].getPosition() + sf::Vector2f(16, 16));
-
-	end[2].setPosition(sf::Vector2f(bombPos.x - 16 * radius, bombPos.y));
-	end[2].setOrigin(8, 8);
-	end[2].setRotation(-90.0f);
-	end[2].setOrigin(0, 0);
-	end[2].setPosition(end[2].getPosition() + sf::Vector2f(0, 16));
-
-	end[3].setPosition(sf::Vector2f(bombPos.x + 16 * radius, bombPos.y));
-	end[3].setOrigin(8, 8);
-	end[3].setRotation(90.0f);
-	end[3].setOrigin(0, 0);
-	end[3].setPosition(end[3].getPosition() + sf::Vector2f(16, 0));
-
-	m_explosions.push_back(end[0]);
-	m_explosions.push_back(end[1]);
-	m_explosions.push_back(end[2]);
-	m_explosions.push_back(end[3]);
-}*/
