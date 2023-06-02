@@ -1,20 +1,16 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
-#include <fstream>
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
 #include "Button.h"
 #include "TextBox.h"
-#include "nlohmann/json.hpp"
+#include "MongoDB.h"
+#include "MongoInstanceManager.h"
 
-struct scn3
-{
-	bool email = false;
-	bool confirmEmail = false;
-	bool password = false;
-	bool confirmPassword = false;
-};
+#include <iostream>
+#include <regex>
+
 
 class RegisterPageState : public am::State
 {
@@ -41,17 +37,17 @@ private:
 	//BOOLEANS
 	bool m_isBackButtonPressed = false;
 	bool registered = false;
-	bool isFileEmpty = false;
 
 	bool isUsernameTaken = false;
 	bool isEmailRegistered = false;
 	bool isUserExists = false;
 
-	//FILE
-	std::ifstream inputFile;
-	std::ofstream outputFile;
-	nlohmann::json jsonFile;
 	
+	
+	//MONGODB
+	mongocxx::instance& instance;
+	learning::MongoDB m;
+
 public:
 	RegisterPageState(std::shared_ptr<Context>& context);
 	~RegisterPageState();
@@ -67,5 +63,4 @@ public:
 	void registerUser();
 	void resetTextboxes();
 	bool anyTextboxEmpty();
-	void writeToFile();
 };

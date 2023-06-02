@@ -15,7 +15,8 @@ OptionsState::OptionsState(std::shared_ptr<Context>& context) :
 	gui(*m_context->m_window),
 	m_isOverallMusicSliderMove(false),
 	m_isInGameMusicSliderMove(false),
-	m_isSFXSliderMove(false)
+	m_isSFXSliderMove(false), 
+	instance(MongoInstance::getInstance())
 {
 	theme.load("Resources/Black.txt");
 	username = UserNameManager::getInstance();
@@ -30,14 +31,6 @@ OptionsState::OptionsState(std::shared_ptr<Context>& context) :
 		);
 
 	m_bgm = &audioManager;
-
-	inputFile = std::ifstream("score.json");
-	isInputFileEmpty = (inputFile.peek() == std::ifstream::traits_type::eof());
-	if (!isInputFileEmpty)
-	{
-		jsonFile = nlohmann::json::parse(inputFile);
-		inputFile.close();
-	}
 }
 
 OptionsState::~OptionsState()
@@ -162,8 +155,6 @@ void OptionsState::processInput()
 			case sf::Event::Closed:
 			{
 				m_context->m_window->close();
-				if (!isInputFileEmpty)
-					writeToFile();
 				break;
 			}
 			case sf::Event::MouseButtonPressed:
@@ -292,24 +283,9 @@ void OptionsState::update(sf::Time deltaTime)
 	}
 	if (m_isResetHighScoreButtonPressed)
 	{
-		if (!isInputFileEmpty)
-		{
-			for (auto& person : jsonFile)
-			{
-				if (person["username"].get<std::string>() == username->getUsername())
-				{
-					person["score"] = 0;
-					m_errorPrompt.setString("Highscore reset successful");
-					break;
-				}
-			}
-			writeToFile();
-		}
-		else
-		{
-			m_errorPrompt.setString("Did not found any highscore with username : " + username->getUsername());
+		m.updateDocument("score", m.findScore(username->getUsername()), "score", 0);
+		m_errorPrompt.setString("Highscore reset successful");
 
-		}
 		m_isResetHighScoreButtonPressed = false;
 	}
 	if (m_isExitButtonPressed)
@@ -350,11 +326,4 @@ void OptionsState::start()
 
 void OptionsState::pause()
 {
-}
-
-void OptionsState::writeToFile()
-{
-	outputFile = std::ofstream("score.json");
-	outputFile << std::setw(4) << jsonFile << std::endl;
-	outputFile.close();
 }

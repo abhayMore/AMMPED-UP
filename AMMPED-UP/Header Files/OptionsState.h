@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <fstream>
 #include "SFML/Graphics/Sprite.hpp"
 #include "TGUI/TGUI.hpp"
 #include "SFML/Graphics/Text.hpp"
@@ -8,7 +7,8 @@
 #include "Game.h"
 #include "AudioManager.h"
 #include "UsernameManager.h"
-#include "nlohmann/json.hpp"
+#include "MongoDB.h"
+#include "MongoInstanceManager.h"
 #include "TGUI/TGUI.hpp"
 
 class OptionsState : public am::State
@@ -50,12 +50,12 @@ private:
 
 	//Reset Highscore
 	UserNameManager* username;
-	std::ifstream inputFile;
-	std::ofstream outputFile;
-	nlohmann::json jsonFile;
-	bool isInputFileEmpty = false;
-	bool foundPlayerData = false;
+	
 	sf::Time m_elapsedTime;
+
+	//MONGODB
+	mongocxx::instance& instance;
+	learning::MongoDB m;
 
 public:
 	OptionsState(std::shared_ptr<Context>& context);
@@ -69,6 +69,5 @@ public:
 	void start();
 	void pause();
 
-	void writeToFile();
 };
 

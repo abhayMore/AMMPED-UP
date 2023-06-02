@@ -3,19 +3,9 @@
 #include "../Header Files/LoginState.h"
 
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
-	m_context(context)
+	m_context(context), instance(MongoInstance::getInstance())
 {
-    inputFile = std::ifstream("key.json");
-    if (inputFile.is_open() && inputFile.peek() != std::ifstream::traits_type::eof())
-    {
-        jsonFile = nlohmann::json::parse(inputFile);
-        inputFile.close();
-    }
-    else
-    {
-        fileEmpty = true;
-    }
-    outputFile = std::ofstream("key.json");
+    
     m_username = UserNameManager::getInstance();
 }
 
@@ -97,8 +87,6 @@ void LoginPageState::processInput()
         {
         case sf::Event::Closed:
         {
-            if (!fileEmpty)
-                writeToFile();
             m_context->m_window->close();
             break;
         }
@@ -132,6 +120,7 @@ void LoginPageState::processInput()
             break;
         }
         case sf::Event::MouseButtonPressed:
+        {
             if (m_backButton.isMouseOver(*m_context->m_window))
             {
                 m_backButton.setTextColor(sf::Color(190, 190, 190));
@@ -141,7 +130,7 @@ void LoginPageState::processInput()
             {
                 m_signInButton.setTextColor(sf::Color::White);
                 m_isSignInButtonPressed = true;
-            }        
+            }
             if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
             {
                 m_allTextBoxes[0].setSelected(true);
@@ -152,6 +141,8 @@ void LoginPageState::processInput()
                 m_allTextBoxes[0].setSelected(false);
                 m_allTextBoxes[1].setSelected(true);
             }
+            break;
+        }
         default:
             break;
         }
@@ -161,27 +152,18 @@ void LoginPageState::processInput()
 void LoginPageState::update(sf::Time deltaTime)
 {
     if (m_isSignInButtonPressed)
-    {
-        if (fileEmpty == false) {
-            for (const auto& person : jsonFile)
-            {
-                std::hash<std::string> pwd_hash;
-                auto hashedPWD = pwd_hash(m_allTextBoxes[1].getText());
-                if ((m_allTextBoxes[0].getText() == person["username"].get<std::string>() ||
-                    m_allTextBoxes[0].getText() == person["email"].get<std::string>()) &&
-                    hashedPWD == person["pwd"])
-                {
-                    verified = true;
-                    m_username->setUsername(m_allTextBoxes[0].getText());
-                    break;
-                }                                
-            }
+    {         
+        const auto loginData = m.findDocument(m_allTextBoxes[0].getText());
+
+
+        if ((std::get<0>(loginData) == m_allTextBoxes[0].getText() || std::get<1>(loginData) == m_allTextBoxes[0].getText()) && std::get<2>(loginData) == m_allTextBoxes[1].getText())
+        {
+            
+            verified = true;
+            m_username->setUsername(std::get<0>(loginData));
+            
         }
         else
-        {
-            m_errorPrompt.setString("User not found, did you register?");
-        }
-        if(fileEmpty == false && verified == false)
         {
             m_errorPrompt.setString("Error login, invalid username or password");
         }
@@ -191,13 +173,9 @@ void LoginPageState::update(sf::Time deltaTime)
     {
         m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
         verified = false;
-        outputFile << std::setw(4) << jsonFile << std::endl;
-        outputFile.close();
     }
     if (m_isBackButtonPressed)
     {
-        if (fileEmpty == false)
-            writeToFile();
         m_context->m_states->popCurrent();
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
         m_isBackButtonPressed = false;
@@ -231,8 +209,3 @@ void LoginPageState::pause()
 {
 }
 
-void LoginPageState::writeToFile()
-{
-    outputFile << std::setw(4) << jsonFile << std::endl;
-    outputFile.close();
-}

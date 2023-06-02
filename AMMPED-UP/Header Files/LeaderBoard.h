@@ -1,8 +1,8 @@
 #pragma once
 #include <memory>
-#include <fstream>
 #include "SFML/Graphics/Sprite.hpp"
-#include "nlohmann/json.hpp"
+#include "MongoDB.h"
+#include "MongoInstanceManager.h"
 
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
@@ -26,13 +26,15 @@ private:
 
 	UserNameManager* username;
 
+	//TOP PLAYERS
+	sf::Text m_TopTenPlayerNames[10];
+	sf::Text m_TopTenPlayerScores[10];
 
-	std::ifstream inputFile;
-	std::ofstream outputFile;
-	nlohmann::json jsonFile;
-	bool isInputFileEmpty = false;
-	bool foundPlayerData = false;
 
+	//MONGODB
+	mongocxx::instance& instance;
+	learning::MongoDB m;
+	std::vector<std::pair<std::string, int>> m_TopTenScores;
 public:
 	Leaderboard(std::shared_ptr<Context>& context);
 	~Leaderboard();
@@ -45,6 +47,6 @@ public:
 	void start();
 	void pause();
 
-	void writeToFile();
+
 };
 

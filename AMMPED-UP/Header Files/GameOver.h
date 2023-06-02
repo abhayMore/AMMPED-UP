@@ -1,9 +1,9 @@
 #pragma once
-#include <fstream>
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Audio/Sound.hpp"
-#include "nlohmann/json.hpp"
+#include "MongoDB.h"
+#include "MongoInstanceManager.h"
 #include "State.h"
 #include "Game.h"
 #include "ScoreManager.h"
@@ -37,11 +37,11 @@ private:
 
 	//FILE SYSTEM FOR SCORE SAVING
 	UserNameManager* m_userName;
-	std::ifstream inputFile;
-	std::ofstream outputFile;
-	nlohmann::json jsonFile;
-	bool isInputFileEmpty = false;
-	bool foundPlayerData = false;
+	
+
+	//MONGODB
+	mongocxx::instance& instance;
+	learning::MongoDB m;
 
 public:
 	GameOver(std::shared_ptr<Context>& context, std::string currentState);
@@ -53,5 +53,4 @@ public:
 	void draw() override;
 	void start() override;
 
-	void writeToFile();
 };

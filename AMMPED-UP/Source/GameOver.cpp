@@ -11,52 +11,28 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 	m_isRetryButtonPressed(false),
 	m_isExitButtonSelected(false),
 	m_isExitButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
+	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
+	instance(MongoInstance::getInstance())
 {
 	m_finalScore = ScoreManager::getInstance();
 	m_userName = UserNameManager::getInstance();
 
 
-	inputFile = std::ifstream("score.json");
-	isInputFileEmpty = (inputFile.peek() == std::ifstream::traits_type::eof());
-	if (!isInputFileEmpty)
-	{
-		jsonFile = nlohmann::json::parse(inputFile);
-		inputFile.close();
-		if (m_currentGameState == "You Won!!") {
-			for (auto& person : jsonFile)
-			{
-				if (m_userName->getUsername() == person["username"].get<std::string>())
-				{
-					foundPlayerData = true;
-					int currentScore = m_finalScore->getScore();
-					int playerScore = person["score"].get<int>();
-					
-					if (currentScore > playerScore)
-					{
-						person["score"] = currentScore;
-					}
-					else
-					{
-						m_finalScore->setScore(playerScore);
-					}
-					break;
-				}
-			}
+	if (m_currentGameState == "You Won!!") {
 			
+		int currentScore = m_finalScore->getScore();
+		int playerScore = m.findScore(m_userName->getUsername());
+		if (currentScore > playerScore)
+		{
+			m.updateDocument("score", m.findScore(m_userName->getUsername()), "score", currentScore);
+			std::cout << m.findScore(m_userName->getUsername());
 		}
-		writeToFile();
+		else
+		{
+			m_finalScore->setScore(playerScore);
+		}
 	}
-	if(isInputFileEmpty || foundPlayerData == false)
-	{
-		nlohmann::json playerInfo;
-		playerInfo = {
-			{"username",    m_userName->getUsername()},
-			{"score",       m_finalScore->getScore()}
-		};
-		jsonFile.push_back(playerInfo);
-		writeToFile();
-	}
+	
 }
 
 GameOver::~GameOver()
@@ -122,8 +98,7 @@ void GameOver::processInput()
 		if (event.type == sf::Event::Closed)
 		{
 			m_context->m_window->close();
-			if (!isInputFileEmpty)
-				writeToFile();
+			
 		}
 		else if (event.type == sf::Event::KeyPressed)
 		{
@@ -215,11 +190,4 @@ void GameOver::start()
 {
 	m_bgm.play();
 	m_deathSfx.play();
-}
-
-void GameOver::writeToFile()
-{
-	outputFile = std::ofstream("score.json");
-	outputFile << std::setw(4) << jsonFile << std::endl;
-	outputFile.close();
 }

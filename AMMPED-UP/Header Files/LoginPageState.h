@@ -1,25 +1,13 @@
 #pragma once
 #include "SFML/Graphics/Sprite.hpp"
-#include <fstream>
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
 #include "Button.h"
 #include "TextBox.h"
 #include "UserNameManager.h"
-#include "nlohmann/json.hpp"
-
-struct account
-{
-	std::string email;
-	std::string password;
-};
-
-struct loginInfo
-{
-	bool email = false;
-	bool password = false;
-};
+#include "MongoInstanceManager.h"
+#include "MongoDB.h"
 
 class LoginPageState : public am::State
 {
@@ -36,9 +24,7 @@ private:
 
 	//TEXTBOXES
 	Textbox m_allTextBoxes[2]; //Username, EmailID, Password
-
 	sf::Text m_errorPrompt;
-
 
 	//SIGN IN BUTTON
 	Button m_signInButton;
@@ -47,14 +33,15 @@ private:
 	bool m_isSignInButtonPressed = false;
 	bool m_isBackButtonPressed = false;
 	//FILE SYSTEM
-	std::ifstream inputFile;
-	std::ofstream outputFile;
-	bool fileEmpty = false;
-	nlohmann::json jsonFile;
+	
 
 	bool verified = false;
 
 	UserNameManager* m_username;
+
+	//MONGODB
+	mongocxx::instance& instance;
+	learning::MongoDB m;
 
 public:
 	LoginPageState(std::shared_ptr<Context>& context);
@@ -68,5 +55,4 @@ public:
 	void start();
 	void pause();
 
-	void writeToFile();
 };

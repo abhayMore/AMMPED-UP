@@ -1,19 +1,56 @@
 #include "../Header Files/RegisterPageState.h"
 #include "../Header Files/LoginState.h"
 
-RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
-	m_context(context)
+bool isEmailValid(const std::string& email)
 {
-    inputFile = std::ifstream("key.json");
-    if (inputFile.is_open() && inputFile.peek() != std::ifstream::traits_type::eof())
-    {
-        jsonFile = nlohmann::json::parse(inputFile);
-        inputFile.close();
+    // Regular expression pattern for email validation
+    std::regex pattern(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
+
+    // Check if the email matches the pattern
+    if (!std::regex_match(email, pattern)) {
+        std::cout << "Invalid email format." << std::endl;
+        return false;
     }
-    else {
-        isFileEmpty = true;
+
+    // Check if the email contains a domain
+    std::size_t atIndex = email.find('@');
+    if (atIndex == std::string::npos) {
+        std::cout << "Missing '@' symbol in email." << std::endl;
+        return false;
     }
-    outputFile = std::ofstream("key.json");
+
+    // Check if the domain is empty
+    std::size_t dotIndex = email.find('.', atIndex + 1);
+    if (dotIndex == std::string::npos || dotIndex == atIndex + 1) {
+        std::cout << "Missing domain in email." << std::endl;
+        return false;
+    }
+
+    // Check if the domain has valid characters
+    std::string domain = email.substr(atIndex + 1, dotIndex - atIndex - 1);
+    std::regex domainPattern(R"([a-zA-Z0-9.-]+)");
+    if (!std::regex_match(domain, domainPattern)) {
+        std::cout << "Invalid characters in domain." << std::endl;
+        return false;
+    }
+
+    // Check if the domain has a valid top-level domain (TLD)
+    std::string tld = email.substr(dotIndex + 1);
+    std::regex tldPattern(R"([a-zA-Z]{2,})");
+    if (!std::regex_match(tld, tldPattern)) {
+        std::cout << "Invalid top-level domain (TLD)." << std::endl;
+        return false;
+    }
+
+    // Email is valid
+    return true;
+}
+
+
+RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
+    m_context(context), instance(MongoInstance::getInstance())
+{
+    
 }
 
 RegisterPageState::~RegisterPageState()
@@ -132,8 +169,6 @@ void RegisterPageState::processInput()
         case sf::Event::Closed:
         {
             m_context->m_window->close();
-            if(!isFileEmpty)
-                writeToFile();
             break;
         }
         case sf::Event::TextEntered:
@@ -176,58 +211,67 @@ void RegisterPageState::processInput()
             if (m_registerButton.isMouseOver(*m_context->m_window))
             {
                 m_registerButton.setTextColor(sf::Color(190, 190, 190));
-                if (isFileEmpty == false)
+                
+                if (m_allTextBoxes[1].getText() != m_allTextBoxes[2].getText())
                 {
-                    for (auto& person : jsonFile)
-                    {
-                        if (m_allTextBoxes[0].getText() == person["username"].get<std::string>())
-                        {
-                            isUsernameTaken = true;
-                            if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
-                            {
-                                isUserExists = true;
-                                break;
-                            }
-                        }
-                        else if (m_allTextBoxes[2].getText() == person["email"].get<std::string>())
-                        {
-                            isEmailRegistered = true;
-                        }
-                    }
-
-                    if (isUserExists)
-                    {
-                        m_errorPrompt.setString("User already exists. Please login!!");
-                        resetTextboxes();
-                    }
-                    else if (isUsernameTaken && !isEmailRegistered)
-                    {
-                        m_errorPrompt.setString("Username is already taken. Please choose another username!!");
-                        resetTextboxes();
-                    }
-                    else if (!isUsernameTaken && isEmailRegistered)
-                    {
-                        m_errorPrompt.setString("Email is already registered. Please use a different email!!");
-                        resetTextboxes();
-                    }
-                    else if (!isUserExists && !isUsernameTaken && !isEmailRegistered)
-                    {
-                        if (!anyTextboxEmpty())
-                        {
-                            registerUser();
-                        }
-                    }
-                    isUsernameTaken = false;
-                    isEmailRegistered = false;
-                    isUserExists = false;
+                    m_errorPrompt.setString("Email ID does not match!!");
+                    resetTextboxes();
                 }
-                else
+                if (!isEmailValid(m_allTextBoxes[2].getText()))
+                {
+                    m_errorPrompt.setString("Email is invalid!!");
+                    resetTextboxes();
+                }
+                if (m_allTextBoxes[3].getText() != m_allTextBoxes[4].getText())
+                {
+                    m_errorPrompt.setString("Password do not match!!");
+                    resetTextboxes();
+                }
+                //--------------//
+                if (m.isDataPresent("username", m_allTextBoxes[0].getText()))
+                {
+                    isUsernameTaken = true;
+                    if (m.isDataPresent("email", m_allTextBoxes[2].getText()))
+                    {
+                        isUserExists = true;
+                    }
+                }
+                else if (m.isDataPresent("email", m_allTextBoxes[2].getText()))
+                {
+                    isEmailRegistered = true;
+                }
+                if (isUserExists)
+                {
+                    m_errorPrompt.setString("User already exists. Please login!!");
+                    resetTextboxes();
+                }
+                else if (isUsernameTaken && !isEmailRegistered)
+                {
+                    m_errorPrompt.setString("Username is already taken. Please choose another username!!");
+                    resetTextboxes();
+                }
+                else if (!isUsernameTaken && isEmailRegistered)
+                {
+                    m_errorPrompt.setString("Email is already registered. Please use a different email!!");
+                    resetTextboxes();
+                }
+                else if (!isUserExists && !isUsernameTaken && !isEmailRegistered)
                 {
                     if (!anyTextboxEmpty())
                     {
                         registerUser();
                     }
                 }
+                isUsernameTaken = false;
+                isEmailRegistered = false;
+                isUserExists = false;
+
+
+                if (!anyTextboxEmpty())
+                {
+                    registerUser();
+                }
+
             }
             if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
             {
@@ -277,18 +321,16 @@ void RegisterPageState::processInput()
     }
 }
 
+
 void RegisterPageState::update(sf::Time deltaTime)
 {
     if (registered)
     {
-        writeToFile();
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
         registered = false;
     }
     if (m_isBackButtonPressed)
     {
-        if(isFileEmpty == false)
-            writeToFile();
         m_context->m_states->popCurrent();
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
         m_isBackButtonPressed = false;
@@ -327,15 +369,15 @@ void RegisterPageState::pause()
 
 void RegisterPageState::registerUser()
 {
-    std::hash<std::string> pwd_hash;
-    auto hashedPWD = pwd_hash(m_allTextBoxes[3].getText());
-    nlohmann::json playerInfo;
-    playerInfo = {
-        {"username",    m_allTextBoxes[0].getText()},
-        {"email",       m_allTextBoxes[2].getText()},
-        {"pwd",         hashedPWD}
-    };
-    jsonFile.push_back(playerInfo);
+    auto builder = bsoncxx::builder::stream::document{};
+    bsoncxx::v_noabi::document::value doc_value =
+        builder << "username" << m_allTextBoxes[0].getText()
+        << "email" << m_allTextBoxes[2].getText()
+        << "pwd" << m_allTextBoxes[4].getText()
+        << "score" << 0
+        << bsoncxx::builder::stream::finalize;
+    m.insertDocument(doc_value);
+
     registered = true;
     resetTextboxes();
 }
@@ -358,8 +400,3 @@ bool RegisterPageState::anyTextboxEmpty()
     return false;
 }
 
-void RegisterPageState::writeToFile()
-{
-    outputFile << std::setw(4) << jsonFile << std::endl;
-    outputFile.close();
-}
