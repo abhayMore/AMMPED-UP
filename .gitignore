@@ -377,3 +377,16 @@ FodyWeavers.xsd
 /AMMPED-UP/tgui.dll
 /AMMPED-UP/tgui-d.dll
 /AMMPED-UP/Dependencies
+/AMMPED-UP/Source/Config.cpp
+/AMMPED-UP/vcruntime140_1.dll
+/AMMPED-UP/vcruntime140.dll
+/AMMPED-UP/msvcp140_codecvt_ids.dll
+/AMMPED-UP/msvcp140_atomic_wait.dll
+/AMMPED-UP/msvcp140_2.dll
+/AMMPED-UP/msvcp140_1.dll
+/AMMPED-UP/msvcp140.dll
+/AMMPED-UP/mongocxx.dll
+/AMMPED-UP/mongoc-1.0.dll
+/AMMPED-UP/concrt140.dll
+/AMMPED-UP/bsoncxx.dll
+/AMMPED-UP/bson-1.0.dll
