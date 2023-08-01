@@ -4,9 +4,10 @@
 #include <iostream>>
 Leaderboard::Leaderboard(std::shared_ptr<Context>& context) :
 	m_context(context), 
-	m_isExitButtonPressed(false),
-	instance(MongoInstance::getInstance())
+	m_isExitButtonPressed(false)
 {
+	instance = MongoInstance::getInstance();
+
 	username = UserNameManager::getInstance();
 	
 	int score = m.findScore(username->getUsername());

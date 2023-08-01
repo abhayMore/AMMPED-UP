@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -191,13 +191,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\include\mongocxx\v_noabi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\mongocxx\v_noabi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\lib;$(SolutionDir)AMMPED-UP\Dependencies\SFML\lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\lib;$(SolutionDir)AMMPED-UP\Dependencies\SFML\lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-system-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;sfml-window-d.lib;sfml-network-d.lib;tgui-d.lib;bson-1.0.lib;mongoc-1.0.lib;bsoncxx.lib;mongocxx.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -209,7 +210,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\include\mongocxx\v_noabi;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\include\bsoncxx\v_noabi;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\mongocxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -219,7 +220,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\lib;$(SolutionDir)AMMPED-UP\Dependencies\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-audio.lib;sfml-window.lib;sfml-network.lib;tgui.lib;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-c-driver\lib\bson-1.0.lib;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-c-driver\lib\mongoc-1.0.lib;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\lib\bsoncxx.lib;D:\WorkSpace\VisualStudio2017\Projects\AbhayMore\Github\AMMPED-UP\AMMPED-UP\AMMPED-UP\Dependencies\mongo-cxx-driver-r3.7.1\lib\mongocxx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-audio.lib;sfml-window.lib;sfml-network.lib;tgui.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\lib\bson-1.0.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\lib\mongoc-1.0.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\lib\bsoncxx.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\lib\mongocxx.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

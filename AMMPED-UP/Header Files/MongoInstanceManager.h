@@ -1,12 +1,15 @@
 #pragma once
 #include <mongocxx/instance.hpp>
-
 class MongoInstance {
 private:
-    static mongocxx::instance instance; // Private static member variable
-
+    static MongoInstance* m_instance;
+    mongocxx::instance instance;
+    // Private constructor
+    MongoInstance();
 public:
-    static mongocxx::instance& getInstance() {
-        return instance;
-    }
+    // Deleted copy constructor and assignment operator to enforce singleton
+    MongoInstance(const MongoInstance&) = delete;
+    MongoInstance& operator=(const MongoInstance&) = delete;
+    ~MongoInstance();
+    static MongoInstance* getInstance();
 };

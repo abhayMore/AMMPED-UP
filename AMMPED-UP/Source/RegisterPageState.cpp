@@ -50,7 +50,7 @@ bool isEmailValid(const std::string& email)
 RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
     m_context(context), instance(MongoInstance::getInstance())
 {
-    
+    std::cout << " Hi before explicit call to mongoDB constructor";
 }
 
 RegisterPageState::~RegisterPageState()

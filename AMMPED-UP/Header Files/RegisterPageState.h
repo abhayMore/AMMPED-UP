@@ -45,7 +45,9 @@ private:
 	
 	
 	//MONGODB
-	mongocxx::instance& instance;
+	MongoInstance* instance;
+
+	//mongocxx::instance& instance;
 	learning::MongoDB m;
 
 public:

@@ -15,11 +15,11 @@ OptionsState::OptionsState(std::shared_ptr<Context>& context) :
 	gui(*m_context->m_window),
 	m_isOverallMusicSliderMove(false),
 	m_isInGameMusicSliderMove(false),
-	m_isSFXSliderMove(false), 
-	instance(MongoInstance::getInstance())
+	m_isSFXSliderMove(false)
 {
 	theme.load("Resources/Black.txt");
 	username = UserNameManager::getInstance();
+	instance = MongoInstance::getInstance();
 
 	AudioManager& audioManager = AudioManager::getInstance(
 		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),

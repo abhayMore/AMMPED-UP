@@ -5,8 +5,14 @@
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
 	m_context(context), instance(MongoInstance::getInstance())
 {
-    
+    //instance = MongoInstance::getInstance();
+    std::cout << " Hi before explicit call to mongoDB constructor" << std::endl;
+
+    m = learning::MongoDB();
+
     m_username = UserNameManager::getInstance();
+    std::cout << "login ctor done" <<std::endl;
+
 }
 
 LoginPageState::~LoginPageState()
@@ -153,8 +159,10 @@ void LoginPageState::update(sf::Time deltaTime)
 {
     if (m_isSignInButtonPressed)
     {         
-        const auto loginData = m.findDocument(m_allTextBoxes[0].getText());
+        std::cout << "signin button pressed" << std::endl;
 
+        const auto loginData = m.findDocument(m_allTextBoxes[0].getText());
+        std::cout << "got login info" << std::endl;
 
         if ((std::get<0>(loginData) == m_allTextBoxes[0].getText() || std::get<1>(loginData) == m_allTextBoxes[0].getText()) && std::get<2>(loginData) == m_allTextBoxes[1].getText())
         {
@@ -171,6 +179,7 @@ void LoginPageState::update(sf::Time deltaTime)
     }
     if (verified == true)
     {
+        std::cout << "user verified" << std::endl;
         m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
         verified = false;
     }

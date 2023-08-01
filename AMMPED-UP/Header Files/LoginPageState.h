@@ -40,7 +40,8 @@ private:
 	UserNameManager* m_username;
 
 	//MONGODB
-	mongocxx::instance& instance;
+
+	MongoInstance* instance;
 	learning::MongoDB m;
 
 public:

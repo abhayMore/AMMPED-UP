@@ -27,10 +27,9 @@ namespace learning {
 		void updateDocument(const std::string& key, const int& value, const std::string& newKey, const int& newValue);
 		std::vector<std::pair<std::string, int>> getTopScores(int limit);				
 	private:
-		mongocxx::options::client client_options;
-		mongocxx::options::server_api api;
 		mongocxx::client conn;
 		mongocxx::v_noabi::database ammpedUPDB;
 		mongocxx::v_noabi::collection loginInfoCollection;
+		std::optional<bsoncxx::document::value> find_one_filtered_result;
 	};
 }

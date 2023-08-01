@@ -256,7 +256,7 @@ void GamePlay::init()
 
 	// POWER UP INIT
 	std::vector<bool> selectedIndicesPowerUP(powerUPSpaces.size(), false);
-	for (int i = 0; i < powerUPSpaces.size()/3; i++)
+	for (int i = 0; i < powerUPSpaces.size(); i++)
 	{
 		PowerUPType type = static_cast<PowerUPType>(ReturnIntRandom(0, static_cast<int>(ICE_CREAM)));
 		int randomIndex;
@@ -489,21 +489,28 @@ void GamePlay::update(sf::Time deltaTime)
 				}
 				
 				//COLLISION OF EXPLOSIONS WITH ENEMIES
-				for (auto it = m_enemies.begin(); it!=m_enemies.end(); it++)
+				for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
 				{
 					for (auto& explosionSprite : m_explosions)
 					{
+						//std::cout << "booom bomb blast" << std::endl;
+
 						if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
 						{
+							std::cout << "booom enemy dead" << std::endl;
 							m_sound->startSFXMusic(ENEMY_DEATH_SFX_SOUND);
 							it = m_enemies.erase(it);
-							if (it == m_enemies.end()) 
+							if (it == m_enemies.end() && m_enemies.size() == 0) 
 							{
+								std::cout << m_enemies.size() << " All enemies dead" << std::endl;
 								break;
 							}
-							break;
+							if (it == m_enemies.end())
+								break;
 						}
 					}
+					if (it == m_enemies.end())
+						break;
 				}
 				m_player.m_isBombPlaced = false;
 			}
@@ -546,7 +553,7 @@ void GamePlay::update(sf::Time deltaTime)
 		//CHANGE DIRECTION OF ENEMIES AFTER PARTICULAR AMOUNT OF TIME
 		if (m_changeDirectionTime.asSeconds() >= 4.0)
 		{
-			for (auto it = m_enemies.begin(); it != m_enemies.end(); ++it)
+			for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
 			{
 				it->setDirection(m_directions[ReturnIntRandom(0, 3)]);
 				
@@ -554,7 +561,7 @@ void GamePlay::update(sf::Time deltaTime)
 			m_changeDirectionTime = sf::Time::Zero;
 		}
 		//COLLISION OF ENEMIES WITH WALLS
-		for (auto it = m_enemies.begin(); it != m_enemies.end(); ++it)
+		for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
 		{
 			if (checkCollision2(it->getPosition()))
 			{

@@ -1,12 +1,38 @@
 #include "../Header Files/MongoDB.h"
-
-learning::MongoDB::MongoDB() :
-	api(mongocxx::options::server_api::version::k_version_1)
+std::vector<std::string> getDatabases(mongocxx::client& client)
 {
-	client_options.server_api_opts(api);
-	conn = mongocxx::client(mongoURI, client_options);
-	ammpedUPDB = conn.database(dbName);
-	loginInfoCollection = ammpedUPDB.collection(collName);
+	std::vector<std::string> cldn = client.list_database_names();
+	return cldn;
+}
+learning::MongoDB::MongoDB()
+	//api(mongocxx::options::server_api::version::k_version_1)
+{
+		//client_options.server_api_opts(api);
+		conn = mongocxx::client(mongoURI);
+		if (conn)
+		{
+			std::cout << "Passed" << std::endl;
+		}
+		else
+		{
+			std::cout << "Failed" << std::endl;
+		}
+		
+		std::cout << "database access is about to start" << std::endl;
+
+		//ammpedUPDB = conn.database(dbName);
+		//std::cout << "conn is done";
+		//loginInfoCollection = ammpedUPDB.collection(collName);
+
+		ammpedUPDB = conn["ammped-upDB"];
+		std::cout << "database access is done" << std::endl;
+		loginInfoCollection = ammpedUPDB["LoginInfo"];
+		if (loginInfoCollection)
+		{
+
+			std::cout << "collection is also done" << std::endl;
+			std::cout << loginInfoCollection.name() << std::endl;
+		}
 }
 
 void learning::MongoDB::insertDocument(const bsoncxx::document::value document)
@@ -16,6 +42,8 @@ void learning::MongoDB::insertDocument(const bsoncxx::document::value document)
 
 std::tuple<std::string, std::string, std::string> learning::MongoDB::findDocument(const std::string& value)
 {
+	std::cout << "inside findDocument func" << std::endl;
+
 	std::string key;
 	if (value.find('@') != std::string::npos) {
 		// Contains '@' symbol, so it looks like an email
@@ -25,21 +53,35 @@ std::tuple<std::string, std::string, std::string> learning::MongoDB::findDocumen
 		// Doesn't contain '@', so it looks like a username
 		key = "username";
 	}
-	auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
-	// Add query filter argument in find
-	auto cursor = loginInfoCollection.find({ filter });
+	std::cout << key + " finding key has been set" << std::endl;
+	//auto cursor_all = loginInfoCollection.find({});
+	
+	find_one_filtered_result = loginInfoCollection.find_one(bsoncxx::builder::basic::make_document(bsoncxx::builder::basic::kvp(key, value)));
 
-	if (cursor.begin() == cursor.end()) {
+	//auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
+	std::cout << "filter has been created depending on the key" << std::endl;
+
+	// Add query filter argument in find
+	//auto cursor = loginInfoCollection.find({ filter });
+	std::cout << "filter has been added to find the desired query result" << std::endl;
+	
+	if (!find_one_filtered_result) {
+		std::cout << "query was not found" << std::endl;
+
 		return  { "", "", "" };; // No data found
 	}
+	std::cout << "query is found" << std::endl;
 
 	// Extract the first document from the cursor
-	auto document = *cursor.begin();
+	//auto document = *cursor.begin();
+	auto document = *find_one_filtered_result;
+	std::cout << "extracted the data from the query" << std::endl;
 
 	// Extract the individual components of the retrieved data
 	std::string retrievedUsername = std::string(document["username"].get_string().value);
 	std::string retrievedEmail = std::string(document["email"].get_string().value);
 	std::string retrievedPassword = std::string(document["pwd"].get_string().value);
+	std::cout << "indiividual data has been extracted" << std::endl;
 
 	return  { retrievedUsername, retrievedEmail, retrievedPassword };
 }

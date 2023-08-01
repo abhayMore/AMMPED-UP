@@ -11,9 +11,10 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 	m_isRetryButtonPressed(false),
 	m_isExitButtonSelected(false),
 	m_isExitButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
-	instance(MongoInstance::getInstance())
+	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
 {
+	instance = MongoInstance::getInstance();
+
 	m_finalScore = ScoreManager::getInstance();
 	m_userName = UserNameManager::getInstance();
 

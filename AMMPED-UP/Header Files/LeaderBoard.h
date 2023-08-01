@@ -32,7 +32,7 @@ private:
 
 
 	//MONGODB
-	mongocxx::instance& instance;
+	MongoInstance* instance;
 	learning::MongoDB m;
 	std::vector<std::pair<std::string, int>> m_TopTenScores;
 public:
