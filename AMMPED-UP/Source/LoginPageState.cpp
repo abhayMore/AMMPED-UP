@@ -3,16 +3,9 @@
 #include "../Header Files/LoginState.h"
 
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
-	m_context(context), instance(MongoInstance::getInstance())
+    m_context(context)
 {
-    //instance = MongoInstance::getInstance();
-    std::cout << " Hi before explicit call to mongoDB constructor" << std::endl;
-
-    m = learning::MongoDB();
-
     m_username = UserNameManager::getInstance();
-    std::cout << "login ctor done" <<std::endl;
-
 }
 
 LoginPageState::~LoginPageState()
@@ -36,6 +29,7 @@ void LoginPageState::init()
     m_signInTitle.setCharacterSize(35);
     m_signInTitle.setOrigin(m_signInTitle.getLocalBounds().width / 2, m_signInTitle.getLocalBounds().height / 2);
     m_signInTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 175.0f);
+    m_signInTitle.setOutlineThickness(1);
 
 	//USERNAME TITLE
 	m_userNameTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
@@ -66,12 +60,14 @@ void LoginPageState::init()
 	m_signInButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_signInButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_signInButton.getButtonSize().x / 2 - 150, m_context->m_window->getSize().y - 200.0f - m_signInButton.getButtonSize().y / 2));
     m_signInButton.setBackColor(sf::Color::Transparent);
+    m_signInButton.setOutlineThickness(1);
 
     //BACK BUTTON to transition to previous state ->LoginState
     m_backButton = Button("Back", { 150,50 }, 35, sf::Color::Green, sf::Color::White);
     m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
     m_backButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_backButton.getButtonSize().x / 2 + 150, m_context->m_window->getSize().y - 200.0f - m_backButton.getButtonSize().y / 2));
     m_backButton.setBackColor(sf::Color::Transparent);
+    m_backButton.setOutlineThickness(1);
 
     //PROMPTS for exceptions at top left corner
     m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
@@ -105,11 +101,41 @@ void LoginPageState::processInput()
             }
             break;
         }
+        case sf::Event::KeyPressed:
+        {
+            switch (event.key.code)
+            {
+            case sf::Keyboard::Enter:
+            {
+                m_isSignInButtonPressed = true;
+                break;
+            }
+            default:
+                break;
+            }
+            break;
+        }
+        case sf::Event::KeyReleased:
+        {
+            switch (event.key.code)
+            {
+            case sf::Keyboard::Enter:
+            {
+                m_isSignInButtonPressed = false;
+                m_signInButton.setTextColor(sf::Color::White);
+
+                break;
+            }
+            default:
+                break;
+            }
+            break;
+        }
         case sf::Event::MouseMoved:
         {
             if (m_signInButton.isMouseOver(*m_context->m_window))
             {
-                m_signInButton.setTextColor(sf::Color(190, 190, 190));
+                m_signInButton.setTextColor(sf::Color::Magenta);
             }
             else
             {
@@ -117,7 +143,7 @@ void LoginPageState::processInput()
             }
             if (m_backButton.isMouseOver(*m_context->m_window))
             {
-                m_backButton.setTextColor(sf::Color(190, 190, 190));
+                m_backButton.setTextColor(sf::Color::Magenta);
             }
             else
             {
@@ -129,12 +155,10 @@ void LoginPageState::processInput()
         {
             if (m_backButton.isMouseOver(*m_context->m_window))
             {
-                m_backButton.setTextColor(sf::Color(190, 190, 190));
                 m_isBackButtonPressed = true;
             }
             if (m_signInButton.isMouseOver(*m_context->m_window))
-            {
-                m_signInButton.setTextColor(sf::Color::White);
+            {  
                 m_isSignInButtonPressed = true;
             }
             if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
@@ -157,19 +181,20 @@ void LoginPageState::processInput()
 
 void LoginPageState::update(sf::Time deltaTime)
 {
+    m_elapsedTime += deltaTime;
     if (m_isSignInButtonPressed)
-    {         
-        std::cout << "signin button pressed" << std::endl;
-
+    {    
+        m_signInButton.setTextColor(sf::Color::Magenta);
         const auto loginData = m.findDocument(m_allTextBoxes[0].getText());
-        std::cout << "got login info" << std::endl;
-
-        if ((std::get<0>(loginData) == m_allTextBoxes[0].getText() || std::get<1>(loginData) == m_allTextBoxes[0].getText()) && std::get<2>(loginData) == m_allTextBoxes[1].getText())
+        if (anyTextboxEmpty())
         {
-            
+            m_errorPrompt.setString("Error, empty values");
+            m_elapsedTime = sf::Time(sf::milliseconds(0));
+        }
+        else if((std::get<0>(loginData) == m_allTextBoxes[0].getText() || std::get<1>(loginData) == m_allTextBoxes[0].getText()) && std::get<2>(loginData) == m_allTextBoxes[1].getText())
+        {
             verified = true;
             m_username->setUsername(std::get<0>(loginData));
-            
         }
         else
         {
@@ -177,17 +202,25 @@ void LoginPageState::update(sf::Time deltaTime)
         }
         m_isSignInButtonPressed = false;
     }
+    
+
     if (verified == true)
     {
-        std::cout << "user verified" << std::endl;
         m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
         verified = false;
     }
     if (m_isBackButtonPressed)
     {
+        m_backButton.setTextColor(sf::Color::Magenta);
         m_context->m_states->popCurrent();
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
         m_isBackButtonPressed = false;
+    }
+
+    if (m_elapsedTime.asSeconds() > 3.0)
+    {
+        m_errorPrompt.setString("");
+        m_elapsedTime = sf::Time::Zero;
     }
 }
 
@@ -218,3 +251,12 @@ void LoginPageState::pause()
 {
 }
 
+bool LoginPageState::anyTextboxEmpty()
+{
+    for (auto& textbox : m_allTextBoxes) {
+        if (textbox.getText() == "") {
+            return true;
+        }
+    }
+    return false;
+}

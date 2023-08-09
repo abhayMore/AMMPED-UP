@@ -11,13 +11,11 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 	m_isRetryButtonPressed(false),
 	m_isExitButtonSelected(false),
 	m_isExitButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
+	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
+	instance(MongoInstance::getInstance())
 {
-	instance = MongoInstance::getInstance();
-
 	m_finalScore = ScoreManager::getInstance();
 	m_userName = UserNameManager::getInstance();
-
 
 	if (m_currentGameState == "You Won!!") {
 			
@@ -26,14 +24,12 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 		if (currentScore > playerScore)
 		{
 			m.updateDocument("score", m.findScore(m_userName->getUsername()), "score", currentScore);
-			std::cout << m.findScore(m_userName->getUsername());
 		}
 		else
 		{
 			m_finalScore->setScore(playerScore);
 		}
 	}
-	
 }
 
 GameOver::~GameOver()

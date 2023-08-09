@@ -9,7 +9,6 @@
 #include "UsernameManager.h"
 #include "MongoDB.h"
 #include "MongoInstanceManager.h"
-#include "TGUI/TGUI.hpp"
 
 class OptionsState : public am::State
 {
@@ -54,7 +53,6 @@ private:
 	sf::Time m_elapsedTime;
 
 	//MONGODB
-	MongoInstance* instance;
 	learning::MongoDB m;
 
 public:

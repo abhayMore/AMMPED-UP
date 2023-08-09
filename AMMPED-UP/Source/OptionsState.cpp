@@ -19,7 +19,6 @@ OptionsState::OptionsState(std::shared_ptr<Context>& context) :
 {
 	theme.load("Resources/Black.txt");
 	username = UserNameManager::getInstance();
-	instance = MongoInstance::getInstance();
 
 	AudioManager& audioManager = AudioManager::getInstance(
 		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
@@ -39,7 +38,6 @@ OptionsState::~OptionsState()
 
 void OptionsState::init()
 {
-	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
 
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -62,10 +60,10 @@ void OptionsState::init()
 		m_controlDirections[i].setCharacterSize(25);
 		m_controlDirections[i].setOutlineThickness(1);
 	}
-	m_controlDirections[0].setString("W - Move UP");
-	m_controlDirections[1].setString("A - Move RIGHT");
-	m_controlDirections[2].setString("S - Move DOWN");
-	m_controlDirections[3].setString("D - Move RIGHT");
+	m_controlDirections[0].setString("W / UP - Move UP");
+	m_controlDirections[1].setString("A / LEFT - Move RIGHT");
+	m_controlDirections[2].setString("S / DOWN - Move DOWN");
+	m_controlDirections[3].setString("D / RIGHT - Move RIGHT");
 	m_controlDirections[4].setString("SPACE - Plant BOMB");
 	for (int i = 0; i < 5; i++)
 	{

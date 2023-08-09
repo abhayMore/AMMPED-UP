@@ -37,7 +37,6 @@ MainMenu::~MainMenu()
 
 void MainMenu::init()
 {
-	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
 
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -47,11 +46,13 @@ void MainMenu::init()
 	m_menuBackground.setScale({ 2,2 });
 	
 	//GAME TITLE
-	m_gameTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
+	m_context->m_assets->addFont(TITLE_FONT, "Resources/fonts/VT323-Regular.TTF");
+
+	m_gameTitle.setFont(m_context->m_assets->getFont(TITLE_FONT));
 	m_gameTitle.setString("AMMPED-UP");
-	m_gameTitle.setCharacterSize(120);
+	m_gameTitle.setCharacterSize(200);
 	m_gameTitle.setOrigin(m_gameTitle.getLocalBounds().width / 2, m_gameTitle.getLocalBounds().height / 2);
-	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 300.0f) ;
+	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 350.0f) ;
 	m_gameTitle.setOutlineThickness(1);
 
 	//PLAY BUTTON
@@ -64,7 +65,7 @@ void MainMenu::init()
 
 	//LEADERSHIP BUTTON
 	m_leadershipButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_leadershipButton.setString("Leadership");
+	m_leadershipButton.setString("Leaderboard");
 	m_leadershipButton.setCharacterSize(50);
 	m_leadershipButton.setOrigin(m_leadershipButton.getLocalBounds().width / 2, m_leadershipButton.getLocalBounds().height / 2);
 	m_leadershipButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
@@ -201,30 +202,30 @@ void MainMenu::update(sf::Time deltaTime)
 	if (m_isPlayButtonSelected)
 	{
 		m_playButton.setFillColor(sf::Color::Magenta);
-		m_leadershipButton.setFillColor(::sf::Color::White);
-		m_optionsButton.setFillColor(::sf::Color::White);
-		m_exitButton.setFillColor(::sf::Color::White);
+		m_leadershipButton.setFillColor(sf::Color::White);
+		m_optionsButton.setFillColor(sf::Color::White);
+		m_exitButton.setFillColor(sf::Color::White);
 	}
 	else if (m_isLeadershipButtonSelected)
 	{
 		m_playButton.setFillColor(sf::Color::White);
-		m_leadershipButton.setFillColor(::sf::Color::Magenta);
-		m_optionsButton.setFillColor(::sf::Color::White);
-		m_exitButton.setFillColor(::sf::Color::White);
+		m_leadershipButton.setFillColor(sf::Color::Magenta);
+		m_optionsButton.setFillColor(sf::Color::White);
+		m_exitButton.setFillColor(sf::Color::White);
 	}
 	else if (m_isOptionsButtonSelected)
 	{
 		m_playButton.setFillColor(sf::Color::White);
-		m_leadershipButton.setFillColor(::sf::Color::White);
-		m_optionsButton.setFillColor(::sf::Color::Magenta);
-		m_exitButton.setFillColor(::sf::Color::White);
+		m_leadershipButton.setFillColor(sf::Color::White);
+		m_optionsButton.setFillColor(sf::Color::Magenta);
+		m_exitButton.setFillColor(sf::Color::White);
 	}
 	else 
 	{
-		m_exitButton.setFillColor(::sf::Color::Magenta);
+		m_exitButton.setFillColor(sf::Color::Magenta);
 		m_playButton.setFillColor(sf::Color::White);
-		m_leadershipButton.setFillColor(::sf::Color::White);
-		m_optionsButton.setFillColor(::sf::Color::White);
+		m_leadershipButton.setFillColor(sf::Color::White);
+		m_optionsButton.setFillColor(sf::Color::White);
 	}
 	if (m_isPlayButtonPressed)
 	{

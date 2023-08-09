@@ -32,7 +32,6 @@ Leaderboard::~Leaderboard()
 
 void Leaderboard::init()
 {
-	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
 
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -41,23 +40,26 @@ void Leaderboard::init()
 	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
 	m_menuBackground.setScale({ 2,2 });
 
-	//GAME TITLE
+	//LEADERBOARD TITLE
 	m_gameTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_gameTitle.setString("LEADERBOARD");
 	m_gameTitle.setCharacterSize(50);
 	m_gameTitle.setOrigin(m_gameTitle.getLocalBounds().width / 2, m_gameTitle.getLocalBounds().height / 2);
 	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 340.0f) ;
+	m_gameTitle.setOutlineThickness(1);
 
 	m_name.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_name.setString(username->getUsername());
 	m_name.setCharacterSize(25);
 	m_name.setOrigin(m_name.getLocalBounds().width / 2, m_name.getLocalBounds().height / 2);
 	m_name.setPosition(m_context->m_window->getSize().x / 2 - 100, m_context->m_window->getSize().y / 2 - 275.0f);
+	m_name.setOutlineThickness(1);
 
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_scoreText.setCharacterSize(25);
 	m_scoreText.setOrigin(m_scoreText.getLocalBounds().width / 2, m_scoreText.getLocalBounds().height / 2);
 	m_scoreText.setPosition(m_context->m_window->getSize().x / 2 + 100, m_context->m_window->getSize().y / 2 - 275.0f);
+	m_scoreText.setOutlineThickness(1);
 
 	for (int i = 0; i < 10; i++)
 	{

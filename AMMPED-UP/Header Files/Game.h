@@ -35,7 +35,8 @@ enum AssetID
 	ENEMY3,
 	HEART_UI,
 	DAMAGE_SFX,
-	BLAST_SFX
+	BLAST_SFX,
+	TITLE_FONT
 };
  
 struct Context

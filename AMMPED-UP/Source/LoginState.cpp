@@ -13,8 +13,11 @@ LoginState::LoginState(std::shared_ptr<Context>& context) :
 	m_isRegisterButtonSelected(false),
 	m_isRegisterButtonPressed(false),
 	m_isExitButtonSelected(false),
-	m_isExitButtonPressed(false)
+	m_isExitButtonPressed(false),
+	gui(*m_context->m_window)
 {
+	theme.load("Resources/Black.txt");
+
 }
 
 LoginState::~LoginState()
@@ -23,13 +26,24 @@ LoginState::~LoginState()
 
 void LoginState::init()
 {
-	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
+	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
+
 
 	m_context->m_assets->addTextures(GAME_LOGO, "Resources/assets/gameName.png");
 	m_gameLogo.setTexture(m_context->m_assets->getTexture(GAME_LOGO));
 	m_gameLogo.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f);
-	m_gameLogo.setOrigin(sf::Vector2f(m_gameLogo.getTexture()->getSize().x / 2, m_gameLogo.getTexture()->getSize().y / 2 ));
-	m_gameLogo.setScale({0.5,0.5}); 
+	m_gameLogo.setOrigin(sf::Vector2f(m_gameLogo.getTexture()->getSize().x / 2, m_gameLogo.getTexture()->getSize().y / 2));
+	m_gameLogo.setScale({ 0.5,0.5 });
+
+	///////////////////////////////////////////////////
+	for (int i = 0; i < 3; i++) {
+		m_pageButtons[i] = tgui::Button::create();
+		m_pageButtons[i]->setRenderer(theme.getRenderer("Button"));
+		m_pageButtons[i]->setOrigin(sf::Vector2f(m_pageButtons[i]->getSize().x / 2, m_pageButtons[i]->getSize().y / 2));
+		m_pageButtons[i]->setSize(200, 20);
+		gui.add(m_pageButtons[i]);
+	}
+
 
 	//LOGIN BACKGROUND
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/login.png");
@@ -43,7 +57,9 @@ void LoginState::init()
 	m_loginButton.setString("LOGIN");
 	m_loginButton.setCharacterSize(35);
 	m_loginButton.setOrigin(m_loginButton.getLocalBounds().width / 2, m_loginButton.getLocalBounds().height / 2);
-	m_loginButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f) ;
+	m_loginButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+	m_loginButton.setOutlineThickness(1);
+
 
 	//REGISTER BUTTON
 	m_registerButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
@@ -51,15 +67,18 @@ void LoginState::init()
 	m_registerButton.setCharacterSize(35);
 	m_registerButton.setOrigin(m_registerButton.getLocalBounds().width / 2, m_registerButton.getLocalBounds().height / 2);
 	m_registerButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-	
+	m_registerButton.setOutlineThickness(1);
+
+
 	//EXIT BUTTON
 	m_exitButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_exitButton.setString("Exit");
 	m_exitButton.setCharacterSize(35);
 	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
 	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
-}
+	m_exitButton.setOutlineThickness(1);
 
+}
 void LoginState::processInput()
 {
 	sf::Event event;
@@ -172,10 +191,14 @@ void LoginState::update(sf::Time deltaTime)
 	{
 		m_context->m_states->add(std::make_unique<RegisterPageState>(m_context), true);
 	}
-	else if (m_isExitButtonPressed)
+	
+
+	if (m_isExitButtonPressed)
 	{
 		m_context->m_window->close();
 	}
+
+	
 }
 
 void LoginState::draw()

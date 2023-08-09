@@ -23,7 +23,6 @@ ExitState::~ExitState()
 
 void ExitState::init()
 {
-	m_context->m_assets->addFont(MAIN_FONT, "Resources/fonts/BOMBERMAN.TTF");
 
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
@@ -38,20 +37,24 @@ void ExitState::init()
 	m_logoutExit.setCharacterSize(35);
 	m_logoutExit.setOrigin(m_logoutExit.getLocalBounds().width / 2, m_logoutExit.getLocalBounds().height / 2);
 	m_logoutExit.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
-	
+	m_logoutExit.setOutlineThickness(1);
+
 	//LOGOUT BUTTON
 	m_logout.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_logout.setString("Logout");
 	m_logout.setCharacterSize(35);
 	m_logout.setOrigin(m_logout.getLocalBounds().width / 2, m_logout.getLocalBounds().height / 2);
 	m_logout.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-	
+	m_logout.setOutlineThickness(1);
+
 	//BACK BUTTON
 	m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_backButton.setString("Back");
 	m_backButton.setCharacterSize(35);
 	m_backButton.setOrigin(m_backButton.getLocalBounds().width / 2, m_backButton.getLocalBounds().height / 2);
 	m_backButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 +75.0f);
+	m_backButton.setOutlineThickness(1);
+
 }
 
 void ExitState::processInput()

@@ -303,21 +303,25 @@ void GamePlay::processInput()
 			switch (event.key.code)
 			{
 			case sf::Keyboard::Up:
+			case sf::Keyboard::W:
 			{
 				m_playerDirection = { 0.0f, -1 };
 				break;
 			}
 			case sf::Keyboard::Down:
+			case sf::Keyboard::S:
 			{
 				m_playerDirection = { 0.0f, 1 };
 				break;
 			}
 			case sf::Keyboard::Left:
+			case sf::Keyboard::A:
 			{
 				m_playerDirection = { -1, 0.0f };
 				break;
 			}
 			case sf::Keyboard::Right:
+			case sf::Keyboard::D:
 			{
 				m_playerDirection = { 1, 0.0f };
 				break;
@@ -338,7 +342,7 @@ void GamePlay::processInput()
 				break;
 			}
 			//TEMPORARY DEBUGGIN TOOL
-			/*case sf::Keyboard::Q:
+			case sf::Keyboard::Q:
 			{
 				m_shiftToGameOver = true;
 				m_currentGameState = std::string("You Won!!");
@@ -351,7 +355,7 @@ void GamePlay::processInput()
 				else
 					showPowerUP = false;
 				break;
-			}*/
+			}
 			default:
 				break;
 			}
@@ -362,24 +366,28 @@ void GamePlay::processInput()
 			switch (event.key.code)
 			{
 			case sf::Keyboard::Up:
+			case sf::Keyboard::W:
 			{
 				if (m_playerDirection.y < 0.f)
 					m_playerDirection.y = 0.f;// (m_playerDirection.y == -1.f) ? 0.f : m_playerDirection.y;
 				break;
 			}
 			case sf::Keyboard::Down:
+			case sf::Keyboard::S:
 			{
 				if (m_playerDirection.y > 0.f)
 					m_playerDirection.y = 0.f;// (m_playerDirection.y == 1.f) ? 0.f : m_playerDirection.y;
 				break;
 			}
 			case sf::Keyboard::Left:
+			case sf::Keyboard::A:
 			{
 				if (m_playerDirection.x < 0.f)
 					m_playerDirection.x = 0.f; // (m_playerDirection.x == -1.f) ? 0.f : m_playerDirection.x;
 				break;
 			}
 			case sf::Keyboard::Right:
+			case sf::Keyboard::D:
 			{
 				if (m_playerDirection.x > 0.f)
 					m_playerDirection.x = 0.f; // (m_playerDirection.x == 1.f) ? 0.f : m_playerDirection.x;
@@ -489,20 +497,29 @@ void GamePlay::update(sf::Time deltaTime)
 				}
 				
 				//COLLISION OF EXPLOSIONS WITH ENEMIES
-				for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
+				for (auto& explosionSprite : m_explosions)
+				{
+					for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
+					{
+						if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
+						{
+							m_sound->startSFXMusic(ENEMY_DEATH_SFX_SOUND);
+							it = m_enemies.erase(it);
+						}
+					}
+
+				}
+
+				/*for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
 				{
 					for (auto& explosionSprite : m_explosions)
 					{
-						//std::cout << "booom bomb blast" << std::endl;
-
 						if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
 						{
-							std::cout << "booom enemy dead" << std::endl;
 							m_sound->startSFXMusic(ENEMY_DEATH_SFX_SOUND);
 							it = m_enemies.erase(it);
 							if (it == m_enemies.end() && m_enemies.size() == 0) 
 							{
-								std::cout << m_enemies.size() << " All enemies dead" << std::endl;
 								break;
 							}
 							if (it == m_enemies.end())
@@ -511,7 +528,7 @@ void GamePlay::update(sf::Time deltaTime)
 					}
 					if (it == m_enemies.end())
 						break;
-				}
+				}*/
 				m_player.m_isBombPlaced = false;
 			}
 		}
@@ -917,10 +934,10 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 	}
 		break;
 	case ICE_CREAM:
-		{
+	{
 			m_currentScore += 25;
 			//m_scoreText.setString("Score : " + std::to_string(m_score));
-		}
+	}
 		break;
 	case APPLE:
 	{
@@ -929,6 +946,7 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 			m_player.setHealth(m_player.getHealth() + 10);
 		}
 	}
+		break;
 	default:
 		break;
 	}

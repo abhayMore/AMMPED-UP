@@ -48,9 +48,8 @@ bool isEmailValid(const std::string& email)
 
 
 RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
-    m_context(context), instance(MongoInstance::getInstance())
+    m_context(context)
 {
-    std::cout << " Hi before explicit call to mongoDB constructor";
 }
 
 RegisterPageState::~RegisterPageState()
@@ -74,6 +73,7 @@ void RegisterPageState::init()
 	m_signUpTitle.setCharacterSize(35);
 	m_signUpTitle.setOrigin(m_signUpTitle.getLocalBounds().width / 2, m_signUpTitle.getLocalBounds().height / 2);
 	m_signUpTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 230.0f);
+    m_signUpTitle.setOutlineThickness(1);
 
 	//USERNAME TITLE
 	m_userNameTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
@@ -141,12 +141,14 @@ void RegisterPageState::init()
 	m_registerButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_registerButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_registerButton.getButtonSize().x / 2 - 150, m_context->m_window->getSize().y - 200.0f - m_registerButton.getButtonSize().y / 2));
     m_registerButton.setBackColor(sf::Color::Transparent);
+    m_registerButton.setOutlineThickness(1);
 
     //BACK BUTTON to transition to previous state ->LoginState
     m_backButton = Button("Back", { 200,40 }, 30, sf::Color::Green, sf::Color::White);
     m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
     m_backButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_backButton.getButtonSize().x / 2 + 150, m_context->m_window->getSize().y - 200.0f - m_backButton.getButtonSize().y / 2));
     m_backButton.setBackColor(sf::Color::Transparent);
+    m_backButton.setOutlineThickness(1);
 
     //PROMPTS for exceptions at top left corner
     m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
@@ -185,7 +187,7 @@ void RegisterPageState::processInput()
         {
             if (m_registerButton.isMouseOver(*m_context->m_window))
             {
-                m_registerButton.setTextColor(sf::Color(190, 190, 190));
+                m_registerButton.setTextColor(sf::Color::Magenta);
             }
             else
             {
@@ -193,7 +195,7 @@ void RegisterPageState::processInput()
             }
             if (m_backButton.isMouseOver(*m_context->m_window))
             {
-                m_backButton.setTextColor(sf::Color(190, 190, 190));
+                m_backButton.setTextColor(sf::Color::Magenta);
             }
             else
             {
@@ -205,12 +207,12 @@ void RegisterPageState::processInput()
         {
             if (m_backButton.isMouseOver(*m_context->m_window))
             {
-                m_backButton.setTextColor(sf::Color(190, 190, 190));
+                m_backButton.setTextColor(sf::Color::Magenta);
                 m_isBackButtonPressed = true;
             }
             if (m_registerButton.isMouseOver(*m_context->m_window))
             {
-                m_registerButton.setTextColor(sf::Color(190, 190, 190));
+                m_registerButton.setTextColor(sf::Color::Magenta);
                 
                 if (m_allTextBoxes[1].getText() != m_allTextBoxes[2].getText())
                 {
@@ -324,6 +326,7 @@ void RegisterPageState::processInput()
 
 void RegisterPageState::update(sf::Time deltaTime)
 {
+    m_elapsedTime += deltaTime;
     if (registered)
     {
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
@@ -334,6 +337,12 @@ void RegisterPageState::update(sf::Time deltaTime)
         m_context->m_states->popCurrent();
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
         m_isBackButtonPressed = false;
+    }
+
+    if (m_elapsedTime.asSeconds() > 3.0)
+    {
+        m_errorPrompt.setString("");
+        m_elapsedTime = sf::Time::Zero;
     }
 }
 

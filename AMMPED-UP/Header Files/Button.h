@@ -36,6 +36,10 @@ public:
 	{
 		text.setFillColor(color);
 	}
+	void setOutlineThickness(float thickness)
+	{
+		text.setOutlineThickness(thickness);
+	}
 
 	void setPosition(sf::Vector2f pos)
 	{

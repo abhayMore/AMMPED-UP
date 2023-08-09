@@ -1,5 +1,5 @@
 #include "../Header Files/AudioManager.h"
-
+#include <iostream>
 AudioManager* AudioManager::m_instance = nullptr;
 
 AudioManager& AudioManager::getInstance(sf::Music& mainMenuMusic, 
@@ -124,19 +124,12 @@ void AudioManager::pauseInGameMusic()
 
 sf::SoundStream::Status AudioManager::isMenuMusicPlaying()
 {
-	if (m_mainMenuMusic.getStatus() == sf::SoundStream::Playing)
-	{
-		return sf::SoundStream::Playing;
-	}
-	
+	return m_mainMenuMusic.getStatus();
 }
 
 sf::SoundStream::Status AudioManager::isInGameMusicPlaying()
 {
-	if (m_inGameMusic.getStatus() == sf::SoundStream::Playing)
-	{
-		return sf::SoundStream::Playing;
-	}
+	return m_inGameMusic.getStatus();
 }
 
 sf::SoundStream::Status AudioManager::isSFXPlaying()
@@ -149,4 +142,5 @@ sf::SoundStream::Status AudioManager::isSFXPlaying()
 	{
 		return sf::SoundStream::Playing;
 	}
+	return sf::SoundStream::Stopped;
 }

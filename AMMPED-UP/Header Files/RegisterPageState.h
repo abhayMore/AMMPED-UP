@@ -6,7 +6,6 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "MongoDB.h"
-#include "MongoInstanceManager.h"
 
 #include <iostream>
 #include <regex>
@@ -17,6 +16,7 @@ class RegisterPageState : public am::State
 private:
 	std::shared_ptr<Context> m_context;
 	sf::Sprite m_loginBackground;
+	sf::Time m_elapsedTime;
 
 	//TITLES
 	sf::Text m_signUpTitle;
@@ -45,8 +45,6 @@ private:
 	
 	
 	//MONGODB
-	MongoInstance* instance;
-
 	//mongocxx::instance& instance;
 	learning::MongoDB m;
 

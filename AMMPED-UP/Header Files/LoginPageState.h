@@ -6,7 +6,6 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "UserNameManager.h"
-#include "MongoInstanceManager.h"
 #include "MongoDB.h"
 
 class LoginPageState : public am::State
@@ -15,6 +14,7 @@ private:
 	std::shared_ptr<Context> m_context;
 
 	sf::Sprite m_loginBackground;
+	sf::Time m_elapsedTime;
 
 	//TITLES
 	sf::Text m_signInTitle;
@@ -32,16 +32,13 @@ private:
 
 	bool m_isSignInButtonPressed = false;
 	bool m_isBackButtonPressed = false;
-	//FILE SYSTEM
-	
 
+	//FILE SYSTEM
 	bool verified = false;
 
 	UserNameManager* m_username;
 
 	//MONGODB
-
-	MongoInstance* instance;
 	learning::MongoDB m;
 
 public:
@@ -55,5 +52,6 @@ public:
 	void draw() override;
 	void start();
 	void pause();
+	bool anyTextboxEmpty();
 
 };
