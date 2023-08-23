@@ -19,6 +19,15 @@ void am::AssetManager::addTextures(int id, const std::string& filePath, bool wan
 	}
 }
 
+void am::AssetManager::addGuiFont(int id, const std::string& filePath)
+{
+	auto font = std::make_unique<tgui::Font>(filePath);
+	if (font->getBackendFont()->loadFromFile(filePath))
+	{
+		m_guiFonts[id] = std::move(font);
+	}
+}
+
 void am::AssetManager::addFont(int id, const std::string& filePath)
 {
 	auto font = std::make_unique<sf::Font>();
@@ -56,6 +65,12 @@ const sf::Font& am::AssetManager::getFont(int id) const
 {
 	// TODO: insert return statement here
 	return *(m_fonts.at(id).get());
+}
+
+const tgui::Font& am::AssetManager::getGuiFont(int id) const
+{
+	// TODO: insert return statement here
+	return *(m_guiFonts.at(id).get());
 }
 
 sf::Music& am::AssetManager::getSoundTrack(int id)

@@ -1,6 +1,22 @@
 #include "../Header Files/RegisterPageState.h"
 #include "../Header Files/LoginState.h"
 
+enum buttonValues
+{
+    REGISTER,
+    BACK
+};
+
+enum textboxValues
+{
+    UID,
+    EID,
+    CEID,
+    PWD,
+    CPWD
+};
+
+
 bool isEmailValid(const std::string& email)
 {
     // Regular expression pattern for email validation
@@ -48,8 +64,11 @@ bool isEmailValid(const std::string& email)
 
 
 RegisterPageState::RegisterPageState(std::shared_ptr<Context>& context) :
-    m_context(context)
+    m_context(context), m_errorPrompt(*m_context->m_window),
+    gui(*m_context->m_window)
+
 {
+    theme.load("Resources/Black.txt");
 }
 
 RegisterPageState::~RegisterPageState()
@@ -82,83 +101,124 @@ void RegisterPageState::init()
 	m_userNameTitle.setOrigin(m_userNameTitle.getLocalBounds().width / 2, m_userNameTitle.getLocalBounds().height / 2);
 	m_userNameTitle.setPosition(m_context->m_window->getSize().x / 4 + 2, m_context->m_window->getSize().y / 2 - 200.0f);
 
-	//USERNAME TEXTBOX
-	m_allTextBoxes[0] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, true);
-	m_allTextBoxes[0].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-	m_allTextBoxes[0].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 170.0f));
-
-
 	//EMAIL TITLE
 	m_emailIDTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
 	m_emailIDTitle.setString("Email");
 	m_emailIDTitle.setCharacterSize(25);
 	m_emailIDTitle.setOrigin(m_emailIDTitle.getLocalBounds().width / 2, m_emailIDTitle.getLocalBounds().height / 2);
 	m_emailIDTitle.setPosition(m_context->m_window->getSize().x / 4 - m_emailIDTitle.getGlobalBounds().width / 2 + 7, m_context->m_window->getSize().y / 2 - 120.0f);
-
-	//EMAIL TEXTBOX
-	m_allTextBoxes[1] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-	m_allTextBoxes[1].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-	m_allTextBoxes[1].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 90.0f));
-
+	
     //CONFIRM EMAIL TITLE
     m_confirmEmailIDTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_confirmEmailIDTitle.setString("Confirm Email");
     m_confirmEmailIDTitle.setCharacterSize(25);
     m_confirmEmailIDTitle.setOrigin(m_confirmEmailIDTitle.getLocalBounds().width / 2, m_confirmEmailIDTitle.getLocalBounds().height / 2);
     m_confirmEmailIDTitle.setPosition(m_context->m_window->getSize().x / 4 + m_confirmEmailIDTitle.getGlobalBounds().width / 4 - 14, m_context->m_window->getSize().y / 2 - 40);
-
-    //CONFIRM EMAIL TEXTBOX
-    m_allTextBoxes[2] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-    m_allTextBoxes[2].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_allTextBoxes[2].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 -10.0f));
-
+   
     //PASSWORD TITTLE
     m_passwordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_passwordTitle.setString("Password");
     m_passwordTitle.setCharacterSize(25);
     m_passwordTitle.setOrigin(m_passwordTitle.getLocalBounds().width / 2, m_passwordTitle.getLocalBounds().height / 2);
     m_passwordTitle.setPosition(m_context->m_window->getSize().x / 4, m_context->m_window->getSize().y / 2 + 40.0f);
-
-    //PASSWORD TEXTBOX
-    m_allTextBoxes[3] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-    m_allTextBoxes[3].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_allTextBoxes[3].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 70.0f));
-
+   
 	//CONFIRM PASSWORD TITTLE
     m_confirmPasswordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_confirmPasswordTitle.setString("Confirm Password");
     m_confirmPasswordTitle.setCharacterSize(25);
     m_confirmPasswordTitle.setOrigin(m_confirmPasswordTitle.getLocalBounds().width / 2, m_confirmPasswordTitle.getLocalBounds().height / 2);
     m_confirmPasswordTitle.setPosition(m_context->m_window->getSize().x / 4 + m_confirmEmailIDTitle.getGlobalBounds().width / 4 + 10,  m_context->m_window->getSize().y / 2 + 120.0f);
+	
+    ////////////////////////////////
+    m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
+    m_context->m_assets->addGuiFont(LOGIN_FONT, "Resources/fonts/Arial.ttf");
 
-	//CONFIRM PASSWORD TEXTBOX
-	m_allTextBoxes[4] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-	m_allTextBoxes[4].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-	m_allTextBoxes[4].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 150.0f));
+    for (int i = 0; i < 5; i++)
+    {
+        m_editTextBoxes[i] = tgui::EditBox::create();
+        m_editTextBoxes[i]->getRenderer()->setFont(m_context->m_assets->getGuiFont(LOGIN_FONT));
+        m_editTextBoxes[i]->setSize(400, 25);
+        m_editTextBoxes[i]->setTextSize(20);
+        m_editTextBoxes[i]->getRenderer()->setTextColor(tgui::Color::White);
+        m_editTextBoxes[i]->getRenderer()->setBorderColor(tgui::Color::Black);
+        m_editTextBoxes[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+        m_editTextBoxes[i]->getRenderer()->setBorderColorFocused(tgui::Color::White);
+        if (i == UID)
+        {
+            m_editTextBoxes[i]->setFocused(true);
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 170.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
+        }
+        else if (i == EID)
+        {
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 90.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
 
-	//SIGN IN BUTTON
-	m_registerButton = Button("Register", { 200,40 }, 30, sf::Color::Green, sf::Color::White);
-	m_registerButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_registerButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_registerButton.getButtonSize().x / 2 - 150, m_context->m_window->getSize().y - 200.0f - m_registerButton.getButtonSize().y / 2));
-    m_registerButton.setBackColor(sf::Color::Transparent);
-    m_registerButton.setOutlineThickness(1);
+        }
+        else if (i == CEID)
+        {
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 10.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
 
-    //BACK BUTTON to transition to previous state ->LoginState
-    m_backButton = Button("Back", { 200,40 }, 30, sf::Color::Green, sf::Color::White);
-    m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-    m_backButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_backButton.getButtonSize().x / 2 + 150, m_context->m_window->getSize().y - 200.0f - m_backButton.getButtonSize().y / 2));
-    m_backButton.setBackColor(sf::Color::Transparent);
-    m_backButton.setOutlineThickness(1);
+        }
+        else if (i == PWD)
+        {
+            m_editTextBoxes[i]->setPasswordCharacter('*');
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 70.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
+
+        }
+        else if (i == CPWD)
+        {
+            m_editTextBoxes[i]->setPasswordCharacter('*');
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 150.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
+
+        }
+        gui.add(m_editTextBoxes[i]);
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        m_pageButtons[i] = tgui::Button::create();
+        m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+        m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+        m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+        m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+        m_pageButtons[i]->setTextSize(35);
+
+        if (i == REGISTER)
+        {
+            m_pageButtons[i]->setText("Register");
+            m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2 - 150.0f, m_context->m_window->getSize().y - 200.0f);
+            m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+            m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+        }
+        else if (i == BACK)
+        {
+            m_pageButtons[i]->setText("Back");
+            m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2 + 150.0f, m_context->m_window->getSize().y - 200.0f);
+            m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+            m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+        }
+        m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+        gui.add(m_pageButtons[i]);
+    }
+
 
     //PROMPTS for exceptions at top left corner
-    m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_errorPrompt.setFillColor(sf::Color(255, 49, 49));
-    m_errorPrompt.setOutlineThickness(0.5);
-    m_errorPrompt.setOutlineColor(sf::Color::Black);
-    m_errorPrompt.setString("");
-    m_errorPrompt.setCharacterSize(20);
-    m_errorPrompt.setOrigin(m_errorPrompt.getLocalBounds().width / 2, m_errorPrompt.getLocalBounds().height / 2);
-    m_errorPrompt.setPosition(m_errorPrompt.getLocalBounds().width / 2 + 2, m_errorPrompt.getLocalBounds().height / 2 + 2);
+    m_context->m_assets->addGuiFont(LOGIN_FONT, "Resources/fonts/Arial.ttf");
+
+    m_errorPrompt.init(
+        "",
+        m_context->m_assets->getGuiFont(LOGIN_FONT),
+        20,
+        { 2,2 },
+        { m_errorPrompt.getSize().x / 2, m_errorPrompt.getSize().y / 2 },
+        sf::Color(255, 49, 49),
+        0.5,
+        sf::Color::Black
+    );
 }
 
 void RegisterPageState::processInput()
@@ -173,150 +233,209 @@ void RegisterPageState::processInput()
             m_context->m_window->close();
             break;
         }
+        case sf::Event::KeyPressed:
+        {
+            switch (event.key.code)
+            {
+            case sf::Keyboard::Tab:
+            {
+                if (m_editTextBoxes[0]->isFocused())
+                {
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[1]->setFocused(true);
+                }
+                else if (m_editTextBoxes[1]->isFocused())
+                {
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_editTextBoxes[2]->setFocused(true);
+                }
+                else if (m_editTextBoxes[2]->isFocused())
+                {
+                    m_editTextBoxes[2]->setFocused(false);
+                    m_editTextBoxes[3]->setFocused(true);
+
+                }
+                else if (m_editTextBoxes[3]->isFocused())
+                {
+                    m_editTextBoxes[3]->setFocused(false);
+                    m_editTextBoxes[4]->setFocused(true);
+                }
+                else if (m_editTextBoxes[4]->isFocused())
+                {
+                    m_editTextBoxes[4]->setFocused(false);
+                    m_pageButtons[0]->setFocused(true);
+                }
+                else if (m_pageButtons[0]->isFocused())
+                {
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(true);
+                }
+                else if (m_pageButtons[1]->isFocused())
+                {
+                    m_pageButtons[1]->setFocused(false);
+                    m_editTextBoxes[0]->setFocused(true);
+                }
+                else
+                {
+                    m_editTextBoxes[0]->setFocused(true);
+                }
+                break;
+            }
+            case sf::Keyboard::Enter:
+            {
+                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                if (m_pageButtons[0]->isFocused() || m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_isRegisterButtonPressed = true;
+                }
+                if (m_pageButtons[1]->isFocused() || m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_isBackButtonPressed = true;
+                }
+                break;
+            }
+            case sf::Keyboard::Escape:
+            {
+                m_isBackButtonPressed = true;
+                break;
+            }
+            default:
+                break;
+            }
+            break;
+        }
         case sf::Event::TextEntered:
         {
-            for (int i = 0; i < sizeof(m_allTextBoxes) / sizeof(m_allTextBoxes[0]); i++)
+            if (event.text.unicode != '\t' && event.text.unicode != '\n')
             {
-                if (m_allTextBoxes[i].getSelected())
-                    m_allTextBoxes[i].typedOn(event);
+                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (m_editTextBoxes[i]->isFocused())
+                    {
+                        if (event.text.unicode == '\b') // Backspace
+                        {
+                            m_editTextBoxes[i]->setText(m_editTextBoxes[i]->getText().substr(0, m_editTextBoxes[i]->getText().size() - 1));
+                        }
+                        else if (event.text.unicode < 128) // Regular character
+                        {
+                            m_editTextBoxes[i]->setText(m_editTextBoxes[i]->getText() + static_cast<char>(event.text.unicode));
+                        }
+                    }                    
+                }
             }
             break;
         }
 
         case sf::Event::MouseMoved:
         {
-            if (m_registerButton.isMouseOver(*m_context->m_window))
+
+            float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+            float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+            if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_registerButton.setTextColor(sf::Color::Magenta);
+                m_pageButtons[0]->getRenderer()->setTextColor(sf::Color::Magenta);
+                m_pageButtons[1]->setFocused(false);
+
             }
-            else
+            if (!m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_registerButton.setTextColor(sf::Color::White);
+                m_pageButtons[0]->getRenderer()->setTextColor(sf::Color::White);
+
             }
-            if (m_backButton.isMouseOver(*m_context->m_window))
+            if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_backButton.setTextColor(sf::Color::Magenta);
+                m_pageButtons[1]->getRenderer()->setTextColor(sf::Color::Magenta);
+                m_pageButtons[0]->setFocused(false);
+
             }
-            else
+            if (!m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_backButton.setTextColor(sf::Color::White);
+                m_pageButtons[1]->getRenderer()->setTextColor(sf::Color::White);
             }
             break;
         }
         case sf::Event::MouseButtonPressed:
         {
-            if (m_backButton.isMouseOver(*m_context->m_window))
+            switch (event.key.code)
             {
-                m_backButton.setTextColor(sf::Color::Magenta);
-                m_isBackButtonPressed = true;
-            }
-            if (m_registerButton.isMouseOver(*m_context->m_window))
+            case sf::Mouse::Left:
             {
-                m_registerButton.setTextColor(sf::Color::Magenta);
-                
-                if (m_allTextBoxes[1].getText() != m_allTextBoxes[2].getText())
+                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
                 {
-                    m_errorPrompt.setString("Email ID does not match!!");
-                    resetTextboxes();
-                }
-                if (!isEmailValid(m_allTextBoxes[2].getText()))
-                {
-                    m_errorPrompt.setString("Email is invalid!!");
-                    resetTextboxes();
-                }
-                if (m_allTextBoxes[3].getText() != m_allTextBoxes[4].getText())
-                {
-                    m_errorPrompt.setString("Password do not match!!");
-                    resetTextboxes();
-                }
-                //--------------//
-                if (m.isDataPresent("username", m_allTextBoxes[0].getText()))
-                {
-                    isUsernameTaken = true;
-                    if (m.isDataPresent("email", m_allTextBoxes[2].getText()))
+                    m_isRegisterButtonPressed = true;
+                    for (int i = 0; i < 5; i++)
                     {
-                        isUserExists = true;
+                        m_editTextBoxes[i]->setFocused(false);
                     }
                 }
-                else if (m.isDataPresent("email", m_allTextBoxes[2].getText()))
+                if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
                 {
-                    isEmailRegistered = true;
-                }
-                if (isUserExists)
-                {
-                    m_errorPrompt.setString("User already exists. Please login!!");
-                    resetTextboxes();
-                }
-                else if (isUsernameTaken && !isEmailRegistered)
-                {
-                    m_errorPrompt.setString("Username is already taken. Please choose another username!!");
-                    resetTextboxes();
-                }
-                else if (!isUsernameTaken && isEmailRegistered)
-                {
-                    m_errorPrompt.setString("Email is already registered. Please use a different email!!");
-                    resetTextboxes();
-                }
-                else if (!isUserExists && !isUsernameTaken && !isEmailRegistered)
-                {
-                    if (!anyTextboxEmpty())
-                    {
-                        registerUser();
-                    }
-                }
-                isUsernameTaken = false;
-                isEmailRegistered = false;
-                isUserExists = false;
-
-
-                if (!anyTextboxEmpty())
-                {
-                    registerUser();
+                    m_isBackButtonPressed = true;
                 }
 
+                if (m_editTextBoxes[0]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[0]->setFocused(true);
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_editTextBoxes[2]->setFocused(false);
+                    m_editTextBoxes[3]->setFocused(false);
+                    m_editTextBoxes[4]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                if (m_editTextBoxes[1]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[1]->setFocused(true);
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[2]->setFocused(false);
+                    m_editTextBoxes[3]->setFocused(false);
+                    m_editTextBoxes[4]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                if (m_editTextBoxes[2]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[2]->setFocused(true);
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_editTextBoxes[3]->setFocused(false);
+                    m_editTextBoxes[4]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                if (m_editTextBoxes[3]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[3]->setFocused(true);
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_editTextBoxes[2]->setFocused(false);
+                    m_editTextBoxes[4]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                if (m_editTextBoxes[4]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[4]->setFocused(true);
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_editTextBoxes[2]->setFocused(false);
+                    m_editTextBoxes[3]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                break;
             }
-            if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(true);
-                m_allTextBoxes[1].setSelected(false);
-                m_allTextBoxes[2].setSelected(false);
-                m_allTextBoxes[3].setSelected(false);
-                m_allTextBoxes[4].setSelected(false);
-            }
-            else if (m_allTextBoxes[1].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(false);
-                m_allTextBoxes[1].setSelected(true);
-                m_allTextBoxes[2].setSelected(false);
-                m_allTextBoxes[3].setSelected(false);
-                m_allTextBoxes[4].setSelected(false);
-            }
-            else if (m_allTextBoxes[2].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(false);
-                m_allTextBoxes[1].setSelected(false);
-                m_allTextBoxes[2].setSelected(true);
-                m_allTextBoxes[3].setSelected(false);
-                m_allTextBoxes[4].setSelected(false);
-            }
-            else if (m_allTextBoxes[3].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(false);
-                m_allTextBoxes[1].setSelected(false);
-                m_allTextBoxes[2].setSelected(false);
-                m_allTextBoxes[3].setSelected(true);
-                m_allTextBoxes[4].setSelected(false);
-            }
-            else if (m_allTextBoxes[4].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(false);
-                m_allTextBoxes[1].setSelected(false);
-                m_allTextBoxes[2].setSelected(false);
-                m_allTextBoxes[3].setSelected(false);
-                m_allTextBoxes[4].setSelected(true);
+            default:
+                break;
             }
             break;
         }
+
         default:
             break;
         }
@@ -326,7 +445,83 @@ void RegisterPageState::processInput()
 
 void RegisterPageState::update(sf::Time deltaTime)
 {
-    m_elapsedTime += deltaTime;
+    if (m_isRegisterButtonPressed)
+    {
+        if (anyTextboxEmpty())
+        {
+            m_errorPrompt.setText("Error, empty values");
+            resetTextboxes();
+        }
+        else 
+        {
+            //--------------//
+            if (m_editTextBoxes[1]->getText() != m_editTextBoxes[2]->getText())
+            {
+                m_errorPrompt.setText("Email ID does not match!!");
+                resetTextboxes();
+            }
+            else if (!isEmailValid(std::string(m_editTextBoxes[2]->getText())))
+            {
+                m_errorPrompt.setText("Email is invalid!!");
+                resetTextboxes();
+            }
+
+            //------PWD DOES NOT MATCH CASE--------//
+            if (m_editTextBoxes[3]->getText() != m_editTextBoxes[4]->getText())
+            {
+                m_errorPrompt.setText("Password do not match!!");
+                resetTextboxes();
+            }
+            //-----IS DATA PRESENT IN ONLINE DATABASE CASE---------//
+            if (m.isDataPresent("username", std::string(m_editTextBoxes[0]->getText())))
+            {
+                isUsernameTaken = true;
+                if (m.isDataPresent("email", std::string(m_editTextBoxes[2]->getText())))
+                {
+                    isUserExists = true;
+                }
+            }
+            else if (m.isDataPresent("email", std::string(m_editTextBoxes[2]->getText())))
+            {
+                isEmailRegistered = true;
+            }
+
+
+            if (isUserExists)
+            {
+                m_errorPrompt.setText("User already exists. Please login!!");
+                isUserExists = false;
+
+                resetTextboxes();
+            }
+            else if (isUsernameTaken && !isEmailRegistered)
+            {
+                m_errorPrompt.setText("Username is already taken. Please choose another username!!");
+                isUsernameTaken = false;
+                resetTextboxes();
+            }
+            else if (!isUsernameTaken && isEmailRegistered)
+            {
+                m_errorPrompt.setText("Email is already registered. Please use a different email!!");
+                isEmailRegistered = false;
+                resetTextboxes();
+            }
+
+            else if (!isUserExists && !isUsernameTaken && !isEmailRegistered)
+            {
+                if (!anyTextboxEmpty())
+                {
+                    registerUser();
+                }
+            }
+            if (!anyTextboxEmpty())
+            {
+                registerUser();
+            }
+        }
+        m_isRegisterButtonPressed = false;
+    }
+
     if (registered)
     {
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
@@ -339,10 +534,14 @@ void RegisterPageState::update(sf::Time deltaTime)
         m_isBackButtonPressed = false;
     }
 
-    if (m_elapsedTime.asSeconds() > 3.0)
+    if (m_errorPrompt.getLength() > 2 )
     {
-        m_errorPrompt.setString("");
-        m_elapsedTime = sf::Time::Zero;
+        m_elapsedTime += deltaTime;
+        if (m_elapsedTime.asSeconds() > 3.0)
+        {
+            m_errorPrompt.setText("");
+            m_elapsedTime = sf::Time::Zero;
+        }
     }
 }
 
@@ -356,15 +555,8 @@ void RegisterPageState::draw()
     m_context->m_window->draw(m_confirmEmailIDTitle);
     m_context->m_window->draw(m_passwordTitle);
     m_context->m_window->draw(m_confirmPasswordTitle);
-    m_context->m_window->draw(m_errorPrompt);
-
-
-    for (int i = 0; i < sizeof(m_allTextBoxes) / sizeof(m_allTextBoxes[0]); i++)
-    {
-        m_allTextBoxes[i].Draw(*m_context->m_window);
-    }
-    m_registerButton.Draw(*m_context->m_window);
-    m_backButton.Draw(*m_context->m_window);
+    gui.draw(); 
+    m_errorPrompt.draw();
     m_context->m_window->display();
 }
 
@@ -380,9 +572,9 @@ void RegisterPageState::registerUser()
 {
     auto builder = bsoncxx::builder::stream::document{};
     bsoncxx::v_noabi::document::value doc_value =
-        builder << "username" << m_allTextBoxes[0].getText()
-        << "email" << m_allTextBoxes[2].getText()
-        << "pwd" << m_allTextBoxes[4].getText()
+        builder << "username" << std::string(m_editTextBoxes[0]->getText())
+        << "email" << std::string(m_editTextBoxes[2]->getText())
+        << "pwd" << std::string(m_editTextBoxes[4]->getText())
         << "score" << 0
         << bsoncxx::builder::stream::finalize;
     m.insertDocument(doc_value);
@@ -393,16 +585,16 @@ void RegisterPageState::registerUser()
 
 void RegisterPageState::resetTextboxes()
 {
-    for (auto& textbox : m_allTextBoxes)
+    for (auto& textbox : m_editTextBoxes)
     {
-        textbox.setString("");
+        textbox->setText("");
     }
 }
 
 bool RegisterPageState::anyTextboxEmpty()
 {
-    for (auto& textbox : m_allTextBoxes) {
-        if (textbox.getText() == "") {
+    for (auto& textbox : m_editTextBoxes) {
+        if (textbox->getText() == "") {
             return true;
         }
     }

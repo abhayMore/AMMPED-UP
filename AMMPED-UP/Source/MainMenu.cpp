@@ -6,16 +6,21 @@
 #include "../Header Files/ExitState.h"
 #include <memory>
 
+enum buttonValues
+{
+	PLAY,
+	LEADERBOARD,
+	OPTIONS,
+	EXIT
+};
+
 MainMenu::MainMenu(std::shared_ptr<Context>& context, float Overallvolume, float inGameMusicVolume, float SFXVolume) :
 	m_context(context), 
-	m_isPlayButtonSelected(true),
 	m_isPlayButtonPressed(false),
-	m_isLeadershipButtonSelected(false),
-	m_isLeadershipButtonPressed(false),
-	m_isOptionsButtonSelected(false),
+	m_isLeaderboardButtonPressed(false),
 	m_isOptionsButtonPressed(false),
-	m_isExitButtonSelected(false),
-	m_isExitButtonPressed(false)
+	m_isExitButtonPressed(false),
+	gui(*m_context->m_window)
 {
 	AudioManager& audioManager = AudioManager::getInstance(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK), 
 														m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
@@ -29,15 +34,19 @@ MainMenu::MainMenu(std::shared_ptr<Context>& context, float Overallvolume, float
 	m_bgm->setOverallVolume(Overallvolume);
 	m_bgm->setInGameVolume(inGameMusicVolume);
 	m_bgm->setSFXVolume(SFXVolume);
+
+	theme.load("Resources/Black.txt");
+
 }
 
 MainMenu::~MainMenu()
 {
+	m_bgm->stopMainMenuMusic();
+
 }
 
 void MainMenu::init()
 {
-
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_menuBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
@@ -55,38 +64,49 @@ void MainMenu::init()
 	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 350.0f) ;
 	m_gameTitle.setOutlineThickness(1);
 
-	//PLAY BUTTON
-	m_playButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_playButton.setString("Play");
-	m_playButton.setCharacterSize(50);
-	m_playButton.setOrigin(m_playButton.getLocalBounds().width / 2, m_playButton.getLocalBounds().height / 2);
-	m_playButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 100.0f);
-	m_playButton.setOutlineThickness(1);
+	//////////////////////////////////////////////////
+	m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
 
-	//LEADERSHIP BUTTON
-	m_leadershipButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_leadershipButton.setString("Leaderboard");
-	m_leadershipButton.setCharacterSize(50);
-	m_leadershipButton.setOrigin(m_leadershipButton.getLocalBounds().width / 2, m_leadershipButton.getLocalBounds().height / 2);
-	m_leadershipButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-	m_leadershipButton.setOutlineThickness(1);
-
-	//OPTIONS BUTTON
-	m_optionsButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_optionsButton.setString("Options");
-	m_optionsButton.setCharacterSize(50);
-	m_optionsButton.setOrigin(m_optionsButton.getLocalBounds().width / 2, m_optionsButton.getLocalBounds().height / 2);
-	m_optionsButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 50.0f);
-	m_optionsButton.setOutlineThickness(1);
-
-	//EXIT BUTTON
-	m_exitButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_exitButton.setString("Exit");
-	m_exitButton.setCharacterSize(50);
-	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
-	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 125.0f);
-	m_exitButton.setOutlineThickness(1);
-	
+	for (int i = 0; i < 4; i++)
+	{
+		m_pageButtons[i] = tgui::Button::create();
+		m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+		m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+		m_pageButtons[i]->setTextSize(50);
+		if (i == PLAY)
+		{
+			m_pageButtons[i]->setText("PLAY");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f);
+			m_pageButtons[i]->setFocused(true);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == LEADERBOARD)
+		{
+			m_pageButtons[i]->setText("LEADERBOARD");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == OPTIONS)
+		{
+			m_pageButtons[i]->setText("OPTIONS");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == EXIT)
+		{
+			m_pageButtons[i]->setText("EXIT");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 75.0f);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+		gui.add(m_pageButtons[i]);
+	}
 }
 
 void MainMenu::processInput()
@@ -94,97 +114,38 @@ void MainMenu::processInput()
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		switch (event.type)
+		{
+		case sf::Event::Closed:
+		{
 			m_context->m_window->close();
-		else if (event.type == sf::Event::KeyPressed)
+			break;
+		}
+		case sf::Event::MouseButtonPressed:
 		{
 			switch (event.key.code)
 			{
-			case sf::Keyboard::Up:
+			case sf::Mouse::Left:
 			{
-				if (!m_isLeadershipButtonSelected && !m_isExitButtonSelected && !m_isPlayButtonSelected)
-				{
-					m_isPlayButtonSelected = false;
-					m_isLeadershipButtonSelected = true;
-					m_isOptionsButtonSelected = false;
-					m_isExitButtonSelected = false;
-				}
-				else if(!m_isPlayButtonSelected && !m_isExitButtonSelected)
-				{
-					m_isPlayButtonSelected = true;
-					m_isLeadershipButtonSelected = false;
-					m_isOptionsButtonSelected = false;
-					m_isExitButtonSelected = false;
-				} 
-				else if (!m_isOptionsButtonSelected && !m_isPlayButtonSelected)
-				{
-					m_isPlayButtonSelected = false;
-					m_isLeadershipButtonSelected = false;
-					m_isOptionsButtonSelected = true;
-					m_isExitButtonSelected = false;
-				}
-				else if (!m_isExitButtonSelected && !m_isPlayButtonSelected)
-				{
-					m_isPlayButtonSelected = false;
-					m_isLeadershipButtonSelected = false;
-					m_isOptionsButtonSelected = false;
-					m_isExitButtonSelected = true;
-				}
-				break;
-			}
-			
-			case sf::Keyboard::Down :
-			{
-				if (!m_isLeadershipButtonSelected && !m_isOptionsButtonSelected && !m_isExitButtonSelected)
-				{
-					m_isPlayButtonSelected = false;
-					m_isLeadershipButtonSelected = true;
-					m_isOptionsButtonSelected = false;
-					m_isExitButtonSelected = false;
-				}
-				else if (!m_isOptionsButtonSelected && !m_isExitButtonSelected)
-				{
-					m_isPlayButtonSelected = false;
-					m_isLeadershipButtonSelected = false;
-					m_isOptionsButtonSelected = true;
-					m_isExitButtonSelected = false;
-				}
-				
-				else if (!m_isExitButtonSelected )
-				{
-					m_isPlayButtonSelected = false;
-					m_isLeadershipButtonSelected = false;
-					m_isOptionsButtonSelected = false;
-					m_isExitButtonSelected = true;
-				}
-				else if (!m_isPlayButtonSelected && !m_isExitButtonSelected)
-				{
-					m_isPlayButtonSelected = true;
-					m_isLeadershipButtonSelected = false;
-					m_isOptionsButtonSelected = false;
-					m_isExitButtonSelected = false;
-				}
-				break;
-			}
-			case sf::Keyboard::Return :
-			{
-				m_isPlayButtonPressed = false;
-				m_isExitButtonPressed = false;
-				m_isLeadershipButtonPressed = false;
-				m_isOptionsButtonPressed = false;
-				if (m_isPlayButtonSelected)
+				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[0]->isFocused())
 				{
 					m_isPlayButtonPressed = true;
 				}
-				else if (m_isLeadershipButtonSelected)
+				if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[1]->isFocused())
 				{
-					m_isLeadershipButtonPressed = true;
+					m_isLeaderboardButtonPressed = true;
 				}
-				else if (m_isOptionsButtonSelected)
+				if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[2]->isFocused())
 				{
 					m_isOptionsButtonPressed = true;
 				}
-				else
+				if (m_pageButtons[3]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[3]->isFocused())
 				{
 					m_isExitButtonPressed = true;
 				}
@@ -193,58 +154,151 @@ void MainMenu::processInput()
 			default:
 				break;
 			}
+			break;
+		}
+		case sf::Event::MouseMoved:
+		{
+			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[0]->setFocused(true);
+				m_pageButtons[1]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+				m_pageButtons[3]->setFocused(false);
+			}
+			else if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[1]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+				m_pageButtons[3]->setFocused(false);
+			}
+			else if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[2]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[1]->setFocused(false);
+				m_pageButtons[3]->setFocused(false);
+			}
+			else if (m_pageButtons[3]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[3]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[1]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+			}
+			break;
+		}
+		case sf::Event::KeyPressed:
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::Up:
+			{
+				if (m_pageButtons[3]->isFocused())
+				{
+					m_pageButtons[2]->setFocused(true);
+					m_pageButtons[2]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[2]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[3]->setFocused(false);
+				}
+				else if (m_pageButtons[2]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[2]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[0]->setFocused(true);
+					m_pageButtons[0]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[0]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Down:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[0]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[2]->setFocused(true);
+					m_pageButtons[2]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[2]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				else if (m_pageButtons[2]->isFocused())
+				{
+					m_pageButtons[3]->setFocused(true);
+					m_pageButtons[3]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[3]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[2]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Return:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_isPlayButtonPressed = true;
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_isLeaderboardButtonPressed = true;
+				}
+				else if (m_pageButtons[2]->isFocused())
+				{
+					m_isOptionsButtonPressed = true;
+				}
+				else if (m_pageButtons[3]->isFocused())
+				{
+					m_isExitButtonPressed = true;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
 
 void MainMenu::update(sf::Time deltaTime)
 {
-	if (m_isPlayButtonSelected)
-	{
-		m_playButton.setFillColor(sf::Color::Magenta);
-		m_leadershipButton.setFillColor(sf::Color::White);
-		m_optionsButton.setFillColor(sf::Color::White);
-		m_exitButton.setFillColor(sf::Color::White);
-	}
-	else if (m_isLeadershipButtonSelected)
-	{
-		m_playButton.setFillColor(sf::Color::White);
-		m_leadershipButton.setFillColor(sf::Color::Magenta);
-		m_optionsButton.setFillColor(sf::Color::White);
-		m_exitButton.setFillColor(sf::Color::White);
-	}
-	else if (m_isOptionsButtonSelected)
-	{
-		m_playButton.setFillColor(sf::Color::White);
-		m_leadershipButton.setFillColor(sf::Color::White);
-		m_optionsButton.setFillColor(sf::Color::Magenta);
-		m_exitButton.setFillColor(sf::Color::White);
-	}
-	else 
-	{
-		m_exitButton.setFillColor(sf::Color::Magenta);
-		m_playButton.setFillColor(sf::Color::White);
-		m_leadershipButton.setFillColor(sf::Color::White);
-		m_optionsButton.setFillColor(sf::Color::White);
-	}
 	if (m_isPlayButtonPressed)
 	{
 		//TODO
 		//Go to Play State
 		m_bgm->stopMainMenuMusic();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
+		m_isPlayButtonPressed = false;
 	}
-	else if (m_isLeadershipButtonPressed)
+	else if (m_isLeaderboardButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<Leaderboard>(m_context), true);
+		m_context->m_states->add(std::make_unique<Leaderboard>(m_context));
+		m_isLeaderboardButtonPressed = false;
 	}
 	else if (m_isOptionsButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<OptionsState>(m_context), true);
+		m_context->m_states->add(std::make_unique<OptionsState>(m_context));
+		m_isOptionsButtonPressed = false;
 	}
 	else if (m_isExitButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<ExitState>(m_context), true);
+		m_context->m_states->add(std::make_unique<ExitState>(m_context));
+		m_isExitButtonPressed = false;
 	}
 	if (m_bgm->isMenuMusicPlaying() == sf::SoundStream::Status::Stopped && !m_isPlayButtonPressed)
 	{
@@ -257,11 +311,7 @@ void MainMenu::draw()
 	m_context->m_window->clear();
 	m_context->m_window->draw(m_menuBackground);
 	m_context->m_window->draw(m_gameTitle);
-	m_context->m_window->draw(m_playButton);
-	m_context->m_window->draw(m_leadershipButton);
-	m_context->m_window->draw(m_optionsButton);
-	m_context->m_window->draw(m_exitButton);
-
+	gui.draw();
 	m_context->m_window->display();
 }
 

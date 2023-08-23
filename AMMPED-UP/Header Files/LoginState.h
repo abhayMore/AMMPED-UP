@@ -7,7 +7,6 @@
 #include "State.h"
 #include "Game.h"
 
-
 class LoginState : public am::State
 {
 private:
@@ -17,22 +16,12 @@ private:
 	tgui::Gui gui;
 	tgui::Button::Ptr m_pageButtons[3];
 
-	sf::Text m_loginButton;
-	sf::Text m_registerButton;
-	sf::Text m_exitButton;
 	sf::Sprite m_loginBackground;
 	sf::Sprite m_gameLogo;
 
-	bool m_isRegisterButtonSelected;
 	bool m_isRegisterButtonPressed;
-
-	bool m_isLoginButtonSelected;
 	bool m_isLoginButtonPressed;
-
-	bool m_isExitButtonSelected;
 	bool m_isExitButtonPressed;
-
-
 
 public:
 	LoginState(std::shared_ptr<Context>& context);
@@ -46,4 +35,3 @@ public:
 	void start();
 	void pause();
 };
-

@@ -10,25 +10,16 @@ class MainMenu : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
-	sf::Text m_gameTitle;
-	sf::Text m_playButton;
-	sf::Text m_leadershipButton;
-	sf::Text m_optionsButton;
-	sf::Text m_exitButton;
-	
-
 	sf::Sprite m_menuBackground;
+	sf::Text m_gameTitle;
+	
+	tgui::Theme theme;
+	tgui::Gui gui;
+	tgui::Button::Ptr m_pageButtons[4];
 
-	bool m_isPlayButtonSelected;
 	bool m_isPlayButtonPressed;
-
-	bool m_isLeadershipButtonSelected;
-	bool m_isLeadershipButtonPressed;
-
-	bool m_isOptionsButtonSelected;
+	bool m_isLeaderboardButtonPressed;
 	bool m_isOptionsButtonPressed;
-
-	bool m_isExitButtonSelected;
 	bool m_isExitButtonPressed;
 
 	//sf::Music& m_bgm;

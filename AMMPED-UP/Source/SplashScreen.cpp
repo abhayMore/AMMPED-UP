@@ -57,7 +57,7 @@ void SplashScreen::update(sf::Time deltaTime)
 			}
 			else
 			{
-				m_context->m_states->add(std::make_unique<LoginState>(m_context));
+				m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
 			}
 		}
 }

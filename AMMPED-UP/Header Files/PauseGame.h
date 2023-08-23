@@ -10,17 +10,13 @@ class PauseGame : public am::State
 private:
 	std::shared_ptr<Context> m_context;
 	sf::Text m_pauseTitle;
-	sf::Text m_resumeButton;
-	sf::Text m_restartButton;
-	sf::Text m_mainMenuButton;
 
-	bool m_isResumeButtonSelected;
+	tgui::Theme theme;
+	tgui::Gui gui;
+	tgui::Button::Ptr m_pageButtons[3];
+
 	bool m_isResumeButtonPressed;
-
-	bool m_isRestartButtonSelected;
 	bool m_isRestartButtonPressed;
-
-	bool m_isMainMenuButtonSelected;
 	bool m_isMainMenuButtonPressed;
 	AudioManager* m_bgm;
 

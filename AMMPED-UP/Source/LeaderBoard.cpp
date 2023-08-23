@@ -6,7 +6,6 @@ Leaderboard::Leaderboard(std::shared_ptr<Context>& context) :
 	m_context(context), 
 	m_isExitButtonPressed(false)
 {
-	instance = MongoInstance::getInstance();
 
 	username = UserNameManager::getInstance();
 	
@@ -23,7 +22,10 @@ Leaderboard::Leaderboard(std::shared_ptr<Context>& context) :
 		);
 	m_bgm = &audioManager;
 
-	m_TopTenScores = m.getTopScores(10);
+	auto tempCount = m.getDocumentCount() > 10 ? 10 : m.getDocumentCount();
+	m_TopTenScores = m.getTopScores(tempCount);
+	//std::cout << "total number : " << m.getDocumentCount() << std::endl;
+
 }
 
 Leaderboard::~Leaderboard()
@@ -61,43 +63,25 @@ void Leaderboard::init()
 	m_scoreText.setPosition(m_context->m_window->getSize().x / 2 + 100, m_context->m_window->getSize().y / 2 - 275.0f);
 	m_scoreText.setOutlineThickness(1);
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < m_TopTenScores.size(); i++)
 	{
 		m_TopTenPlayerNames[i].setFont(m_context->m_assets->getFont(LOGIN_FONT));
 		m_TopTenPlayerNames[i].setCharacterSize(25);
 		m_TopTenPlayerNames[i].setString(m_TopTenScores[i].first);
 		m_TopTenPlayerNames[i].setOutlineThickness(1);
 		m_TopTenPlayerNames[i].setOrigin(m_TopTenPlayerNames[i].getLocalBounds().width / 2, m_TopTenPlayerNames[i].getLocalBounds().height / 2);
+		m_TopTenPlayerNames[i].setPosition(m_context->m_window->getSize().x / 2 - 100.0f, m_context->m_window->getSize().y / 2 + (i*50)- 225.0f);
 
 		m_TopTenPlayerScores[i].setFont(m_context->m_assets->getFont(LOGIN_FONT));
 		m_TopTenPlayerScores[i].setCharacterSize(25);
 		m_TopTenPlayerScores[i].setString(std::to_string(m_TopTenScores[i].second));
 		m_TopTenPlayerScores[i].setOutlineThickness(1);
 		m_TopTenPlayerScores[i].setOrigin(m_TopTenPlayerScores[i].getLocalBounds().width / 2, m_TopTenPlayerScores[i].getLocalBounds().height / 2);
+		m_TopTenPlayerScores[i].setPosition(m_context->m_window->getSize().x / 2 + 100.0f, m_context->m_window->getSize().y / 2 + (i * 50) - 225.0);
+
 	}
 
-	m_TopTenPlayerNames[0].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 - 225.0f);
-	m_TopTenPlayerNames[1].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 - 175.0f);
-	m_TopTenPlayerNames[2].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 - 125.0f);
-	m_TopTenPlayerNames[3].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 - 75.0f);
-	m_TopTenPlayerNames[4].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 - 25.0f);
-	m_TopTenPlayerNames[5].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 + 25.0f);
-	m_TopTenPlayerNames[6].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 + 75.0f);
-	m_TopTenPlayerNames[7].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 + 125.0f);
-	m_TopTenPlayerNames[8].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 + 175.0f);
-	m_TopTenPlayerNames[9].setPosition(m_context->m_window->getSize().x / 2 - 100.0f , m_context->m_window->getSize().y / 2 + 225.0f);
-
-	m_TopTenPlayerScores[0].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 - 225.0f);
-	m_TopTenPlayerScores[1].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 - 175.0f);
-	m_TopTenPlayerScores[2].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 - 125.0f);
-	m_TopTenPlayerScores[3].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 - 75.0f);
-	m_TopTenPlayerScores[4].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 - 25.0f);
-	m_TopTenPlayerScores[5].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 + 25.0f);
-	m_TopTenPlayerScores[6].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 + 75.0f);
-	m_TopTenPlayerScores[7].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 + 125.0f);
-	m_TopTenPlayerScores[8].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 + 175.0f);
-	m_TopTenPlayerScores[9].setPosition(m_context->m_window->getSize().x / 2 + 100.0f , m_context->m_window->getSize().y / 2 + 225.0f);
-
+	
 }
 
 void Leaderboard::processInput()

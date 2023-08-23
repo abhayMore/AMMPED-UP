@@ -8,31 +8,25 @@
 #include "AudioManager.h"
 #include "UsernameManager.h"
 #include "MongoDB.h"
-#include "MongoInstanceManager.h"
+#include "TextPrompt.h"
 
 class OptionsState : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
 	sf::Text m_optionsTitle;
-	sf::Text m_resetHighScoreButton;
-	sf::Text m_exitButton;
 	sf::Sprite m_menuBackground;
-
-
 	//DISPLAYS GENERAL CONTROLS
 	sf::Text m_controlDirections[5];
 
-	bool m_isResetHighScoreButtonSelected;
 	bool m_isResetHighScoreButtonPressed;
-	
-	bool m_isExitButtonSelected;
-	bool m_isExitButtonPressed;
+	bool m_isMainmenuButtonPressed;
 
 	//SLIDERS
 	tgui::Theme theme;
 	tgui::Gui gui;
 	tgui::Slider::Ptr m_audioControls[3];
+	tgui::Button::Ptr m_pageButtons[2];
 	sf::Text m_overallMusic;
 	sf::Text m_inGameMusic;
 	sf::Text m_sfx;
@@ -45,7 +39,7 @@ private:
 	AudioManager* m_bgm;
 
 	//Reset HighScore Warning
-	sf::Text m_errorPrompt;
+	TextPrompt m_errorPrompt;
 
 	//Reset Highscore
 	UserNameManager* username;

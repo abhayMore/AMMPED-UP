@@ -4,15 +4,22 @@
 #include "../Header Files/GamePlay.h"
 #include <memory>
 
+enum buttonValues
+{
+	RESUME,
+	RESTART,
+	MAINMENU
+};
+
 PauseGame::PauseGame(std::shared_ptr<Context>& context) : 
 	m_context(context), 
-	m_isResumeButtonSelected(true),
 	m_isResumeButtonPressed(false),
-	m_isRestartButtonSelected(false),
 	m_isRestartButtonPressed(false),
-	m_isMainMenuButtonSelected(false),
-	m_isMainMenuButtonPressed(false)
+	m_isMainMenuButtonPressed(false),
+	gui(*m_context->m_window)
 {
+	theme.load("Resources/Black.txt");
+
 	AudioManager& audioManager = AudioManager::getInstance(
 		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
 		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
@@ -36,26 +43,43 @@ void PauseGame::init()
 	m_pauseTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f);
 	m_pauseTitle.setOrigin(m_pauseTitle.getLocalBounds().width / 2, m_pauseTitle.getLocalBounds().height / 2);
 
-	//RESUME
-	m_resumeButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_resumeButton.setString("Resume");
-	m_resumeButton.setCharacterSize(35);
-	m_resumeButton.setOrigin(m_resumeButton.getLocalBounds().width / 2, m_resumeButton.getLocalBounds().height / 2);
-	m_resumeButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+	///////////////////////////////////////////////////
+	m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
 
-	//RESTART TITLE
-	m_restartButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_restartButton.setString("Restart");
-	m_restartButton.setCharacterSize(35);
-	m_restartButton.setOrigin(m_restartButton.getLocalBounds().width / 2, m_restartButton.getLocalBounds().height / 2);
-	m_restartButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-	
-	//MAINMENU TITLE
-	m_mainMenuButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_mainMenuButton.setString("Main Menu");
-	m_mainMenuButton.setCharacterSize(35);
-	m_mainMenuButton.setOrigin(m_mainMenuButton.getLocalBounds().width / 2, m_mainMenuButton.getLocalBounds().height / 2);
-	m_mainMenuButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
+	for (int i = 0; i < 3; i++)
+	{
+		m_pageButtons[i] = tgui::Button::create();
+		m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+		m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+		m_pageButtons[i]->setTextSize(35);
+		if (i == RESUME)
+		{
+			m_pageButtons[i]->setText("RESUME");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+			m_pageButtons[i]->setFocused(true);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == RESTART)
+		{
+			m_pageButtons[i]->setText("RESTART");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == MAINMENU)
+		{
+			m_pageButtons[i]->setText("MAINMENU");
+
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 75.0f);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+		gui.add(m_pageButtons[i]);
+	}
 }
 
 void PauseGame::processInput()
@@ -63,77 +87,33 @@ void PauseGame::processInput()
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		switch (event.type)
+		{
+		case sf::Event::Closed:
+		{
 			m_context->m_window->close();
-		else if (event.type == sf::Event::KeyPressed)
+			break;
+		}
+		case sf::Event::MouseButtonPressed:
 		{
 			switch (event.key.code)
 			{
-			case sf::Keyboard::Escape:
+			case sf::Mouse::Left:
 			{
-				m_bgm->stopMainMenuMusic();
-				m_context->m_states->popCurrent();
-				break;
-			}
-			case sf::Keyboard::Up:
-			{
-				if (!m_isRestartButtonSelected && !m_isResumeButtonSelected)
-				{
-					m_isResumeButtonSelected = false;
-					m_isRestartButtonSelected = true;
-					m_isMainMenuButtonSelected = false;
-				}
-				else if (!m_isResumeButtonSelected)
-				{
-					m_isResumeButtonSelected = true;
-					m_isRestartButtonSelected = false;
-					m_isMainMenuButtonSelected = false;
-				}
-				else if (!m_isMainMenuButtonSelected && !m_isResumeButtonSelected)
-				{
-					m_isResumeButtonSelected = false;
-					m_isRestartButtonSelected = false;
-					m_isMainMenuButtonSelected = true;
-				}
-				break;
-			}
-
-			case sf::Keyboard::Down:
-			{
-				if (!m_isRestartButtonSelected && !m_isMainMenuButtonSelected)
-				{
-					m_isResumeButtonSelected = false;
-					m_isRestartButtonSelected = true;
-					m_isMainMenuButtonSelected = false;
-				}
-				else if (!m_isMainMenuButtonSelected)
-				{
-					m_isResumeButtonSelected = false;
-					m_isRestartButtonSelected = false;
-					m_isMainMenuButtonSelected = true;
-				}
-				else if (!m_isResumeButtonSelected && !m_isMainMenuButtonSelected)
-				{
-					m_isResumeButtonSelected = true;
-					m_isRestartButtonSelected = false;
-					m_isMainMenuButtonSelected = false;
-				}
-				break;
-			}
-			case sf::Keyboard::Return:
-			{
-				m_isResumeButtonPressed = false;
-				m_isRestartButtonPressed = false;
-				m_isMainMenuButtonPressed = false;
-				if (m_isResumeButtonSelected)
+				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[0]->isFocused())
 				{
 					m_isResumeButtonPressed = true;
 				}
-				else if (m_isRestartButtonSelected)
+				if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[1]->isFocused())
 				{
 					m_isRestartButtonPressed = true;
 				}
-				else
+				if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[2]->isFocused())
 				{
 					m_isMainMenuButtonPressed = true;
 				}
@@ -142,59 +122,135 @@ void PauseGame::processInput()
 			default:
 				break;
 			}
+			break;
+		}
+		case sf::Event::MouseMoved:
+		{
+			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[0]->setFocused(true);
+				m_pageButtons[1]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+			}
+			else if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[1]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+			}
+			else if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[2]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[1]->setFocused(false);
+			}
+			break;
+		}
+		case sf::Event::KeyPressed:
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::Up:
+			{
+				if (m_pageButtons[2]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[2]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[0]->setFocused(true);
+					m_pageButtons[0]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[0]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Down:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[0]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[2]->setFocused(true);
+					m_pageButtons[2]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[2]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Escape:
+			{
+				m_isResumeButtonPressed = true;
+				break;
+			}
+			case sf::Keyboard::Return:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_isResumeButtonPressed = true;
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_isRestartButtonPressed = true;
+				}
+				else if (m_pageButtons[2]->isFocused())
+				{
+					m_isMainMenuButtonPressed = true;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
 
 void PauseGame::update(sf::Time deltaTime)
 {	
-	if (m_isResumeButtonSelected)
-	{
-		m_resumeButton.setFillColor(sf::Color::Magenta);
-		m_restartButton.setFillColor(::sf::Color::White);
-		m_mainMenuButton.setFillColor(::sf::Color::White);
-	}
-	else if (m_isRestartButtonSelected)
-	{
-		m_resumeButton.setFillColor(sf::Color::White);
-		m_restartButton.setFillColor(::sf::Color::Magenta);
-		m_mainMenuButton.setFillColor(::sf::Color::White);
-	}
-	else
-	{
-		m_resumeButton.setFillColor(sf::Color::White);
-		m_restartButton.setFillColor(::sf::Color::White);
-		m_mainMenuButton.setFillColor(::sf::Color::Magenta);
-	}
+	
 	if (m_isResumeButtonPressed)
 	{
 		//TODO
 		//Go to Play State
 		m_bgm->stopMainMenuMusic();
 		m_context->m_states->popCurrent();
+		m_isResumeButtonPressed = false;
 	}
 	else if (m_isRestartButtonPressed)
 	{
 		m_bgm->stopMainMenuMusic();
 		m_context->m_states->popCurrent();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
+		m_isRestartButtonPressed = false;
 	}
 	else if (m_isMainMenuButtonPressed)
 	{
 		m_context->m_states->popCurrent();
 		m_context->m_states->popCurrent();
 		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
+		m_isMainMenuButtonPressed = false;
 	}
 }
 
 void PauseGame::draw()
 {
 	m_context->m_window->draw(m_pauseTitle);
-	m_context->m_window->draw(m_resumeButton);
-
-	m_context->m_window->draw(m_restartButton);
-	m_context->m_window->draw(m_mainMenuButton);
-
+	gui.draw();
 	m_context->m_window->display();
 }
 

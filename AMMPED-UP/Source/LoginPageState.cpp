@@ -2,9 +2,24 @@
 #include "../Header Files/MainMenu.h"
 #include "../Header Files/LoginState.h"
 
-LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
-    m_context(context)
+enum buttonValues
 {
+    SIGN_IN,
+    BACK
+};
+
+enum textboxValues
+{
+    UID,
+    PWD
+};
+
+LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
+    m_context(context), m_errorPrompt(*m_context->m_window),
+    gui(*m_context->m_window)
+
+{
+    theme.load("Resources/Black.txt");
     m_username = UserNameManager::getInstance();
 }
 
@@ -38,11 +53,6 @@ void LoginPageState::init()
 	m_userNameTitle.setOrigin(m_userNameTitle.getLocalBounds().width / 2, m_userNameTitle.getLocalBounds().height / 2);
 	m_userNameTitle.setPosition(m_context->m_window->getSize().x / 4 + 77, m_context->m_window->getSize().y / 2 - 80.0f);
 
-	//USERNAME TEXTBOX
-    m_allTextBoxes[0] = Textbox({ 400,25 },20, sf::Color::Black, sf::Color::Transparent,sf::Color::White, true);
-    m_allTextBoxes[0].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_allTextBoxes[0].setPosition(sf::Vector2f( m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 50.0f ));
-
 	//PASSWORD TITTLE
 	m_passwordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
 	m_passwordTitle.setString("Password");
@@ -50,34 +60,80 @@ void LoginPageState::init()
 	m_passwordTitle.setOrigin(m_passwordTitle.getLocalBounds().width / 2, m_passwordTitle.getLocalBounds().height / 2);
 	m_passwordTitle.setPosition(m_context->m_window->getSize().x / 4, m_context->m_window->getSize().y / 2);
 
-	//PASSWORD TEXTBOX
-    m_allTextBoxes[1] = Textbox({ 400,25 }, 20, sf::Color::Black, sf::Color::Transparent, sf::Color::White, false);
-    m_allTextBoxes[1].setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_allTextBoxes[1].setPosition(sf::Vector2f(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 30.0f));
 
-	//SIGN IN BUTTON
-	m_signInButton = Button("Sign In",{ 150,50 }, 35, sf::Color::Green, sf::Color::White);
-	m_signInButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_signInButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_signInButton.getButtonSize().x / 2 - 150, m_context->m_window->getSize().y - 200.0f - m_signInButton.getButtonSize().y / 2));
-    m_signInButton.setBackColor(sf::Color::Transparent);
-    m_signInButton.setOutlineThickness(1);
+    //////////////////////////////////////////////////
+    m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
+    m_context->m_assets->addGuiFont(LOGIN_FONT, "Resources/fonts/Arial.ttf");
 
-    //BACK BUTTON to transition to previous state ->LoginState
-    m_backButton = Button("Back", { 150,50 }, 35, sf::Color::Green, sf::Color::White);
-    m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-    m_backButton.setPosition(sf::Vector2f(m_context->m_window->getSize().x / 2 - m_backButton.getButtonSize().x / 2 + 150, m_context->m_window->getSize().y - 200.0f - m_backButton.getButtonSize().y / 2));
-    m_backButton.setBackColor(sf::Color::Transparent);
-    m_backButton.setOutlineThickness(1);
+    for (int i = 0; i < 2; i++)
+    {
+        m_editTextBoxes[i] = tgui::EditBox::create();
+        m_editTextBoxes[i]->getRenderer()->setFont(m_context->m_assets->getGuiFont(LOGIN_FONT));
+        m_editTextBoxes[i]->setSize(400, 25);
+        m_editTextBoxes[i]->setTextSize(20);
+        m_editTextBoxes[i]->getRenderer()->setTextColor(tgui::Color::White);
+        m_editTextBoxes[i]->getRenderer()->setBorderColor(tgui::Color::Black);
+        m_editTextBoxes[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+        m_editTextBoxes[i]->getRenderer()->setBorderColorFocused(tgui::Color::White);
+        if (i == UID)
+        {
+            m_editTextBoxes[i]->setFocused(true);
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 - 50.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
+        }
+        else if (i == PWD)
+        {
+            m_editTextBoxes[i]->setPasswordCharacter('*');
+            m_editTextBoxes[i]->setPosition(m_context->m_window->getSize().x / 4 - 50, m_context->m_window->getSize().y / 2 + 30.0f);
+            m_editTextBoxes[i]->getRenderer()->setBackgroundColorFocused(tgui::Color(0, 0, 0, 120));
+
+        }
+        gui.add(m_editTextBoxes[i]);
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        m_pageButtons[i] = tgui::Button::create();
+        m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+        m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+        m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+        m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+        m_pageButtons[i]->setTextSize(35);
+        
+        if (i == SIGN_IN)
+        {
+            m_pageButtons[i]->setText("Sign In");
+            m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2 - 150.0f, m_context->m_window->getSize().y / 2 + 200.0f);
+            m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+            m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+        }
+        else if (i == BACK)
+        {
+            m_pageButtons[i]->setText("Back");
+            m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2 + 150.0f, m_context->m_window->getSize().y / 2 + 200.0f);
+            m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+            m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+        }
+        m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+        gui.add(m_pageButtons[i]);
+    }
+	
 
     //PROMPTS for exceptions at top left corner
-    m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
-    m_errorPrompt.setFillColor(sf::Color(255, 49, 49));
-    m_errorPrompt.setOutlineThickness(0.5);
-    m_errorPrompt.setOutlineColor(sf::Color::Black);
-    m_errorPrompt.setString("");
-    m_errorPrompt.setCharacterSize(20);
-    m_errorPrompt.setOrigin(m_errorPrompt.getLocalBounds().width / 2, m_errorPrompt.getLocalBounds().height / 2);
-    m_errorPrompt.setPosition(m_errorPrompt.getLocalBounds().width / 2 + 2, m_errorPrompt.getLocalBounds().height / 2 + 2);
+    m_context->m_assets->addGuiFont(LOGIN_FONT, "Resources/fonts/Arial.ttf");
+
+    //PROMPTS for exceptions at top left corner
+    m_errorPrompt.init(
+        "",
+        m_context->m_assets->getGuiFont(LOGIN_FONT),
+        20,
+        { 2,2 },
+        { m_errorPrompt.getSize().x / 2, m_errorPrompt.getSize().y / 2 },
+        sf::Color(255, 49, 49),
+        0.5,
+        sf::Color::Black
+    );
+
 }
 
 void LoginPageState::processInput()
@@ -85,6 +141,7 @@ void LoginPageState::processInput()
     sf::Event event;
     while (m_context->m_window->pollEvent(event))
     {
+        //gui.handleEvent(event);
         switch (event.type)
         {
         case sf::Event::Closed:
@@ -92,22 +149,57 @@ void LoginPageState::processInput()
             m_context->m_window->close();
             break;
         }
-        case sf::Event::TextEntered:
-        {
-            for (int i = 0; i < sizeof(m_allTextBoxes) / sizeof(m_allTextBoxes[0]); i++)
-            {
-                if(m_allTextBoxes[i].getSelected())
-                    m_allTextBoxes[i].typedOn(event);
-            }
-            break;
-        }
         case sf::Event::KeyPressed:
         {
             switch (event.key.code)
             {
+            case sf::Keyboard::Tab:
+            {
+
+                if (m_editTextBoxes[0]->isFocused())
+                {
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[1]->setFocused(true);
+                }
+                else if(m_editTextBoxes[1]->isFocused())
+                {
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_pageButtons[0]->setFocused(true);
+                }
+                else if(m_pageButtons[0]->isFocused())
+                {
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(true);
+                }else if(m_pageButtons[1]->isFocused())
+                {
+                    m_pageButtons[1]->setFocused(false);
+                    m_editTextBoxes[0]->setFocused(true);
+                }
+                else
+                {
+                    m_editTextBoxes[0]->setFocused(true);
+                }
+                break;
+            }
             case sf::Keyboard::Enter:
             {
-                m_isSignInButtonPressed = true;
+                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                if (m_pageButtons[0]->isFocused() || m_pageButtons[0]->isMouseOnWidget({mouseX, mouseY}))
+                {
+                    m_isSignInButtonPressed = true;
+                }
+
+                if (m_pageButtons[1]->isFocused() || m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_isBackButtonPressed = true;
+                }
+
+                break;
+            }
+            case sf::Keyboard::Escape:
+            {
+                m_isBackButtonPressed = true;
                 break;
             }
             default:
@@ -115,67 +207,110 @@ void LoginPageState::processInput()
             }
             break;
         }
-        case sf::Event::KeyReleased:
+        case sf::Event::TextEntered:
         {
-            switch (event.key.code)
+            if (event.text.unicode != '\t' && event.text.unicode != '\n')
             {
-            case sf::Keyboard::Enter:
-            {
-                m_isSignInButtonPressed = false;
-                m_signInButton.setTextColor(sf::Color::White);
+                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                if (m_editTextBoxes[0]->isFocused())
+                {
+                    if (event.text.unicode == '\b') // Backspace
+                    {
+                        m_editTextBoxes[0]->setText(m_editTextBoxes[0]->getText().substr(0, m_editTextBoxes[0]->getText().size() - 1));
+                    }
+                    else if (event.text.unicode < 128) // Regular character
+                    {
+                        m_editTextBoxes[0]->setText(m_editTextBoxes[0]->getText() + static_cast<char>(event.text.unicode));
+                    }
+                }
+                if (m_editTextBoxes[1]->isFocused())
+                {
+                    if (event.text.unicode == '\b') // Backspace
+                    {
+                        m_editTextBoxes[1]->setText(m_editTextBoxes[1]->getText().substr(0, m_editTextBoxes[1]->getText().size() - 1));
+                    }
+                    else if (event.text.unicode < 128) // Regular character
+                    {
+                        m_editTextBoxes[1]->setText(m_editTextBoxes[1]->getText() + static_cast<char>(event.text.unicode));
+                    }
+                }
+            }
 
-                break;
-            }
-            default:
-                break;
-            }
+
             break;
         }
         case sf::Event::MouseMoved:
         {
-            if (m_signInButton.isMouseOver(*m_context->m_window))
+            float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+            float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+            if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_signInButton.setTextColor(sf::Color::Magenta);
+                m_pageButtons[0]->getRenderer()->setTextColor(sf::Color::Magenta);
+                m_pageButtons[1]->setFocused(false);
+
             }
-            else
+            if(!m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_signInButton.setTextColor(sf::Color::White);
+                m_pageButtons[0]->getRenderer()->setTextColor(sf::Color::White);
+
             }
-            if (m_backButton.isMouseOver(*m_context->m_window))
+            if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_backButton.setTextColor(sf::Color::Magenta);
+                m_pageButtons[1]->getRenderer()->setTextColor(sf::Color::Magenta);
+                m_pageButtons[0]->setFocused(false);
+
             }
-            else
+            if(!m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
             {
-                m_backButton.setTextColor(sf::Color::White);
+                m_pageButtons[1]->getRenderer()->setTextColor(sf::Color::White);
             }
             break;
         }
         case sf::Event::MouseButtonPressed:
         {
-            if (m_backButton.isMouseOver(*m_context->m_window))
+            switch (event.key.code)
             {
-                m_isBackButtonPressed = true;
-            }
-            if (m_signInButton.isMouseOver(*m_context->m_window))
-            {  
-                m_isSignInButtonPressed = true;
-            }
-            if (m_allTextBoxes[0].isMouseOver(*m_context->m_window))
+            case sf::Mouse::Left:
             {
-                m_allTextBoxes[0].setSelected(true);
-                m_allTextBoxes[1].setSelected(false);
+                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_isSignInButtonPressed = true;
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_editTextBoxes[1]->setFocused(false);
+                }
+                if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_isBackButtonPressed = true;
+                }
+
+                //TEXTBOXES             
+                if (m_editTextBoxes[0]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[0]->setFocused(true);
+                    m_editTextBoxes[1]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                if (m_editTextBoxes[1]->isMouseOnWidget({ mouseX, mouseY }))
+                {
+                    m_editTextBoxes[1]->setFocused(true);
+                    m_editTextBoxes[0]->setFocused(false);
+                    m_pageButtons[0]->setFocused(false);
+                    m_pageButtons[1]->setFocused(false);
+                }
+                break;
             }
-            else if (m_allTextBoxes[1].isMouseOver(*m_context->m_window))
-            {
-                m_allTextBoxes[0].setSelected(false);
-                m_allTextBoxes[1].setSelected(true);
+            default:
+                break;
             }
             break;
         }
         default:
             break;
-        }
+    }
     }
 }
 
@@ -183,22 +318,22 @@ void LoginPageState::update(sf::Time deltaTime)
 {
     m_elapsedTime += deltaTime;
     if (m_isSignInButtonPressed)
-    {    
-        m_signInButton.setTextColor(sf::Color::Magenta);
-        const auto loginData = m.findDocument(m_allTextBoxes[0].getText());
+    {   
+        std::string temp(m_editTextBoxes[0]->getText());
+        const auto loginData = m.findDocument(temp);
         if (anyTextboxEmpty())
         {
-            m_errorPrompt.setString("Error, empty values");
+            m_errorPrompt.setText("Error, empty values");
             m_elapsedTime = sf::Time(sf::milliseconds(0));
         }
-        else if((std::get<0>(loginData) == m_allTextBoxes[0].getText() || std::get<1>(loginData) == m_allTextBoxes[0].getText()) && std::get<2>(loginData) == m_allTextBoxes[1].getText())
+        else if((std::get<0>(loginData) == m_editTextBoxes[0]->getText() || std::get<1>(loginData) == m_editTextBoxes[0]->getText()) && std::get<2>(loginData) == m_editTextBoxes[1]->getText())
         {
             verified = true;
             m_username->setUsername(std::get<0>(loginData));
         }
         else
         {
-            m_errorPrompt.setString("Error login, invalid username or password");
+            m_errorPrompt.setText("Error login, invalid username or password");
         }
         m_isSignInButtonPressed = false;
     }
@@ -211,7 +346,6 @@ void LoginPageState::update(sf::Time deltaTime)
     }
     if (m_isBackButtonPressed)
     {
-        m_backButton.setTextColor(sf::Color::Magenta);
         m_context->m_states->popCurrent();
         m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
         m_isBackButtonPressed = false;
@@ -219,7 +353,7 @@ void LoginPageState::update(sf::Time deltaTime)
 
     if (m_elapsedTime.asSeconds() > 3.0)
     {
-        m_errorPrompt.setString("");
+        m_errorPrompt.setText("");
         m_elapsedTime = sf::Time::Zero;
     }
 }
@@ -232,14 +366,13 @@ void LoginPageState::draw()
     m_context->m_window->draw(m_userNameTitle);
     m_context->m_window->draw(m_emailIDTitle);
     m_context->m_window->draw(m_passwordTitle);
-    m_context->m_window->draw(m_errorPrompt);
+    m_errorPrompt.draw();
 
     for (int i = 0; i < 2; i++)
     {
-        m_allTextBoxes[i].Draw(*m_context->m_window);
+        //m_allTextBoxes[i].Draw(*m_context->m_window);
     }
-	m_signInButton.Draw(*m_context->m_window);
-    m_backButton.Draw(*m_context->m_window);
+    gui.draw();
 	m_context->m_window->display();
 }
 
@@ -253,8 +386,8 @@ void LoginPageState::pause()
 
 bool LoginPageState::anyTextboxEmpty()
 {
-    for (auto& textbox : m_allTextBoxes) {
-        if (textbox.getText() == "") {
+    for (auto& textbox : m_editTextBoxes) {
+        if (textbox->getText() == "") {
             return true;
         }
     }

@@ -2,7 +2,6 @@
 #include <memory>
 #include "SFML/Graphics/Sprite.hpp"
 #include "MongoDB.h"
-#include "MongoInstanceManager.h"
 
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
@@ -32,7 +31,6 @@ private:
 
 
 	//MONGODB
-	MongoInstance* instance;
 	learning::MongoDB m;
 	std::vector<std::pair<std::string, int>> m_TopTenScores;
 public:

@@ -7,6 +7,7 @@
 #include "TextBox.h"
 #include "UserNameManager.h"
 #include "MongoDB.h"
+#include "TextPrompt.h"
 
 class LoginPageState : public am::State
 {
@@ -23,12 +24,18 @@ private:
 	sf::Text m_passwordTitle;
 
 	//TEXTBOXES
-	Textbox m_allTextBoxes[2]; //Username, EmailID, Password
-	sf::Text m_errorPrompt;
+	//Textbox m_allTextBoxes[2]; //Username or EmailID, Password
+	tgui::EditBox::Ptr m_editTextBoxes[2];
+
+	//Error visual showing at top left corner
+	TextPrompt m_errorPrompt;
+
 
 	//SIGN IN BUTTON
-	Button m_signInButton;
-	Button m_backButton;
+	tgui::Theme theme;
+	tgui::Gui gui;
+	tgui::Button::Ptr m_pageButtons[2];
+
 
 	bool m_isSignInButtonPressed = false;
 	bool m_isBackButtonPressed = false;

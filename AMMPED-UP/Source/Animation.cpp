@@ -26,6 +26,7 @@ void Animation::update(sf::Time elapsed)
 {
 	progress += elapsed;
 	sf::Time p = progress;
+	
 	for (size_t i = 0; i < m_frames.size(); i++)
 	{
 		p -= m_frames[i].duration;
@@ -40,6 +41,7 @@ void Animation::update(sf::Time elapsed)
 			break;
 		}
 	}
+	
 }
 
 const sf::Time Animation::getLength() const

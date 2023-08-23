@@ -45,6 +45,8 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
 	);
 	m_sound = &audioManager;
+	m_sound->stopMainMenuMusic();
+	//m_sound->startInGameMusic();
 	srand(time(nullptr));
 }
 
@@ -102,7 +104,6 @@ void GamePlay::init()
 				sf::Sprite vWall;
 				vWall.setTexture(m_context->m_assets->getTexture(VERTICAL_WALL_TEXTURE));
 				vWall.setScale({ 2,2 });
-
 				vWall.setPosition(sf::Vector2f(j * 32, i * 32));
 				m_VWalls.push_back(vWall);
 			}
@@ -192,12 +193,12 @@ void GamePlay::init()
 	getEnemyValue(m_enemies, 4).setDirection(m_directions[ReturnIntRandom(2, 3)]);
 	getEnemyValue(m_enemies, 5).setDirection(m_directions[ReturnIntRandom(0, 1)]);
 	
-	getEnemyValue(m_enemies, 0).setPosition(sf::Vector2f(240 * 2, 176 * 2));
-	getEnemyValue(m_enemies, 1).setPosition(sf::Vector2f(384 * 2, 288 * 2));
-	getEnemyValue(m_enemies, 2).setPosition(sf::Vector2f(560 * 2, 208 * 2));
-	getEnemyValue(m_enemies, 3).setPosition(sf::Vector2f(304 * 2, 448 * 2));
-	getEnemyValue(m_enemies, 4).setPosition(sf::Vector2f(256 * 2, 16 * 2));
-	getEnemyValue(m_enemies, 5).setPosition(sf::Vector2f(96 * 2, 192 * 2));
+	getEnemyValue(m_enemies, 0).setPosition(sf::Vector2f(255 * 2, 191 * 2));	//PURPLE TOP LEFT
+	getEnemyValue(m_enemies, 1).setPosition(sf::Vector2f(367 * 2, 271 * 2));	//PURPLE BOTTOM RIGHT
+	getEnemyValue(m_enemies, 2).setPosition(sf::Vector2f(560 * 2, 208 * 2));	//VERTICAL RIGHT 
+	getEnemyValue(m_enemies, 3).setPosition(sf::Vector2f(304 * 2, 448 * 2));	//HORIZONTAL BOTTOM
+	getEnemyValue(m_enemies, 4).setPosition(sf::Vector2f(256 * 2, 16 * 2));		//HORIZONTAL UP
+	getEnemyValue(m_enemies, 5).setPosition(sf::Vector2f(96 * 2, 192 * 2));		//VERTICAL LEFT
 
 	getEnemyValue(m_enemies, 0).setPreviousPosition(getEnemyValue(m_enemies, 0).getPosition());
 	getEnemyValue(m_enemies, 1).setPreviousPosition(getEnemyValue(m_enemies, 1).getPosition());
@@ -342,12 +343,25 @@ void GamePlay::processInput()
 				break;
 			}
 			//TEMPORARY DEBUGGIN TOOL
-			case sf::Keyboard::Q:
+			/*case sf::Keyboard::Q:
 			{
 				m_shiftToGameOver = true;
 				m_currentGameState = std::string("You Won!!");
 				break;
 			}
+			case sf::Keyboard::J:
+			{
+				m_shiftToGameOver = true;
+				m_currentGameState = std::string("You Died!!");
+				break;
+			}
+			case sf::Keyboard::K:
+			{
+				m_shiftToGameOver = true;
+				m_currentGameState = std::string("Time's Up!!");
+				break;
+			}
+
 			case sf::Keyboard::P:
 			{
 				if (!showPowerUP)
@@ -355,7 +369,7 @@ void GamePlay::processInput()
 				else
 					showPowerUP = false;
 				break;
-			}
+			}*/
 			default:
 				break;
 			}
@@ -435,7 +449,9 @@ void GamePlay::update(sf::Time deltaTime)
 				{
 					m_sound->startSFXMusic(DAMAGE_SFX_SOUND);
 					m_damageCounter = true;
-					m_player.setHealth(m_player.getHealth() - 20);
+					auto temphealth = m_player.getHealth() - 20;
+					m_player.setHealth(temphealth);
+
 					m_inVulnerability = true;
 					break;
 				}
@@ -510,28 +526,9 @@ void GamePlay::update(sf::Time deltaTime)
 
 				}
 
-				/*for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
-				{
-					for (auto& explosionSprite : m_explosions)
-					{
-						if (checkCollision5(it->getPosition(), explosionSprite.getPosition()))
-						{
-							m_sound->startSFXMusic(ENEMY_DEATH_SFX_SOUND);
-							it = m_enemies.erase(it);
-							if (it == m_enemies.end() && m_enemies.size() == 0) 
-							{
-								break;
-							}
-							if (it == m_enemies.end())
-								break;
-						}
-					}
-					if (it == m_enemies.end())
-						break;
-				}*/
 				m_player.m_isBombPlaced = false;
 			}
-		}
+		} 
 		//PLAYER DAMAGE EFFEFCT - > BLINK EFFECT
 		if (m_damageCounter)
 		{
@@ -570,11 +567,12 @@ void GamePlay::update(sf::Time deltaTime)
 		//CHANGE DIRECTION OF ENEMIES AFTER PARTICULAR AMOUNT OF TIME
 		if (m_changeDirectionTime.asSeconds() >= 4.0)
 		{
-			for (auto it = m_enemies.begin(); it != m_enemies.end(); it++)
-			{
-				it->setDirection(m_directions[ReturnIntRandom(0, 3)]);
-				
-			}
+			getEnemyValue(m_enemies, 0).setDirection(m_directions[ReturnIntRandom(0, 3)]);
+			getEnemyValue(m_enemies, 1).setDirection(m_directions[ReturnIntRandom(0, 3)]);
+			getEnemyValue(m_enemies, 2).setDirection(m_directions[ReturnIntRandom(0, 1)]);
+			getEnemyValue(m_enemies, 3).setDirection(m_directions[ReturnIntRandom(2, 3)]);
+			getEnemyValue(m_enemies, 4).setDirection(m_directions[ReturnIntRandom(2, 3)]);
+			getEnemyValue(m_enemies, 5).setDirection(m_directions[ReturnIntRandom(0, 1)]);
 			m_changeDirectionTime = sf::Time::Zero;
 		}
 		//COLLISION OF ENEMIES WITH WALLS
@@ -612,6 +610,7 @@ void GamePlay::update(sf::Time deltaTime)
 		}
 		if (progressBar->getValue() <= 0)
 		{
+			std::cout << "live down by 1" << std::endl;
 			m_lives--;
 			m_player.setHealth(100);
 			m_livesText.setString(std::to_string(m_lives));
@@ -631,15 +630,16 @@ void GamePlay::update(sf::Time deltaTime)
 			m_currentGameState = std::string("You Won!!");
 			m_shiftToGameOver = true;
 		}
-		if (m_shiftToGameOver)
-		{
-			m_context->m_states->add(std::make_unique<GameOver>(m_context, m_currentGameState));
-			m_shiftToGameOver = false;
-		}
+		
 		m_scoreManager->setScore(m_currentScore);
 		m_scoreText.setString("Score : " + std::to_string(m_scoreManager->getScore()));
 		m_livesText.setString(std::to_string(m_lives));
 		progressBar->setValue(m_player.getHealth());
+		if (m_shiftToGameOver)
+		{
+			m_context->m_states->add(std::make_unique<GameOver>(m_context, m_currentGameState), true);
+			m_shiftToGameOver = false;
+		}
 	}
 }
 

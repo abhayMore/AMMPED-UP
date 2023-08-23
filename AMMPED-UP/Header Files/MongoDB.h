@@ -13,7 +13,6 @@
 #include "mongocxx/database.hpp"
 #include "mongocxx/uri.hpp"
 #include <mongocxx/exception/operation_exception.hpp>
-
 namespace learning {
 	const mongocxx::uri mongoURI(mongodb_uri);
 	const std::string dbName = databaseName;
@@ -26,9 +25,10 @@ namespace learning {
 		std::tuple<std::string, std::string, std::string> findDocument(const std::string& value);
 		bool isDataPresent(const std::string& key, const std::string& value);
 		int findScore(const std::string& value);
-		void updateDocument(const std::string& key, const int& value, const std::string& newKey, const int& newValue);
+		void updateDocument(const std::string& userName, const std::string& key, const int& value);
 		std::vector<std::pair<std::string, int>> getTopScores(int limit);				
 		bool getConnection();
+		int getDocumentCount();
 
 	private:
 		MongoInstance* instance;

@@ -6,16 +6,21 @@
 
 #include <memory>
 
+enum buttonValues
+{
+	RESET_HIGHSCORE,
+	BACK
+};
+
 OptionsState::OptionsState(std::shared_ptr<Context>& context) :
 	m_context(context),
-	m_isResetHighScoreButtonSelected(false),
 	m_isResetHighScoreButtonPressed(false),
-	m_isExitButtonSelected(true),
-	m_isExitButtonPressed(false),
+	m_isMainmenuButtonPressed(false),
 	gui(*m_context->m_window),
 	m_isOverallMusicSliderMove(false),
 	m_isInGameMusicSliderMove(false),
-	m_isSFXSliderMove(false)
+	m_isSFXSliderMove(false),
+	m_errorPrompt(*m_context->m_window)
 {
 	theme.load("Resources/Black.txt");
 	username = UserNameManager::getInstance();
@@ -51,7 +56,7 @@ void OptionsState::init()
 	m_optionsTitle.setString("Options");
 	m_optionsTitle.setCharacterSize(50);
 	m_optionsTitle.setOrigin(m_optionsTitle.getLocalBounds().width / 2, m_optionsTitle.getLocalBounds().height / 2);
-	m_optionsTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 325.0f) ;
+	m_optionsTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 325.0f);
 	m_optionsTitle.setOutlineThickness(1);
 
 	for (int i = 0; i < 5; i++)
@@ -75,22 +80,38 @@ void OptionsState::init()
 	m_controlDirections[3].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 50.0f);
 	m_controlDirections[4].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 100.0f);
 
-	//RESET HIGHSCORE BUTTON
-	m_resetHighScoreButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_resetHighScoreButton.setString("Reset Highscore?");
-	m_resetHighScoreButton.setCharacterSize(35);
-	m_resetHighScoreButton.setOrigin(m_resetHighScoreButton.getLocalBounds().width / 2, m_resetHighScoreButton.getLocalBounds().height / 2);
-	m_resetHighScoreButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 200.0f);
-	m_resetHighScoreButton.setOutlineThickness(1);
+	///////////////////////////////////////////////////
+	//RESET HIGHSCORE AND MAINMENU BUTTON INIT
+	m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
 
-	//EXIT BUTTON
-	m_exitButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_exitButton.setString("Back");
-	m_exitButton.setCharacterSize(35);
-	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
-	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 300.0f);
-	m_exitButton.setOutlineThickness(1);
+	for (int i = 0; i < 2; i++)
+	{
+		m_pageButtons[i] = tgui::Button::create();
+		m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+		m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+		m_pageButtons[i]->setTextSize(35);
+		if (i == RESET_HIGHSCORE)
+		{
+			m_pageButtons[i]->setText("Reset Highscore?");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 200.0f);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == BACK)
+		{
+			m_pageButtons[i]->setText("Back");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 300.0f);
+			m_pageButtons[i]->setFocused(true);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+		gui.add(m_pageButtons[i]);
+	}
 
+	//AUDIO CONTROLS INIT
 	for (int i = 0; i < 3; i++) {
 		m_audioControls[i] = tgui::Slider::create();
 		m_audioControls[i]->setRenderer(theme.getRenderer("Slider"));
@@ -131,16 +152,20 @@ void OptionsState::init()
 	m_audioControls[2]->setValue(m_bgm->getSFXVolume());
 	//m_bgm->setVolume(m_audioControls[0]->getValue());
 
-	//PROMPTS for exceptions at top left corner
-	m_errorPrompt.setFont(m_context->m_assets->getFont(LOGIN_FONT));
-	m_errorPrompt.setFillColor(sf::Color(255, 49, 49));
-	m_errorPrompt.setOutlineThickness(0.5);
-	m_errorPrompt.setOutlineColor(sf::Color::Black);
-	m_errorPrompt.setString("");
-	m_errorPrompt.setCharacterSize(20);
-	m_errorPrompt.setOrigin(m_errorPrompt.getLocalBounds().width / 2, m_errorPrompt.getLocalBounds().height / 2);
-	m_errorPrompt.setPosition(m_errorPrompt.getLocalBounds().width / 2 + 2, m_errorPrompt.getLocalBounds().height / 2 + 2);
+	m_context->m_assets->addGuiFont(LOGIN_FONT, "Resources/fonts/Arial.ttf");
 
+	//PROMPTS for exceptions at top left corner
+	m_errorPrompt.init(
+		"",
+		m_context->m_assets->getGuiFont(LOGIN_FONT),
+		20,
+		{2,2},
+		{ m_errorPrompt.getSize().x / 2, m_errorPrompt.getSize().y / 2 },
+		sf::Color(255, 49, 49),
+		0.5,
+		sf::Color::Black
+	);
+	
 }
 
 void OptionsState::processInput()
@@ -153,6 +178,22 @@ void OptionsState::processInput()
 			case sf::Event::Closed:
 			{
 				m_context->m_window->close();
+				break;
+			}
+			case sf::Event::MouseMoved:
+			{
+				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
+				{
+					m_pageButtons[0]->setFocused(true);
+					m_pageButtons[1]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[0]->setFocused(false);
+				}
 				break;
 			}
 			case sf::Event::MouseButtonPressed:
@@ -173,6 +214,21 @@ void OptionsState::processInput()
 					{
 						m_isSFXSliderMove = true;
 					}
+					float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+					float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+					if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
+						&& m_pageButtons[0]->isFocused())
+					{
+						
+						m_isResetHighScoreButtonPressed = true;
+					}
+					if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY })
+						&& m_pageButtons[1]->isFocused())
+					{
+						m_isMainmenuButtonPressed = true;
+					}
+
+
 					break;
 				}
 				default:
@@ -198,43 +254,45 @@ void OptionsState::processInput()
 			{
 				switch (event.key.code)
 				{
-					case sf::Keyboard::Up:
+				case sf::Keyboard::Up:
+				{
+					if (m_pageButtons[1]->isFocused())
 					{
-						if (!m_isResetHighScoreButtonSelected)
-						{
-							m_isResetHighScoreButtonSelected = true;
-							m_isExitButtonSelected = false;
-						}
-					break;
+						m_pageButtons[0]->setFocused(true);
+						m_pageButtons[0]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+						m_pageButtons[0]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+						m_pageButtons[1]->setFocused(false);
 					}
-					case sf::Keyboard::Down:
-					{
-						if (!m_isExitButtonSelected)
-						{
-							m_isExitButtonSelected = true;
-							m_isResetHighScoreButtonSelected = false;
-						}
-					
-					break;
-					}
-					case sf::Keyboard::Escape:
-					{
-					m_isExitButtonPressed = true;
-					break;
-					}
-					case sf::Keyboard::Return:
-					{
-						m_isResetHighScoreButtonPressed = false;
-						m_isExitButtonPressed = false;
-						if (m_isExitButtonSelected)
-							m_isExitButtonPressed = true;
-						else if (m_isResetHighScoreButtonSelected)
-							m_isResetHighScoreButtonPressed = true;
-					break;
-					}
-					default:
 					break;
 				}
+				case sf::Keyboard::Down:
+				{
+					if (m_pageButtons[0]->isFocused())
+					{
+						m_pageButtons[1]->setFocused(true);
+						m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+						m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+						m_pageButtons[0]->setFocused(false);
+					}
+					break;
+				}
+				case sf::Keyboard::Return:
+				{
+					if (m_pageButtons[0]->isFocused())
+					{
+						m_isResetHighScoreButtonPressed = true;
+					}
+					else if (m_pageButtons[1]->isFocused())
+					{
+						m_isMainmenuButtonPressed = true;
+					}
+					break;
+				}
+				default:
+					break;
+				}
+
+				break;
 			}
 		}
 	}
@@ -242,7 +300,7 @@ void OptionsState::processInput()
 
 void OptionsState::update(sf::Time deltaTime)
 {
-	m_elapsedTime += deltaTime;
+	
 	if (m_isOverallMusicSliderMove)
 	{
 		m_audioControls[0]->setValue(sf::Mouse::getPosition(*m_context->m_window).x / 2 - m_audioControls[0]->getPosition().x / 2);
@@ -255,46 +313,31 @@ void OptionsState::update(sf::Time deltaTime)
 	{
 		m_audioControls[2]->setValue(sf::Mouse::getPosition(*m_context->m_window).x / 2 - m_audioControls[2]->getPosition().x / 2);
 	}
-	if (m_isExitButtonSelected)
-	{
-		m_exitButton.setFillColor(::sf::Color::Magenta);
-	}
-	else
-	{
-		m_exitButton.setFillColor(::sf::Color::White);
-	}
+	
 
 	m_bgm->setOverallVolume(m_audioControls[0]->getValue());
 	m_bgm->setInGameVolume(m_audioControls[1]->getValue());
 	m_bgm->setSFXVolume(m_audioControls[2]->getValue());
 
 
-	if (m_isResetHighScoreButtonSelected)
-	{
-		m_resetHighScoreButton.setFillColor(sf::Color::Magenta);
-		m_exitButton.setFillColor(::sf::Color::White);
-	}
-	else if (m_isExitButtonSelected)
-	{
-		m_resetHighScoreButton.setFillColor(sf::Color::White);
-		m_exitButton.setFillColor(::sf::Color::Magenta);
-	}
 	if (m_isResetHighScoreButtonPressed)
 	{
-		m.updateDocument("score", m.findScore(username->getUsername()), "score", 0);
-		m_errorPrompt.setString("Highscore reset successful");
+		m_elapsedTime += deltaTime;
+		m.updateDocument(username->getUsername(), "score", 0);
+		m_errorPrompt.setText("Highscore reset successful");
 
-		m_isResetHighScoreButtonPressed = false;
 	}
-	if (m_isExitButtonPressed)
+	if (m_isMainmenuButtonPressed)
 	{
 		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
-		m_isExitButtonPressed = false;
+		m_isMainmenuButtonPressed = false;
 	}
 	if (m_elapsedTime.asSeconds() > 3.0)
 	{
-		m_errorPrompt.setString("");
+		m_errorPrompt.setText("");
 		m_elapsedTime = sf::Time::Zero;
+		m_isResetHighScoreButtonPressed = false;
+
 	}
 }
 
@@ -303,12 +346,10 @@ void OptionsState::draw()
 	m_context->m_window->clear();
 	m_context->m_window->draw(m_menuBackground);
 	m_context->m_window->draw(m_optionsTitle);
-	m_context->m_window->draw(m_resetHighScoreButton);
-	m_context->m_window->draw(m_exitButton);
 	m_context->m_window->draw(m_overallMusic);
 	m_context->m_window->draw(m_inGameMusic);
 	m_context->m_window->draw(m_sfx);
-	m_context->m_window->draw(m_errorPrompt);
+	m_errorPrompt.draw();
 	for (int i = 0; i < 5; i++)
 	{
 		m_context->m_window->draw(m_controlDirections[i]);

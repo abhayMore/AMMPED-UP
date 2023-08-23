@@ -4,16 +4,21 @@
 #include "../Header Files/MainMenu.h"
 #include <iostream>
 
+enum buttonValues
+{
+	RETRY,
+	MAINMENU
+};
+
 GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) :
 	m_context(context),
 	m_currentGameState(currentState),
-	m_isRetryButtonSelected(true),
 	m_isRetryButtonPressed(false),
-	m_isExitButtonSelected(false),
-	m_isExitButtonPressed(false),
+	m_isMainmenuButtonPressed(false),
 	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
-	instance(MongoInstance::getInstance())
+	gui(*m_context->m_window)
 {
+	theme.load("Resources/Black.txt");
 	m_finalScore = ScoreManager::getInstance();
 	m_userName = UserNameManager::getInstance();
 
@@ -23,11 +28,11 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 		int playerScore = m.findScore(m_userName->getUsername());
 		if (currentScore > playerScore)
 		{
-			m.updateDocument("score", m.findScore(m_userName->getUsername()), "score", currentScore);
+			m.updateDocument(m_userName->getUsername(),"score", currentScore);
 		}
 		else
 		{
-			m_finalScore->setScore(playerScore);
+			m_finalScore->setScore(currentScore);
 		}
 	}
 }
@@ -51,13 +56,35 @@ void GameOver::init()
 	m_gameOverTitle.setCharacterSize(50);
 	m_gameOverTitle.setOrigin(m_gameOverTitle.getLocalBounds().width / 2, m_gameOverTitle.getLocalBounds().height / 2);
 	m_gameOverTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 300.0f);
+	m_gameOverTitle.setOutlineThickness(1);
 
 	//CURRENT GAME STATE TEXT -> WON, TIME's UP, DIED..
 	m_currentGameStateTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_currentGameStateTitle.setString(m_currentGameState);
+	if (m_currentGameState == "You Won!!")
+	{
+		m_currentGameStateTitle.setFillColor(sf::Color(255, 215, 0));
+		m_currentGameStateTitle.setOutlineColor(sf::Color(255, 255, 0));
+
+	}
+	else if (m_currentGameState == "Time's Up!!")
+	{
+		m_currentGameStateTitle.setFillColor(sf::Color(8, 143, 143));
+		m_currentGameStateTitle.setOutlineColor(sf::Color(255, 255, 0));
+
+
+	}
+	else if (m_currentGameState == "You Died!!")
+	{
+		m_currentGameStateTitle.setFillColor(sf::Color(255, 36, 0));
+		m_currentGameStateTitle.setOutlineColor(sf::Color(255, 255, 0));
+
+	}
 	m_currentGameStateTitle.setCharacterSize(45);
 	m_currentGameStateTitle.setOrigin(m_currentGameStateTitle.getLocalBounds().width / 2, m_currentGameStateTitle.getLocalBounds().height / 2);
 	m_currentGameStateTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 200.0f);
+	m_currentGameStateTitle.setOutlineThickness(1);
+;
 
 	//SCORE TEXT AFTER GAME OVER
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
@@ -66,20 +93,47 @@ void GameOver::init()
 	m_scoreText.setCharacterSize(35);
 	m_scoreText.setOrigin(m_scoreText.getLocalBounds().width / 2, m_scoreText.getLocalBounds().height / 2);
 	m_scoreText.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+	m_scoreText.setOutlineThickness(1);
 
-	//PLAY BUTTON
-	m_retryButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_retryButton.setString("Retry");
-	m_retryButton.setCharacterSize(35);
-	m_retryButton.setOrigin(m_retryButton.getLocalBounds().width / 2, m_retryButton.getLocalBounds().height / 2);
-	m_retryButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
+	m_highScoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
+	m_highScoreText.setString("High Score : " + std::to_string(m.findScore(m_userName->getUsername())));
+	m_highScoreText.setCharacterSize(35);
+	m_highScoreText.setOrigin(m_highScoreText.getLocalBounds().width / 2, m_highScoreText.getLocalBounds().height / 2);
+	m_highScoreText.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
+	m_highScoreText.setOutlineThickness(1);
 
-	//EXIT BUTTON
-	m_exitButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_exitButton.setString("Exit");
-	m_exitButton.setCharacterSize(35);
-	m_exitButton.setOrigin(m_exitButton.getLocalBounds().width / 2, m_exitButton.getLocalBounds().height / 2);
-	m_exitButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 75.0f);
+
+	///////////////////////////////////////////////////
+	m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
+
+	for (int i = 0; i < 2; i++)
+	{
+		m_pageButtons[i] = tgui::Button::create();
+		m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+		m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+		m_pageButtons[i]->setTextSize(35);
+		if (i == RETRY)
+		{
+			m_pageButtons[i]->setText("RETRY");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
+			m_pageButtons[i]->setFocused(true);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == MAINMENU)
+		{
+			m_pageButtons[i]->setText("MAINMENU");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 75.0f);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+		gui.add(m_pageButtons[i]);
+	}
+
+
 	
 	m_deathSfx.setBuffer(m_context->m_assets->getSoundEffect(DEATH_SFX));
 	m_deathSfx.setVolume(10);
@@ -92,68 +146,105 @@ void GameOver::processInput()
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		switch (event.type)
+		{
+		case sf::Event::Closed:
 		{
 			m_context->m_window->close();
-			
+			break;
 		}
-		else if (event.type == sf::Event::KeyPressed)
+		case sf::Event::MouseButtonPressed:
 		{
 			switch (event.key.code)
 			{
-			case sf::Keyboard::Up:
+			case sf::Mouse::Left:
 			{
-				if (!m_isRetryButtonSelected)
-				{
-					m_isRetryButtonSelected = true;
-					m_isExitButtonSelected = false;
-				}
-				break;
-			}
-
-			case sf::Keyboard::Down:
-			{
-				if (!m_isExitButtonSelected)
-				{
-					m_isRetryButtonSelected = false;
-					m_isExitButtonSelected = true;
-				}
-				break;
-			}
-			case sf::Keyboard::Return:
-			{
-				m_isRetryButtonPressed = false;
-				m_isExitButtonPressed = false;
-				if (m_isRetryButtonSelected)
+				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[0]->isFocused())
 				{
 					m_isRetryButtonPressed = true;
 				}
-				else
+				if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[1]->isFocused())
 				{
-					m_isExitButtonPressed = true;
+					m_isMainmenuButtonPressed = true;
 				}
 				break;
 			}
 			default:
 				break;
 			}
+			break;
+		}
+		case sf::Event::MouseMoved:
+		{
+			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[0]->setFocused(true);
+				m_pageButtons[1]->setFocused(false);
+			}
+			else if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[1]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+			}
+			break;
+		}
+		case sf::Event::KeyPressed:
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::Up:
+			{
+				if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[0]->setFocused(true);
+					m_pageButtons[0]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[0]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Down:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[0]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Return:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_isRetryButtonPressed = true;
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_isMainmenuButtonPressed = true;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
 
 void GameOver::update(sf::Time deltaTime)
 {
-	if (m_isRetryButtonSelected)
-	{
-		m_retryButton.setFillColor(sf::Color::Magenta);
-		m_exitButton.setFillColor(::sf::Color::White);
-	}
-	else
-	{
-		m_exitButton.setFillColor(::sf::Color::Magenta);
-		m_retryButton.setFillColor(sf::Color::White);
-	}
-
 	if (m_isRetryButtonPressed)
 	{
 		//TODO
@@ -161,10 +252,12 @@ void GameOver::update(sf::Time deltaTime)
 		m_finalScore->setScore(0);
 		m_bgm.stop();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
+		m_isRetryButtonPressed = false;
 	}
-	else if (m_isExitButtonPressed)
+	else if (m_isMainmenuButtonPressed)
 	{
 		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_isMainmenuButtonPressed = false;
 
 	}
 }
@@ -176,9 +269,9 @@ void GameOver::draw()
 	m_context->m_window->draw(m_gameOverTitle);
 	m_context->m_window->draw(m_currentGameStateTitle);
 	m_context->m_window->draw(m_scoreText);
+	m_context->m_window->draw(m_highScoreText);
 
-	m_context->m_window->draw(m_retryButton);
-	m_context->m_window->draw(m_exitButton);
+	gui.draw();
 
 	m_context->m_window->display();
 }
@@ -186,5 +279,8 @@ void GameOver::draw()
 void GameOver::start()
 {
 	m_bgm.play();
-	m_deathSfx.play();
+	if (m_currentGameState != "You Won!!")
+	{
+		m_deathSfx.play();
+	}
 }

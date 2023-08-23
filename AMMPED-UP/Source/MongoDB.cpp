@@ -8,11 +8,9 @@ learning::MongoDB::MongoDB() :instance(MongoInstance::getInstance()),
 	api(mongocxx::options::server_api::version::k_version_1)
 {
 	connect();
-		//ammpedUPDB = conn.database(dbName);
-		//std::cout << "conn is done";
-		//loginInfoCollection = ammpedUPDB.collection(collName);
-
-		
+	//ammpedUPDB = conn.database(dbName);
+	//std::cout << "conn is done";
+	//loginInfoCollection = ammpedUPDB.collection(collName);	
 }
 
 void learning::MongoDB::connect()
@@ -100,10 +98,23 @@ int learning::MongoDB::findScore(const std::string& value)
 	}
 }
 
-void learning::MongoDB::updateDocument(const std::string& key, const int& value, const std::string& newKey, const int& newValue)
+//void learning::MongoDB::updateDocument(const std::string & userName, const std::string& key, const int& value, const std::string& newKey, const int& newValue)
+void learning::MongoDB::updateDocument(const std::string& userName, const std::string& key, const int& value)
 {
-	loginInfoCollection.update_one(bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize,
-		bsoncxx::builder::stream::document{} << "$set" << bsoncxx::builder::stream::open_document << newKey << newValue << bsoncxx::builder::stream::close_document << bsoncxx::builder::stream::finalize);
+	bsoncxx::builder::stream::document filter_builder{};
+	filter_builder << "username" << userName;
+
+	bsoncxx::builder::stream::document update_builder{};
+	update_builder << "$set" << bsoncxx::builder::stream::open_document << key << value << bsoncxx::builder::stream::close_document;
+	loginInfoCollection.update_one(filter_builder.view(), update_builder.view());
+	
+	//loginInfoCollection.update_one(bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize, bsoncxx::builder::stream::document{} << "$set" << bsoncxx::builder::stream::open_document << newKey << newValue << bsoncxx::builder::stream::close_document << bsoncxx::builder::stream::finalize);
+}
+
+int learning::MongoDB::getDocumentCount()
+{
+	bsoncxx::builder::basic::document filter_builder{}; // Optionally, you can provide a filter
+	return loginInfoCollection.count_documents(filter_builder.view());
 }
 
 std::vector<std::pair<std::string, int>> learning::MongoDB::getTopScores(int limit)

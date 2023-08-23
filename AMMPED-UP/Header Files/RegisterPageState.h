@@ -6,6 +6,7 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "MongoDB.h"
+#include "TextPrompt.h"
 
 #include <iostream>
 #include <regex>
@@ -27,14 +28,16 @@ private:
 	sf::Text m_confirmPasswordTitle;
 
 	//TEXTBOXES
-	Textbox m_allTextBoxes[5]; //Username, EmailID, ConfirmEmailID, Password, ConfrimPassword
+	tgui::Theme theme;
+	tgui::Gui gui;
+	tgui::EditBox::Ptr m_editTextBoxes[5]; //Username, EmailID, ConfirmEmailID, Password, ConfrimPassword
 
-	sf::Text m_errorPrompt;
+	TextPrompt m_errorPrompt;
 	//BUTTONS
-	Button m_registerButton;
-	Button m_backButton;
+	tgui::Button::Ptr m_pageButtons[2]; //REGISTER & BACK
 
 	//BOOLEANS
+	bool m_isRegisterButtonPressed = false;
 	bool m_isBackButtonPressed = false;
 	bool registered = false;
 
@@ -42,10 +45,7 @@ private:
 	bool isEmailRegistered = false;
 	bool isUserExists = false;
 
-	
-	
 	//MONGODB
-	//mongocxx::instance& instance;
 	learning::MongoDB m;
 
 public:

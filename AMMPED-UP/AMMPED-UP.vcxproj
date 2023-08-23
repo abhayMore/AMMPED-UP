@@ -54,6 +54,7 @@
     <ClCompile Include="Source\ScoreManager.cpp" />
     <ClCompile Include="Source\SplashScreen.cpp" />
     <ClCompile Include="Source\StateManager.cpp" />
+    <ClCompile Include="Source\TextPrompt.cpp" />
     <ClCompile Include="Source\UserNameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -81,12 +82,22 @@
     <ClInclude Include="Header Files\PowerUP.h" />
     <ClInclude Include="Header Files\Player.h" />
     <ClInclude Include="Header Files\RegisterPageState.h" />
+    <ClInclude Include="Header Files\resource.h" />
     <ClInclude Include="Header Files\ScoreManager.h" />
     <ClInclude Include="Header Files\SplashScreen.h" />
     <ClInclude Include="Header Files\State.h" />
     <ClInclude Include="Header Files\StateManager.h" />
     <ClInclude Include="Header Files\TextBox.h" />
+    <ClInclude Include="Header Files\TextPrompt.h" />
     <ClInclude Include="Header Files\UserNameManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\assets\gameLogo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\AMMPED-UP.rc">
+      <ResourceOutputFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)assets\%(Filename).res</ResourceOutputFileName>
+    </ResourceCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

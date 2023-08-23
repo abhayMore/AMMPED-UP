@@ -5,16 +5,23 @@
 #include "../Header Files/MainMenu.h"
 #include <memory>
 
+enum buttonValues
+{
+	LOGOUT,
+	LOGOUT_EXIT,
+	BACK
+};
+
 ExitState::ExitState(std::shared_ptr<Context>& context) :
 	m_context(context), 
-	m_isLogoutExitButtonSelected(false),
-	m_isLogoutExitButtonPressed(false),
-	m_isLogoutSelected(true),
 	m_isLogoutButtonPressed(false),
-	m_isBackButtonSelected(false),
+	m_isLogoutExitButtonPressed(false),
 	m_isBackButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK))
+	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
+	gui(*m_context->m_window)
 {
+	theme.load("Resources/Black.txt");
+
 }
 
 ExitState::~ExitState()
@@ -31,30 +38,42 @@ void ExitState::init()
 	m_exitBackground.setOrigin(sf::Vector2f(m_exitBackground.getTexture()->getSize().x / 2, m_exitBackground.getTexture()->getSize().y / 2));
 	m_exitBackground.setScale({ 2,2 });
 
-	//LOGOUT AND EXIT BUTTON
-	m_logoutExit.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_logoutExit.setString("Logout and Exit");
-	m_logoutExit.setCharacterSize(35);
-	m_logoutExit.setOrigin(m_logoutExit.getLocalBounds().width / 2, m_logoutExit.getLocalBounds().height / 2);
-	m_logoutExit.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 25.0f);
-	m_logoutExit.setOutlineThickness(1);
+	///////////////////////////////////////////////////
+	m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
 
-	//LOGOUT BUTTON
-	m_logout.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_logout.setString("Logout");
-	m_logout.setCharacterSize(35);
-	m_logout.setOrigin(m_logout.getLocalBounds().width / 2, m_logout.getLocalBounds().height / 2);
-	m_logout.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
-	m_logout.setOutlineThickness(1);
-
-	//BACK BUTTON
-	m_backButton.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_backButton.setString("Back");
-	m_backButton.setCharacterSize(35);
-	m_backButton.setOrigin(m_backButton.getLocalBounds().width / 2, m_backButton.getLocalBounds().height / 2);
-	m_backButton.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 +75.0f);
-	m_backButton.setOutlineThickness(1);
-
+	for (int i = 0; i < 3; i++)
+	{
+		m_pageButtons[i] = tgui::Button::create();
+		m_pageButtons[i]->getRenderer()->setBackgroundColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setBorderColor(tgui::Color::Transparent);
+		m_pageButtons[i]->getRenderer()->setTextColor(tgui::Color::White);
+		m_pageButtons[i]->getRenderer()->setFont(tgui::Font(m_context->m_assets->getGuiFont(MAIN_FONT).getId()));
+		m_pageButtons[i]->setTextSize(35);
+		if (i == LOGOUT)
+		{
+			m_pageButtons[i]->setText("Logout");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+			m_pageButtons[i]->setFocused(true);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == LOGOUT_EXIT)
+		{
+			m_pageButtons[i]->setText("Logout and Exit");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		else if (i == BACK)
+		{
+			m_pageButtons[i]->setText("Back");
+			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2 + 75.0f);
+			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+		}
+		m_pageButtons[i]->getRenderer()->setTextOutlineThickness(1);
+		gui.add(m_pageButtons[i]);
+	}
 }
 
 void ExitState::processInput()
@@ -62,112 +81,142 @@ void ExitState::processInput()
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
 	{
-		if (event.type == sf::Event::Closed)
+		switch (event.type)
+		{
+		case sf::Event::Closed:
+		{
 			m_context->m_window->close();
-		else if (event.type == sf::Event::KeyPressed)
+			break;
+		}
+		case sf::Event::MouseButtonPressed:
 		{
 			switch (event.key.code)
 			{
-			case sf::Keyboard::Up:
+			case sf::Mouse::Left:
 			{
-				if (!m_isLogoutExitButtonSelected && !m_isLogoutSelected)
-				{
-					m_isLogoutSelected = false;
-					m_isLogoutExitButtonSelected = true;
-					m_isBackButtonSelected = false;
-				}
-				else if (!m_isLogoutSelected)
-				{
-					m_isLogoutSelected = true;
-					m_isLogoutExitButtonSelected = false;
-					m_isBackButtonSelected = false;
-				}
-				else if (!m_isBackButtonSelected && !m_isLogoutSelected)
-				{
-					m_isLogoutSelected = false;
-					m_isLogoutExitButtonSelected = false;
-					m_isBackButtonSelected = true;
-				}
-				break;
-			}
-			case sf::Keyboard::Down :
-			{
-				if (!m_isLogoutExitButtonSelected && !m_isBackButtonSelected)
-				{
-					m_isLogoutSelected = false;
-					m_isLogoutExitButtonSelected = true;
-					m_isBackButtonSelected = false;
-				}
-				else if (!m_isBackButtonSelected)
-				{
-					m_isLogoutSelected = false;
-					m_isLogoutExitButtonSelected = false;
-					m_isBackButtonSelected = true;
-				}
-				else if (!m_isLogoutSelected && !m_isBackButtonSelected)
-				{
-					m_isLogoutSelected = true;
-					m_isLogoutExitButtonSelected = false;
-					m_isBackButtonSelected = false;
-				}
-				break;
-			}
-			case sf::Keyboard::Return :
-			{
-				m_isLogoutButtonPressed = false;
-				m_isLogoutExitButtonPressed = false;
-				m_isBackButtonPressed = false;
-				if (m_isLogoutSelected)
+				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[0]->isFocused())
 				{
 					m_isLogoutButtonPressed = true;
 				}
-				else if (m_isLogoutExitButtonSelected)
+				if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[1]->isFocused())
 				{
 					m_isLogoutExitButtonPressed = true;
 				}
-				else
+				if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY })
+					&& m_pageButtons[2]->isFocused())
 				{
 					m_isBackButtonPressed = true;
 				}
 				break;
 			}
-			case sf::Keyboard::Escape:
+			default:
+				break;
+			}
+			break;
+		}
+		case sf::Event::MouseMoved:
+		{
+			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
+			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 			{
-				m_isBackButtonPressed = true;
+				m_pageButtons[0]->setFocused(true);
+				m_pageButtons[1]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+			}
+			else if (m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[1]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[2]->setFocused(false);
+			}
+			else if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY }))
+			{
+				m_pageButtons[2]->setFocused(true);
+				m_pageButtons[0]->setFocused(false);
+				m_pageButtons[1]->setFocused(false);
+			}
+			break;
+		}
+		case sf::Event::KeyPressed:
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::Up:
+			{
+				if (m_pageButtons[2]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[2]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[0]->setFocused(true);
+					m_pageButtons[0]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[0]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Down:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_pageButtons[1]->setFocused(true);
+					m_pageButtons[1]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[1]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[0]->setFocused(false);
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_pageButtons[2]->setFocused(true);
+					m_pageButtons[2]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
+					m_pageButtons[2]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
+					m_pageButtons[1]->setFocused(false);
+				}
+				break;
+			}
+			case sf::Keyboard::Return:
+			{
+				if (m_pageButtons[0]->isFocused())
+				{
+					m_isLogoutButtonPressed = true;
+				}
+				else if (m_pageButtons[1]->isFocused())
+				{
+					m_isLogoutExitButtonPressed = true;
+				}
+				else if (m_pageButtons[2]->isFocused())
+				{
+					m_isBackButtonPressed = true;
+				}
 				break;
 			}
 			default:
 				break;
 			}
+			break;
+		}
+		default:
+			break;
 		}
 	}
 }
 
 void ExitState::update(sf::Time deltaTime)
 {
-	if (m_isLogoutSelected)
-	{
-		m_logout.setFillColor(sf::Color::Magenta);
-		m_logoutExit.setFillColor(::sf::Color::White);
-		m_backButton.setFillColor(::sf::Color::White);
-	}
-	else if (m_isLogoutExitButtonSelected)
-	{
-		m_logout.setFillColor(sf::Color::White);
-		m_logoutExit.setFillColor(::sf::Color::Magenta);
-		m_backButton.setFillColor(::sf::Color::White);
-	}
-	else
-	{
-		m_logout.setFillColor(sf::Color::White);
-		m_logoutExit.setFillColor(::sf::Color::White);
-		m_backButton.setFillColor(::sf::Color::Magenta);
-	}
 	if (m_isLogoutExitButtonPressed)
 	{
 		//TODO
 		//Close
 		m_context->m_window->close();
+		m_isLogoutExitButtonPressed = false;
 	}
 	else if (m_isLogoutButtonPressed)
 	{
@@ -175,11 +224,12 @@ void ExitState::update(sf::Time deltaTime)
 		m_bgm.stop();
 		//GO TO LOGIN STATE
 		m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
+		m_isLogoutButtonPressed = false;
 	}
 	else if (m_isBackButtonPressed)
 	{
 		m_context->m_states->popCurrent();
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context));
 		m_isBackButtonPressed = false;
 	}
 }
@@ -189,9 +239,7 @@ void ExitState::draw()
 	m_context->m_window->clear();
 	m_context->m_window->draw(m_exitBackground);
 	m_context->m_window->draw(m_gameTitle);
-	m_context->m_window->draw(m_logoutExit);
-	m_context->m_window->draw(m_logout);
-	m_context->m_window->draw(m_backButton);
+	gui.draw();
 
 	m_context->m_window->display();
 }

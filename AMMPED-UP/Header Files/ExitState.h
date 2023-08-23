@@ -9,19 +9,19 @@ class ExitState : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
-	sf::Text m_gameTitle;
-	sf::Text m_logoutExit;
-	sf::Text m_logout;
-	sf::Text m_backButton;
-	sf::Sprite m_exitBackground;
-
-	bool m_isLogoutExitButtonSelected;
-	bool m_isLogoutExitButtonPressed;
-
-	bool m_isLogoutSelected;
-	bool m_isLogoutButtonPressed;
 	
-	bool m_isBackButtonSelected;
+	sf::Sprite m_exitBackground;
+	sf::Text m_gameTitle;
+
+	tgui::Theme theme;
+	tgui::Gui gui;
+	tgui::Button::Ptr m_pageButtons[3];
+
+
+
+
+	bool m_isLogoutButtonPressed;
+	bool m_isLogoutExitButtonPressed;
 	bool m_isBackButtonPressed;
 
 	sf::Music& m_bgm;

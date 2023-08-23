@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "ScoreManager.h"
 #include "UserNameManager.h"
+#include "TGUI/TGUI.hpp"
 
 class GameOver : public am::State
 {
@@ -21,16 +22,18 @@ private:
 	sf::Text m_currentGameStateTitle;
 	std::string m_currentGameState; //WON, DIED, TIME's UP??
 	sf::Text m_scoreText;
+	sf::Text m_highScoreText;
 	ScoreManager *m_finalScore;
 
+	tgui::Theme theme;
+	tgui::Gui gui;
+	tgui::Button::Ptr m_pageButtons[2];
+	
 	sf::Text m_retryButton;
 	sf::Text m_exitButton;
 
-	bool m_isRetryButtonSelected;
 	bool m_isRetryButtonPressed;
-
-	bool m_isExitButtonSelected;
-	bool m_isExitButtonPressed;
+	bool m_isMainmenuButtonPressed;
 
 	sf::Sound m_deathSfx;
 	sf::Music& m_bgm;
@@ -38,9 +41,7 @@ private:
 	//FILE SYSTEM FOR SCORE SAVING
 	UserNameManager* m_userName;
 	
-
 	//MONGODB
-	MongoInstance* instance;
 	learning::MongoDB m;
 
 public:
@@ -52,5 +53,4 @@ public:
 	void update(sf::Time deltaTime) override;
 	void draw() override;
 	void start() override;
-
 };
