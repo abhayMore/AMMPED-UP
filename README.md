@@ -2,6 +2,7 @@
 Clone of the classic Bomberman game, made in C++, SFML & TGUI.
 
 v1.0 : https://youtu.be/dV3PnYL2-nw
+v2.0 : https://youtu.be/P5EFfVkfIMc
 
 If you want to open this in Visual Studio, follow these steps :
 1. Download SFML for Visual Studio 2022 (32 Bit), SFML C++15 Visual Studio 2017 32 Bit : https://www.sfml-dev.org/files/SFML-2.5.1-windows-vc15-32-bit.zip.
