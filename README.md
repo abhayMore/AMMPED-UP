@@ -2,6 +2,7 @@
 Clone of the classic Bomberman game, made in C++, SFML & TGUI.
 
 v1.0 : https://youtu.be/dV3PnYL2-nw
+
 v2.0 : https://youtu.be/P5EFfVkfIMc
 
 If you want to open this in Visual Studio, follow these steps :
