@@ -50,8 +50,8 @@ void MainMenu::init()
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_menuBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_menuBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
+	m_menuBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_menuBackground.setOrigin(sf::Vector2f(static_cast<float>(m_menuBackground.getTexture()->getSize().x / 2), static_cast<float>(m_menuBackground.getTexture()->getSize().y / 2)));
 	m_menuBackground.setScale({ 2,2 });
 	
 	//GAME TITLE
@@ -61,7 +61,7 @@ void MainMenu::init()
 	m_gameTitle.setString("AMMPED-UP");
 	m_gameTitle.setCharacterSize(200);
 	m_gameTitle.setOrigin(m_gameTitle.getLocalBounds().width / 2, m_gameTitle.getLocalBounds().height / 2);
-	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 350.0f) ;
+	m_gameTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 350.0f) ;
 	m_gameTitle.setOutlineThickness(1);
 
 	//////////////////////////////////////////////////
@@ -127,8 +127,8 @@ void MainMenu::processInput()
 			{
 			case sf::Mouse::Left:
 			{
-				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+				float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
 					&& m_pageButtons[0]->isFocused())
 				{
@@ -158,8 +158,8 @@ void MainMenu::processInput()
 		}
 		case sf::Event::MouseMoved:
 		{
-			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+			float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 			{
 				m_pageButtons[0]->setFocused(true);

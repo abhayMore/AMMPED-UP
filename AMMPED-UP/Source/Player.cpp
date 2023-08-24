@@ -8,7 +8,7 @@ Player::~Player()
 {
 }
 
-int Player::getHealth()
+unsigned int Player::getHealth()
 {
 	return m_health;
 }

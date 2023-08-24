@@ -22,7 +22,7 @@ public:
 	bool getIsBombPlaced();
 	sf::Sprite& getSprite();
 
-	int getHealth();
+	unsigned int getHealth();
 	void setHealth(int health);
 	bool playerBombCollision(sf::Vector2f bombPos);
 	bool playerCollisionIsOn(sf::Sprite& bombSprite);

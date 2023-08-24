@@ -47,8 +47,8 @@ void OptionsState::init()
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_menuBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_menuBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
+	m_menuBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_menuBackground.setOrigin(sf::Vector2f(static_cast<float>(m_menuBackground.getTexture()->getSize().x / 2), static_cast<float>(m_menuBackground.getTexture()->getSize().y / 2)));
 	m_menuBackground.setScale({ 2,2 });
 
 	//OPTIONS TITLE
@@ -56,7 +56,7 @@ void OptionsState::init()
 	m_optionsTitle.setString("Options");
 	m_optionsTitle.setCharacterSize(50);
 	m_optionsTitle.setOrigin(m_optionsTitle.getLocalBounds().width / 2, m_optionsTitle.getLocalBounds().height / 2);
-	m_optionsTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 325.0f);
+	m_optionsTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2)  - 325.0f);
 	m_optionsTitle.setOutlineThickness(1);
 
 	for (int i = 0; i < 5; i++)
@@ -74,11 +74,11 @@ void OptionsState::init()
 	{
 		m_controlDirections[i].setOrigin(m_controlDirections[i].getLocalBounds().width / 2, m_controlDirections[i].getLocalBounds().height / 2);
 	}
-	m_controlDirections[0].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 100.0f);
-	m_controlDirections[1].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 50.0f);
-	m_controlDirections[2].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - .0f);
-	m_controlDirections[3].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 50.0f);
-	m_controlDirections[4].setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 + 100.0f);
+	m_controlDirections[0].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 100.0f);
+	m_controlDirections[1].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 50.0f);
+	m_controlDirections[2].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - .0f);
+	m_controlDirections[3].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) + 50.0f);
+	m_controlDirections[4].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) + 100.0f);
 
 	///////////////////////////////////////////////////
 	//RESET HIGHSCORE AND MAINMENU BUTTON INIT
@@ -182,8 +182,8 @@ void OptionsState::processInput()
 			}
 			case sf::Event::MouseMoved:
 			{
-				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+				float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 				{
 					m_pageButtons[0]->setFocused(true);
@@ -202,20 +202,20 @@ void OptionsState::processInput()
 				{
 				case sf::Mouse::Left:
 				{
-					if (m_audioControls[0]->isMouseOnWidget(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+					if (m_audioControls[0]->isMouseOnWidget(sf::Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y))))
 					{
 						m_isOverallMusicSliderMove = true;
 					}
-					if (m_audioControls[1]->isMouseOnWidget(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+					if (m_audioControls[1]->isMouseOnWidget(sf::Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y))))
 					{
 						m_isInGameMusicSliderMove = true;
 					}
-					if (m_audioControls[2]->isMouseOnWidget(sf::Vector2f(event.mouseButton.x, event.mouseButton.y)))
+					if (m_audioControls[2]->isMouseOnWidget(sf::Vector2f(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y))))
 					{
 						m_isSFXSliderMove = true;
 					}
-					float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-					float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+					float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+					float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 					if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
 						&& m_pageButtons[0]->isFocused())
 					{

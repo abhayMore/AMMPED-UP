@@ -38,7 +38,7 @@ sf::Vector2f TextPrompt::getSize()
 
 int TextPrompt::getLength()
 {
-	return m_text->getText().size();
+	return static_cast<int>(m_text->getText().size());
 }
 
 void TextPrompt::setText(std::string str)

@@ -46,8 +46,8 @@ void GameOver::init()
 	//GAME OVER BACKGROUND
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_gameOverBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_gameOverBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_gameOverBackground.setOrigin(sf::Vector2f(m_gameOverBackground.getTexture()->getSize().x / 2, m_gameOverBackground.getTexture()->getSize().y / 2));
+	m_gameOverBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_gameOverBackground.setOrigin(sf::Vector2f(static_cast<float>(m_gameOverBackground.getTexture()->getSize().x / 2), static_cast<float>(m_gameOverBackground.getTexture()->getSize().y / 2)));
 	m_gameOverBackground.setScale({ 2,2 });
 
 	//GAME TITLE
@@ -55,7 +55,7 @@ void GameOver::init()
 	m_gameOverTitle.setString("Game Over");
 	m_gameOverTitle.setCharacterSize(50);
 	m_gameOverTitle.setOrigin(m_gameOverTitle.getLocalBounds().width / 2, m_gameOverTitle.getLocalBounds().height / 2);
-	m_gameOverTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 300.0f);
+	m_gameOverTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 300.0f);
 	m_gameOverTitle.setOutlineThickness(1);
 
 	//CURRENT GAME STATE TEXT -> WON, TIME's UP, DIED..
@@ -82,7 +82,7 @@ void GameOver::init()
 	}
 	m_currentGameStateTitle.setCharacterSize(45);
 	m_currentGameStateTitle.setOrigin(m_currentGameStateTitle.getLocalBounds().width / 2, m_currentGameStateTitle.getLocalBounds().height / 2);
-	m_currentGameStateTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 200.0f);
+	m_currentGameStateTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 200.0f);
 	m_currentGameStateTitle.setOutlineThickness(1);
 ;
 
@@ -92,14 +92,14 @@ void GameOver::init()
 	m_scoreText.setString("Score : " + std::to_string(tempFinalScore));
 	m_scoreText.setCharacterSize(35);
 	m_scoreText.setOrigin(m_scoreText.getLocalBounds().width / 2, m_scoreText.getLocalBounds().height / 2);
-	m_scoreText.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 75.0f);
+	m_scoreText.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 75.0f);
 	m_scoreText.setOutlineThickness(1);
 
 	m_highScoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_highScoreText.setString("High Score : " + std::to_string(m.findScore(m_userName->getUsername())));
 	m_highScoreText.setCharacterSize(35);
 	m_highScoreText.setOrigin(m_highScoreText.getLocalBounds().width / 2, m_highScoreText.getLocalBounds().height / 2);
-	m_highScoreText.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 25.0f);
+	m_highScoreText.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 25.0f);
 	m_highScoreText.setOutlineThickness(1);
 
 
@@ -159,8 +159,8 @@ void GameOver::processInput()
 			{
 			case sf::Mouse::Left:
 			{
-				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+				float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
 					&& m_pageButtons[0]->isFocused())
 				{
@@ -180,8 +180,8 @@ void GameOver::processInput()
 		}
 		case sf::Event::MouseMoved:
 		{
-			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+			float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 			{
 				m_pageButtons[0]->setFocused(true);

@@ -82,8 +82,8 @@ void RegisterPageState::init()
 	//BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/login.png");
 	m_loginBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_loginBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_loginBackground.setOrigin(sf::Vector2f(m_loginBackground.getTexture()->getSize().x / 2, m_loginBackground.getTexture()->getSize().y / 2));
+	m_loginBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_loginBackground.setOrigin(sf::Vector2f(static_cast<float>(m_loginBackground.getTexture()->getSize().x / 2), static_cast<float>(m_loginBackground.getTexture()->getSize().y / 2)));
     m_loginBackground.setScale({ 2,2 });
 
 	//SIGN UP TITLE
@@ -91,7 +91,7 @@ void RegisterPageState::init()
 	m_signUpTitle.setString("SIGN UP");
 	m_signUpTitle.setCharacterSize(35);
 	m_signUpTitle.setOrigin(m_signUpTitle.getLocalBounds().width / 2, m_signUpTitle.getLocalBounds().height / 2);
-	m_signUpTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 230.0f);
+	m_signUpTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 230.0f);
     m_signUpTitle.setOutlineThickness(1);
 
 	//USERNAME TITLE
@@ -99,35 +99,35 @@ void RegisterPageState::init()
 	m_userNameTitle.setString("Username");
 	m_userNameTitle.setCharacterSize(25);
 	m_userNameTitle.setOrigin(m_userNameTitle.getLocalBounds().width / 2, m_userNameTitle.getLocalBounds().height / 2);
-	m_userNameTitle.setPosition(m_context->m_window->getSize().x / 4 + 2, m_context->m_window->getSize().y / 2 - 200.0f);
+	m_userNameTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4) + 2.0f, static_cast<float>(m_context->m_window->getSize().y / 2) - 200.0f);
 
 	//EMAIL TITLE
 	m_emailIDTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
 	m_emailIDTitle.setString("Email");
 	m_emailIDTitle.setCharacterSize(25);
 	m_emailIDTitle.setOrigin(m_emailIDTitle.getLocalBounds().width / 2, m_emailIDTitle.getLocalBounds().height / 2);
-	m_emailIDTitle.setPosition(m_context->m_window->getSize().x / 4 - m_emailIDTitle.getGlobalBounds().width / 2 + 7, m_context->m_window->getSize().y / 2 - 120.0f);
+	m_emailIDTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4) - static_cast<float>(m_emailIDTitle.getGlobalBounds().width / 2) + 7.0f, static_cast<float>(m_context->m_window->getSize().y / 2) - 120.0f);
 	
     //CONFIRM EMAIL TITLE
     m_confirmEmailIDTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_confirmEmailIDTitle.setString("Confirm Email");
     m_confirmEmailIDTitle.setCharacterSize(25);
     m_confirmEmailIDTitle.setOrigin(m_confirmEmailIDTitle.getLocalBounds().width / 2, m_confirmEmailIDTitle.getLocalBounds().height / 2);
-    m_confirmEmailIDTitle.setPosition(m_context->m_window->getSize().x / 4 + m_confirmEmailIDTitle.getGlobalBounds().width / 4 - 14, m_context->m_window->getSize().y / 2 - 40);
+    m_confirmEmailIDTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4) + static_cast<float>(m_confirmEmailIDTitle.getGlobalBounds().width / 4) - 14.0f, static_cast<float>(m_context->m_window->getSize().y / 2) - 40.0f);
    
     //PASSWORD TITTLE
     m_passwordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_passwordTitle.setString("Password");
     m_passwordTitle.setCharacterSize(25);
     m_passwordTitle.setOrigin(m_passwordTitle.getLocalBounds().width / 2, m_passwordTitle.getLocalBounds().height / 2);
-    m_passwordTitle.setPosition(m_context->m_window->getSize().x / 4, m_context->m_window->getSize().y / 2 + 40.0f);
+    m_passwordTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4), static_cast<float>(m_context->m_window->getSize().y / 2) + 40.0f);
    
 	//CONFIRM PASSWORD TITTLE
     m_confirmPasswordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
     m_confirmPasswordTitle.setString("Confirm Password");
     m_confirmPasswordTitle.setCharacterSize(25);
     m_confirmPasswordTitle.setOrigin(m_confirmPasswordTitle.getLocalBounds().width / 2, m_confirmPasswordTitle.getLocalBounds().height / 2);
-    m_confirmPasswordTitle.setPosition(m_context->m_window->getSize().x / 4 + m_confirmEmailIDTitle.getGlobalBounds().width / 4 + 10,  m_context->m_window->getSize().y / 2 + 120.0f);
+    m_confirmPasswordTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4) + static_cast<float>(m_confirmEmailIDTitle.getGlobalBounds().width / 4) + 10.0f, static_cast<float>(m_context->m_window->getSize().y / 2) + 120.0f);
 	
     ////////////////////////////////
     m_context->m_assets->addGuiFont(MAIN_FONT, "Resources/fonts/BungeeSpice-Regular.TTF");
@@ -283,8 +283,8 @@ void RegisterPageState::processInput()
             }
             case sf::Keyboard::Enter:
             {
-                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+                float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 if (m_pageButtons[0]->isFocused() || m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
                 {
                     m_isRegisterButtonPressed = true;
@@ -309,8 +309,8 @@ void RegisterPageState::processInput()
         {
             if (event.text.unicode != '\t' && event.text.unicode != '\n')
             {
-                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+                float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 for (int i = 0; i < 5; i++)
                 {
                     if (m_editTextBoxes[i]->isFocused())
@@ -332,8 +332,8 @@ void RegisterPageState::processInput()
         case sf::Event::MouseMoved:
         {
 
-            float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-            float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+            float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+            float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
             if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
             {
                 m_pageButtons[0]->getRenderer()->setTextColor(sf::Color::Magenta);
@@ -363,8 +363,8 @@ void RegisterPageState::processInput()
             {
             case sf::Mouse::Left:
             {
-                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+                float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
                 {
                     m_isRegisterButtonPressed = true;

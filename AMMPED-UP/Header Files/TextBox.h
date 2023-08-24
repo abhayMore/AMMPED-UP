@@ -1,5 +1,6 @@
 #pragma once
-#include <iostream>>
+
+#include <iostream>
 #include "SFML/Graphics.hpp"
 #include <sstream>
 
@@ -136,8 +137,8 @@ public:
 	}
 	bool isMouseOver(sf::RenderWindow& window)
 	{
-		float mouseX = sf::Mouse::getPosition(window).x;
-		float mouseY = sf::Mouse::getPosition(window).y;
+		float mouseX = static_cast<float>(sf::Mouse::getPosition(window).x);
+		float mouseY = static_cast<float>(sf::Mouse::getPosition(window).y);
 
 		float btnPosX = background.getPosition().x;
 		float btnPosY = background.getPosition().y;

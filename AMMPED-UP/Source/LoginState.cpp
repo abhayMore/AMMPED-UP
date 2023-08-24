@@ -35,15 +35,15 @@ void LoginState::init()
 	//LOGIN BACKGROUND
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/login.png");
 	m_loginBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_loginBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_loginBackground.setOrigin(sf::Vector2f(m_loginBackground.getTexture()->getSize().x / 2, m_loginBackground.getTexture()->getSize().y / 2));
+	m_loginBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_loginBackground.setOrigin(sf::Vector2f(static_cast<float>(m_loginBackground.getTexture()->getSize().x / 2), static_cast<float>(m_loginBackground.getTexture()->getSize().y / 2)));
 	m_loginBackground.setScale({ 2,2 });
 
 	//GAME LOGO
 	m_context->m_assets->addTextures(GAME_LOGO, "Resources/assets/gameName.png");
 	m_gameLogo.setTexture(m_context->m_assets->getTexture(GAME_LOGO));
-	m_gameLogo.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f);
-	m_gameLogo.setOrigin(sf::Vector2f(m_gameLogo.getTexture()->getSize().x / 2, m_gameLogo.getTexture()->getSize().y / 2));
+	m_gameLogo.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 150.0f);
+	m_gameLogo.setOrigin(sf::Vector2f(static_cast<float>(m_gameLogo.getTexture()->getSize().x / 2), static_cast<float>(m_gameLogo.getTexture()->getSize().y / 2)));
 	m_gameLogo.setScale({ 0.5,0.5 });
 
 	///////////////////////////////////////////////////
@@ -104,8 +104,8 @@ void LoginState::processInput()
 			{
 			case sf::Mouse::Left:
 			{
-				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+				float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }) 
 					&& m_pageButtons[0]->isFocused())
 				{
@@ -130,8 +130,8 @@ void LoginState::processInput()
 		}
 		case sf::Event::MouseMoved:
 		{
-			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+			float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 			{
 				m_pageButtons[0]->setFocused(true);

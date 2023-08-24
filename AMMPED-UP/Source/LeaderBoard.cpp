@@ -1,7 +1,8 @@
 #include "../Header Files/Leaderboard.h"
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/MainMenu.h"
-#include <iostream>>
+#include <iostream>
+
 Leaderboard::Leaderboard(std::shared_ptr<Context>& context) :
 	m_context(context), 
 	m_isExitButtonPressed(false)
@@ -38,8 +39,8 @@ void Leaderboard::init()
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_menuBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_menuBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_menuBackground.setOrigin(sf::Vector2f(m_menuBackground.getTexture()->getSize().x / 2, m_menuBackground.getTexture()->getSize().y / 2));
+	m_menuBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_menuBackground.setOrigin(sf::Vector2f(static_cast<float>(m_menuBackground.getTexture()->getSize().x / 2), static_cast<float>(m_menuBackground.getTexture()->getSize().y / 2)));
 	m_menuBackground.setScale({ 2,2 });
 
 	//LEADERBOARD TITLE
@@ -47,20 +48,20 @@ void Leaderboard::init()
 	m_gameTitle.setString("LEADERBOARD");
 	m_gameTitle.setCharacterSize(50);
 	m_gameTitle.setOrigin(m_gameTitle.getLocalBounds().width / 2, m_gameTitle.getLocalBounds().height / 2);
-	m_gameTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 340.0f) ;
+	m_gameTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 340.0f) ;
 	m_gameTitle.setOutlineThickness(1);
 
 	m_name.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_name.setString(username->getUsername());
 	m_name.setCharacterSize(25);
 	m_name.setOrigin(m_name.getLocalBounds().width / 2, m_name.getLocalBounds().height / 2);
-	m_name.setPosition(m_context->m_window->getSize().x / 2 - 100, m_context->m_window->getSize().y / 2 - 275.0f);
+	m_name.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2) - 100, static_cast<float>(m_context->m_window->getSize().y / 2) - 275.0f);
 	m_name.setOutlineThickness(1);
 
 	m_scoreText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_scoreText.setCharacterSize(25);
 	m_scoreText.setOrigin(m_scoreText.getLocalBounds().width / 2, m_scoreText.getLocalBounds().height / 2);
-	m_scoreText.setPosition(m_context->m_window->getSize().x / 2 + 100, m_context->m_window->getSize().y / 2 - 275.0f);
+	m_scoreText.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2) + 100.0f, static_cast<float>(m_context->m_window->getSize().y / 2) - 275.0f);
 	m_scoreText.setOutlineThickness(1);
 
 	for (int i = 0; i < m_TopTenScores.size(); i++)
@@ -70,14 +71,14 @@ void Leaderboard::init()
 		m_TopTenPlayerNames[i].setString(m_TopTenScores[i].first);
 		m_TopTenPlayerNames[i].setOutlineThickness(1);
 		m_TopTenPlayerNames[i].setOrigin(m_TopTenPlayerNames[i].getLocalBounds().width / 2, m_TopTenPlayerNames[i].getLocalBounds().height / 2);
-		m_TopTenPlayerNames[i].setPosition(m_context->m_window->getSize().x / 2 - 100.0f, m_context->m_window->getSize().y / 2 + (i*50)- 225.0f);
+		m_TopTenPlayerNames[i].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2) - 100.0f, static_cast<float>(m_context->m_window->getSize().y / 2) + static_cast<float>(i*50)- 225.0f);
 
 		m_TopTenPlayerScores[i].setFont(m_context->m_assets->getFont(LOGIN_FONT));
 		m_TopTenPlayerScores[i].setCharacterSize(25);
 		m_TopTenPlayerScores[i].setString(std::to_string(m_TopTenScores[i].second));
 		m_TopTenPlayerScores[i].setOutlineThickness(1);
 		m_TopTenPlayerScores[i].setOrigin(m_TopTenPlayerScores[i].getLocalBounds().width / 2, m_TopTenPlayerScores[i].getLocalBounds().height / 2);
-		m_TopTenPlayerScores[i].setPosition(m_context->m_window->getSize().x / 2 + 100.0f, m_context->m_window->getSize().y / 2 + (i * 50) - 225.0);
+		m_TopTenPlayerScores[i].setPosition(static_cast<float>(m_context->m_window->getSize().x / 2) + 100.0f, static_cast<float>(m_context->m_window->getSize().y / 2) + static_cast<float>((i * 50)) - 225.0f);
 
 	}
 

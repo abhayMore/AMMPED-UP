@@ -17,10 +17,10 @@ SplashScreen::~SplashScreen()
 void SplashScreen::init()
 {
 	m_background.setTexture(m_context->m_assets->getTexture(m_assetID[m_currentSplashScreen].first));
-	m_background.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_background.setOrigin(sf::Vector2f(m_background.getTexture()->getSize().x / 2,m_background.getTexture()->getSize().y / 2 ));
+	m_background.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_background.setOrigin(sf::Vector2f(static_cast<float>(m_background.getTexture()->getSize().x / 2), static_cast<float>(m_background.getTexture()->getSize().y / 2 )));
 
-	for (auto id : m_assetID)
+	for (auto &id : m_assetID)
 	{
 		if (id.first == COLLEGE_SPLASH_SCREEN)
 		{
@@ -49,8 +49,8 @@ void SplashScreen::update(sf::Time deltaTime)
 			if (m_currentSplashScreen < m_assetID.size())
 			{
 				m_background.setTexture(m_context->m_assets->getTexture(m_assetID[m_currentSplashScreen].first));
-				m_background.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-				m_background.setOrigin(sf::Vector2f(m_background.getTexture()->getSize().x / 2, m_background.getTexture()->getSize().y / 2));
+				m_background.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+				m_background.setOrigin(sf::Vector2f(static_cast<float>(m_background.getTexture()->getSize().x / 2), static_cast<float>(m_background.getTexture()->getSize().y / 2)));
 				m_bgColor = sf::Color::Black;
 
 				m_elapsedTime = sf::Time::Zero;

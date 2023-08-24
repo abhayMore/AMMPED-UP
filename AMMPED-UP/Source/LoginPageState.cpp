@@ -17,7 +17,6 @@ enum textboxValues
 LoginPageState::LoginPageState(std::shared_ptr<Context>& context) :
     m_context(context), m_errorPrompt(*m_context->m_window),
     gui(*m_context->m_window)
-
 {
     theme.load("Resources/Black.txt");
     m_username = UserNameManager::getInstance();
@@ -34,8 +33,8 @@ void LoginPageState::init()
     //BACKGROUND 
     m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/login.png");
     m_loginBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-    m_loginBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-    m_loginBackground.setOrigin(sf::Vector2f(m_loginBackground.getTexture()->getSize().x / 2, m_loginBackground.getTexture()->getSize().y / 2));
+    m_loginBackground.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+    m_loginBackground.setOrigin(sf::Vector2f(static_cast<float>(m_loginBackground.getTexture()->getSize().x / 2), static_cast<float>(m_loginBackground.getTexture()->getSize().y / 2)));
     m_loginBackground.setScale({ 2,2 });
 
 	//SIGN IN TITLE
@@ -43,7 +42,7 @@ void LoginPageState::init()
     m_signInTitle.setString("SIGN IN");
     m_signInTitle.setCharacterSize(35);
     m_signInTitle.setOrigin(m_signInTitle.getLocalBounds().width / 2, m_signInTitle.getLocalBounds().height / 2);
-    m_signInTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 175.0f);
+    m_signInTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 175.0f);
     m_signInTitle.setOutlineThickness(1);
 
 	//USERNAME TITLE
@@ -51,14 +50,14 @@ void LoginPageState::init()
 	m_userNameTitle.setString("Username OR Email ID");
 	m_userNameTitle.setCharacterSize(25);
 	m_userNameTitle.setOrigin(m_userNameTitle.getLocalBounds().width / 2, m_userNameTitle.getLocalBounds().height / 2);
-	m_userNameTitle.setPosition(m_context->m_window->getSize().x / 4 + 77, m_context->m_window->getSize().y / 2 - 80.0f);
+	m_userNameTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4) + 77.0f, static_cast<float>(m_context->m_window->getSize().y / 2) - 80.0f);
 
 	//PASSWORD TITTLE
 	m_passwordTitle.setFont(m_context->m_assets->getFont(LOGIN_FONT));
 	m_passwordTitle.setString("Password");
 	m_passwordTitle.setCharacterSize(25);
 	m_passwordTitle.setOrigin(m_passwordTitle.getLocalBounds().width / 2, m_passwordTitle.getLocalBounds().height / 2);
-	m_passwordTitle.setPosition(m_context->m_window->getSize().x / 4, m_context->m_window->getSize().y / 2);
+	m_passwordTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 4), static_cast<float>(m_context->m_window->getSize().y / 2));
 
 
     //////////////////////////////////////////////////
@@ -183,8 +182,8 @@ void LoginPageState::processInput()
             }
             case sf::Keyboard::Enter:
             {
-                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+                float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 if (m_pageButtons[0]->isFocused() || m_pageButtons[0]->isMouseOnWidget({mouseX, mouseY}))
                 {
                     m_isSignInButtonPressed = true;
@@ -211,8 +210,8 @@ void LoginPageState::processInput()
         {
             if (event.text.unicode != '\t' && event.text.unicode != '\n')
             {
-                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+                float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 if (m_editTextBoxes[0]->isFocused())
                 {
                     if (event.text.unicode == '\b') // Backspace
@@ -242,8 +241,8 @@ void LoginPageState::processInput()
         }
         case sf::Event::MouseMoved:
         {
-            float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-            float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+            float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+            float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
             if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
             {
                 m_pageButtons[0]->getRenderer()->setTextColor(sf::Color::Magenta);
@@ -273,8 +272,8 @@ void LoginPageState::processInput()
             {
             case sf::Mouse::Left:
             {
-                float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-                float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+                float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+                float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
                 {
                     m_isSignInButtonPressed = true;
@@ -319,6 +318,7 @@ void LoginPageState::update(sf::Time deltaTime)
     m_elapsedTime += deltaTime;
     if (m_isSignInButtonPressed)
     {   
+
         std::string temp(m_editTextBoxes[0]->getText());
         const auto loginData = m.findDocument(temp);
         if (anyTextboxEmpty())

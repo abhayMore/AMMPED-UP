@@ -15,8 +15,8 @@
 #include <mongocxx/exception/operation_exception.hpp>
 namespace learning {
 	const mongocxx::uri mongoURI(mongodb_uri);
-	const std::string dbName = databaseName;
-	const std::string collName = colectionName;
+	const std::string_view dbName = databaseName;
+	const std::string_view collName = colectionName;
 	class MongoDB {
 	public:
 		MongoDB();

@@ -19,8 +19,8 @@ void learning::MongoDB::connect()
 	{
 		client_options.server_api_opts(api);
 		conn = mongocxx::client(mongoURI, client_options);
-		ammpedUPDB = conn[dbName];
-		loginInfoCollection = ammpedUPDB[collName];
+		ammpedUPDB = conn.database(bsoncxx::string::view_or_value(dbName));
+		loginInfoCollection = ammpedUPDB.collection(bsoncxx::string::view_or_value(collName));
 		const auto ping_cmd = bsoncxx::builder::basic::make_document(bsoncxx::builder::basic::kvp("ping", 1));
 		ammpedUPDB.run_command(ping_cmd.view());
 		std::cout << "Pinged your deployment. You successfully connected to MongoDB!" << std::endl;
@@ -50,12 +50,9 @@ std::tuple<std::string, std::string, std::string> learning::MongoDB::findDocumen
 		key = "username";
 	}
 	//auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
-
 	//auto cursor_all = loginInfoCollection.find({});
-	
+
 	find_one_filtered_result = loginInfoCollection.find_one(bsoncxx::builder::basic::make_document(bsoncxx::builder::basic::kvp(key, value)));
-
-
 	// Add query filter argument in find
 	//auto cursor = loginInfoCollection.find({ filter });
 	
@@ -65,7 +62,7 @@ std::tuple<std::string, std::string, std::string> learning::MongoDB::findDocumen
 
 	// Extract the first document from the cursor
 	//auto document = *cursor.begin();
-	auto document = *find_one_filtered_result;
+	auto &document = *find_one_filtered_result;
 
 	// Extract the individual components of the retrieved data
 	std::string retrievedUsername = std::string(document["username"].get_string().value);
@@ -96,6 +93,7 @@ int learning::MongoDB::findScore(const std::string& value)
 		int score = curvename.get_int32().value;
 		return score;
 	}
+	return 0;
 }
 
 //void learning::MongoDB::updateDocument(const std::string & userName, const std::string& key, const int& value, const std::string& newKey, const int& newValue)
@@ -114,7 +112,7 @@ void learning::MongoDB::updateDocument(const std::string& userName, const std::s
 int learning::MongoDB::getDocumentCount()
 {
 	bsoncxx::builder::basic::document filter_builder{}; // Optionally, you can provide a filter
-	return loginInfoCollection.count_documents(filter_builder.view());
+	return static_cast<int>(loginInfoCollection.count_documents(filter_builder.view()));
 }
 
 std::vector<std::pair<std::string, int>> learning::MongoDB::getTopScores(int limit)

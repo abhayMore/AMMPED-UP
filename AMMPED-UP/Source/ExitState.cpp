@@ -34,8 +34,8 @@ void ExitState::init()
 	//MENU BACKGROUND 
 	m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_exitBackground.setTexture(m_context->m_assets->getTexture(MENU_BACKGROUND));
-	m_exitBackground.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_exitBackground.setOrigin(sf::Vector2f(m_exitBackground.getTexture()->getSize().x / 2, m_exitBackground.getTexture()->getSize().y / 2));
+	m_exitBackground.setPosition(m_context->m_window->getSize().x / 2.f, m_context->m_window->getSize().y / 2.f);
+	m_exitBackground.setOrigin(sf::Vector2f(m_exitBackground.getTexture()->getSize().x / 2.f, m_exitBackground.getTexture()->getSize().y / 2.f));
 	m_exitBackground.setScale({ 2,2 });
 
 	///////////////////////////////////////////////////
@@ -94,8 +94,8 @@ void ExitState::processInput()
 			{
 			case sf::Mouse::Left:
 			{
-				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+				float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
 					&& m_pageButtons[0]->isFocused())
 				{
@@ -120,8 +120,8 @@ void ExitState::processInput()
 		}
 		case sf::Event::MouseMoved:
 		{
-			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+			float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 			{
 				m_pageButtons[0]->setFocused(true);

@@ -40,7 +40,7 @@ void PauseGame::init()
 	m_pauseTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_pauseTitle.setString("Paused!!");
 	m_pauseTitle.setCharacterSize(50);
-	m_pauseTitle.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2 - 150.0f);
+	m_pauseTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2) - 150.0f);
 	m_pauseTitle.setOrigin(m_pauseTitle.getLocalBounds().width / 2, m_pauseTitle.getLocalBounds().height / 2);
 
 	///////////////////////////////////////////////////
@@ -100,8 +100,8 @@ void PauseGame::processInput()
 			{
 			case sf::Mouse::Left:
 			{
-				float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-				float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+				float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+				float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 				if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY })
 					&& m_pageButtons[0]->isFocused())
 				{
@@ -126,8 +126,8 @@ void PauseGame::processInput()
 		}
 		case sf::Event::MouseMoved:
 		{
-			float mouseX = sf::Mouse::getPosition(*m_context->m_window).x;
-			float mouseY = sf::Mouse::getPosition(*m_context->m_window).y;
+			float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
+			float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
 			if (m_pageButtons[0]->isMouseOnWidget({ mouseX, mouseY }))
 			{
 				m_pageButtons[0]->setFocused(true);

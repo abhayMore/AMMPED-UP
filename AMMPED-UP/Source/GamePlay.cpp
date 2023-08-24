@@ -47,7 +47,7 @@ GamePlay::GamePlay(std::shared_ptr<Context>& context) :
 	m_sound = &audioManager;
 	m_sound->stopMainMenuMusic();
 	//m_sound->startInGameMusic();
-	srand(time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr)));
 }
 
 GamePlay::~GamePlay()
@@ -79,8 +79,8 @@ void GamePlay::init()
 	//GAME MAP
 	//m_context->m_assets->addTextures(MENU_BACKGROUND, "Resources/assets/bombmap.png");
 	m_gameMap.setTexture(m_context->m_assets->getTexture(GAME_BACKGROUND));
-	m_gameMap.setPosition(m_context->m_window->getSize().x / 2, m_context->m_window->getSize().y / 2);
-	m_gameMap.setOrigin(sf::Vector2f(m_gameMap.getTexture()->getSize().x / 2, m_gameMap.getTexture()->getSize().y / 2));
+	m_gameMap.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2));
+	m_gameMap.setOrigin(sf::Vector2f(static_cast<float>(m_gameMap.getTexture()->getSize().x / 2), static_cast<float>(m_gameMap.getTexture()->getSize().y / 2)));
 	m_gameMap.setScale({ 2,2 });
 
 	//TILESET SETUP
@@ -93,7 +93,7 @@ void GamePlay::init()
 			{
 				sf::Sprite breakabletile;
 				breakabletile.setTexture(m_context->m_assets->getTexture(BREAKABLE_WALL_TEXTURE));
-				breakabletile.setPosition(sf::Vector2f( j * 32, i * 32 ));
+				breakabletile.setPosition(sf::Vector2f(static_cast<float>(j) * 32.f, static_cast<float>(i) * 32.f ));
 				breakabletile.setScale({ 2,2 });
 				m_breakableWalls.push_back(breakabletile);
 
@@ -104,7 +104,7 @@ void GamePlay::init()
 				sf::Sprite vWall;
 				vWall.setTexture(m_context->m_assets->getTexture(VERTICAL_WALL_TEXTURE));
 				vWall.setScale({ 2,2 });
-				vWall.setPosition(sf::Vector2f(j * 32, i * 32));
+				vWall.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i* 32)));
 				m_VWalls.push_back(vWall);
 			}
 
@@ -113,7 +113,7 @@ void GamePlay::init()
 				sf::Sprite hWall;
 				hWall.setTexture(m_context->m_assets->getTexture(HORIZONTAL_WALL_TEXTURE));
 				hWall.setScale({ 2,2 });
-				hWall.setPosition(sf::Vector2f(j * 32, i * 32));
+				hWall.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_HWalls.push_back(hWall);
 			}
 			if (collisionMap[i][j] == INNER_COMPARTMENT_WALL_TILE)
@@ -121,7 +121,7 @@ void GamePlay::init()
 				sf::Sprite iWall;
 				iWall.setTexture(m_context->m_assets->getTexture(INNER_COMPARTMENT_WALL_TEXTURE));
 				iWall.setScale({ 2,2 });
-				iWall.setPosition(sf::Vector2f(j * 32, i * 32));
+				iWall.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_innerCompartmentWalls.push_back(iWall);
 			}
 			if (collisionMap[i][j] == COLUMN_WALL1)
@@ -130,7 +130,7 @@ void GamePlay::init()
 				cWall1.setTexture(m_context->m_assets->getTexture(COLUMN_WALL_TEXTURE));
 				cWall1.setTextureRect({ 0,0,16,16 });
 				cWall1.setScale({ 2,2 });
-				cWall1.setPosition(sf::Vector2f(j * 32, i * 32));
+				cWall1.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_columnWall.push_back(cWall1);
 			}
 			if (collisionMap[i][j] == COLUMN_WALL2)
@@ -139,7 +139,7 @@ void GamePlay::init()
 				cWall2.setTexture(m_context->m_assets->getTexture(COLUMN_WALL_TEXTURE));
 				cWall2.setTextureRect({ 16,0,16,16 });
 				cWall2.setScale({ 2,2 });
-				cWall2.setPosition(sf::Vector2f(j * 32, i * 32));
+				cWall2.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_columnWall.push_back(cWall2);
 			}
 			if (collisionMap[i][j] == COLUMN_WALL3)
@@ -148,7 +148,7 @@ void GamePlay::init()
 				cWall3.setTexture(m_context->m_assets->getTexture(COLUMN_WALL_TEXTURE));
 				cWall3.setTextureRect({ 32,0,16,16 });
 				cWall3.setScale({ 2,2 });
-				cWall3.setPosition(sf::Vector2f(j * 32, i * 32));
+				cWall3.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_columnWall.push_back(cWall3);
 			}
 			if (collisionMap[i][j] == COLUMN_WALL4)
@@ -157,7 +157,7 @@ void GamePlay::init()
 				cWall4.setTexture(m_context->m_assets->getTexture(COLUMN_WALL_TEXTURE));
 				cWall4.setTextureRect({ 48,0,16,16 });
 				cWall4.setScale({ 2,2 });
-				cWall4.setPosition(sf::Vector2f(j * 32, i * 32));
+				cWall4.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_columnWall.push_back(cWall4);
 			}
 		}
@@ -170,11 +170,11 @@ void GamePlay::init()
 		{
 			if (collisionMap[i][j] == EMPTY_TILE)
 			{
-				openSpaces.push_back(sf::Vector2f(j * 32, i * 32));
+				openSpaces.push_back(sf::Vector2f(static_cast<float>(j) * 32.f, static_cast<float>(i) * 32.f));
 			}
 			if (collisionMap[i][j] == BREAKABLE_TILE)
 			{
-				powerUPSpaces.push_back(sf::Vector2f(j * 32, i * 32));
+				powerUPSpaces.push_back(sf::Vector2f(static_cast<float>(j) * 32, static_cast<float>(i) * 32));
 			}
 		}
 	}
@@ -236,13 +236,13 @@ void GamePlay::init()
 	// LIVES COUNT INIT
 	m_livesText.setFont(m_context->m_assets->getFont(MAIN_FONT));
 	m_livesText.setString(std::to_string(m_lives));
-	m_livesText.setPosition(m_context->m_window->getSize().x - 234, -2);
+	m_livesText.setPosition(static_cast<float>(m_context->m_window->getSize().x) - 234, -2.f);
 	m_livesText.setCharacterSize(22);
 	m_livesText.setFillColor(sf::Color::White);
 	m_livesText.setOutlineThickness(1);
 
 	m_livesHeartUI.setTexture(m_context->m_assets->getTexture(HEART_UI));
-	m_livesHeartUI.setPosition(m_context->m_window->getSize().x - 240, 0);
+	m_livesHeartUI.setPosition(static_cast<float>(m_context->m_window->getSize().x) - 240, 0.f);
 	m_livesHeartUI.setScale({ 2,2 });
 
 	//HEALTH BAR
@@ -262,7 +262,7 @@ void GamePlay::init()
 		PowerUPType type = static_cast<PowerUPType>(ReturnIntRandom(0, static_cast<int>(ICE_CREAM)));
 		int randomIndex;
 		do {
-			randomIndex = ReturnIntRandom(0, powerUPSpaces.size() - 1);
+			randomIndex = ReturnIntRandom(0, static_cast<int>(powerUPSpaces.size()) - 1);
 		} while (selectedIndicesPowerUP[randomIndex]);
 		selectedIndicesPowerUP[randomIndex] = true;
 		sf::Vector2f pos = powerUPSpaces[randomIndex];
@@ -277,7 +277,7 @@ void GamePlay::init()
 	{
 		int randomIndex;
 		do {
-			randomIndex = ReturnIntRandom(0, openSpaces.size() - 1);
+			randomIndex = ReturnIntRandom(0, static_cast<int>(openSpaces.size()) - 1);
 		} while (selectedIndicesCoins[randomIndex]);
 		selectedIndicesCoins[randomIndex] = true;
 		sf::Vector2f pos = openSpaces[randomIndex];
@@ -661,7 +661,7 @@ void GamePlay::draw()
 				sf::Sprite breakabletile;
 				breakabletile.setTexture(m_context->m_assets->getTexture(BREAKABLE_WALL_TEXTURE));
 				breakabletile.setScale({ 2,2 });
-				breakabletile.setPosition(sf::Vector2f(j * 32, i * 32));
+				breakabletile.setPosition(sf::Vector2f(static_cast<float>(j * 32), static_cast<float>(i * 32)));
 				m_breakableWalls.push_back(breakabletile);
 			}
 		}
@@ -872,8 +872,8 @@ bool GamePlay::checkCollision5(sf::Vector2f enemyPos, sf::Vector2f bombPos)
 // INDEX BASED TILE COLLISION FOR FRAMERATE DEPENDENT MOVEMENT
 bool GamePlay::checkCollision(sf::Vector2f pos)
 {
-	int i = pos.x / 32;
-	int j = pos.y / 32;
+	int i = static_cast<int>(pos.x / 32);
+	int j = static_cast<int>(pos.y / 32);
 	if (collisionMap[j][i] == WALL_TILE || collisionMap[j][i] == BREAKABLE_TILE)
 		return true;
 	return false;
@@ -956,8 +956,8 @@ void GamePlay::applyPowerUPEffect(PowerUPType powerUPType)
 int GamePlay::removeWalls(sf::Vector2f pos, int radius)
 {
 	int explodeTileCount = 0;
-	int x = pos.x / 32;
-	int y = pos.y / 32;
+	int x = static_cast<int>(pos.x / 32);
+	int y = static_cast<int>(pos.y / 32);
 
 	sf::Sprite center;
 	center.setTexture(m_context->m_assets->getTexture(EXPLOSION_SPRITE));

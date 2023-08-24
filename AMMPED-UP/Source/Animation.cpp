@@ -30,7 +30,7 @@ void Animation::update(sf::Time elapsed)
 	for (size_t i = 0; i < m_frames.size(); i++)
 	{
 		p -= m_frames[i].duration;
-		if (p > sf::Time(sf::microseconds(0.0000)) && &(m_frames[i]) == &m_frames.back())
+		if (p > sf::Time(sf::microseconds(sf::Int64(0))) && &(m_frames[i]) == &m_frames.back())
 		{
 			i = 0;
 			continue;

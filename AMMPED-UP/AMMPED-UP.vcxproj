@@ -258,9 +258,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\mongocxx\v_noabi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\mongocxx\v_noabi;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -279,7 +278,6 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\mongocxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -301,7 +299,6 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\include;$(SolutionDir)AMMPED-UP\Dependencies\json-3.11.2\include;$(SolutionDir)AMMPED-UP\Dependencies\SFML\include;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\mongocxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\include\bsoncxx\v_noabi;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libmongoc-1.0;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\include\libbson-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -8,10 +8,10 @@ void Coin::init(const sf::Texture& texture)
 	m_coin.setTexture(texture);
 	m_coin.setTextureRect(sf::IntRect(0, 0, 16, 16));
 	//m_coin.setScale({ 2,2 });
-	m_coinAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.1)) });
-	m_coinAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.1)) });
-	m_coinAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.1)) });
-	m_coinAnimation.addFrame({ sf::IntRect(48,0,16,16), sf::Time(sf::seconds(0.1)) });
+	m_coinAnimation.addFrame({ sf::IntRect(0,0,16,16), sf::Time(sf::seconds(0.1f)) });
+	m_coinAnimation.addFrame({ sf::IntRect(16,0,16,16), sf::Time(sf::seconds(0.1f)) });
+	m_coinAnimation.addFrame({ sf::IntRect(32,0,16,16), sf::Time(sf::seconds(0.1f)) });
+	m_coinAnimation.addFrame({ sf::IntRect(48,0,16,16), sf::Time(sf::seconds(0.1f)) });
 }
 bool Coin::playerIsOnCoin(sf::Sprite& other)
 {
