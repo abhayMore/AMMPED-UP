@@ -1,4 +1,4 @@
-#include "../Header Files/OptionsState.h"
+#include "../Header Files/SettingsState.h"
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/ExitState.h"
@@ -12,7 +12,7 @@ enum buttonValues
 	BACK
 };
 
-OptionsState::OptionsState(std::shared_ptr<Context>& context) :
+SettingsState::SettingsState(std::shared_ptr<Context>& context) :
 	m_context(context),
 	m_isResetHighScoreButtonPressed(false),
 	m_isMainmenuButtonPressed(false),
@@ -37,11 +37,11 @@ OptionsState::OptionsState(std::shared_ptr<Context>& context) :
 	m_bgm = &audioManager;
 }
 
-OptionsState::~OptionsState()
+SettingsState::~SettingsState()
 {
 }
 
-void OptionsState::init()
+void SettingsState::init()
 {
 
 	//MENU BACKGROUND 
@@ -51,13 +51,13 @@ void OptionsState::init()
 	m_menuBackground.setOrigin(sf::Vector2f(static_cast<float>(m_menuBackground.getTexture()->getSize().x / 2), static_cast<float>(m_menuBackground.getTexture()->getSize().y / 2)));
 	m_menuBackground.setScale({ 2,2 });
 
-	//OPTIONS TITLE
-	m_optionsTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
-	m_optionsTitle.setString("Options");
-	m_optionsTitle.setCharacterSize(50);
-	m_optionsTitle.setOrigin(m_optionsTitle.getLocalBounds().width / 2, m_optionsTitle.getLocalBounds().height / 2);
-	m_optionsTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2)  - 325.0f);
-	m_optionsTitle.setOutlineThickness(1);
+	//SETTINGS TITLE
+	m_settingsTitle.setFont(m_context->m_assets->getFont(MAIN_FONT));
+	m_settingsTitle.setString("Settings");
+	m_settingsTitle.setCharacterSize(50);
+	m_settingsTitle.setOrigin(m_settingsTitle.getLocalBounds().width / 2, m_settingsTitle.getLocalBounds().height / 2);
+	m_settingsTitle.setPosition(static_cast<float>(m_context->m_window->getSize().x / 2), static_cast<float>(m_context->m_window->getSize().y / 2)  - 325.0f);
+	m_settingsTitle.setOutlineThickness(1);
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -168,7 +168,7 @@ void OptionsState::init()
 	
 }
 
-void OptionsState::processInput()
+void SettingsState::processInput()
 {
 	sf::Event event;
 	while (m_context->m_window->pollEvent(event))
@@ -298,7 +298,7 @@ void OptionsState::processInput()
 	}
 }
 
-void OptionsState::update(sf::Time deltaTime)
+void SettingsState::update(sf::Time deltaTime)
 {
 	
 	if (m_isOverallMusicSliderMove)
@@ -341,11 +341,11 @@ void OptionsState::update(sf::Time deltaTime)
 	}
 }
 
-void OptionsState::draw()
+void SettingsState::draw()
 {
 	m_context->m_window->clear();
 	m_context->m_window->draw(m_menuBackground);
-	m_context->m_window->draw(m_optionsTitle);
+	m_context->m_window->draw(m_settingsTitle);
 	m_context->m_window->draw(m_overallMusic);
 	m_context->m_window->draw(m_inGameMusic);
 	m_context->m_window->draw(m_sfx);
@@ -359,10 +359,10 @@ void OptionsState::draw()
 	m_context->m_window->display();
 }
 
-void OptionsState::start()
+void SettingsState::start()
 {
 }
 
-void OptionsState::pause()
+void SettingsState::pause()
 {
 }

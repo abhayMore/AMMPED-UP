@@ -75,7 +75,7 @@
     <ClCompile Include="Source\LoginState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\OptionsState.cpp">
+    <ClCompile Include="Source\SettingsState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\LeaderBoard.cpp">
@@ -170,7 +170,7 @@
     <ClInclude Include="Header Files\RegisterPageState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header Files\OptionsState.h">
+    <ClInclude Include="Header Files\SettingsState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\LeaderBoard.h">

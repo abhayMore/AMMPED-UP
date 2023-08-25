@@ -45,7 +45,7 @@
     <ClCompile Include="Source\MainMenu.cpp" />
     <ClCompile Include="Source\MongoDB.cpp" />
     <ClCompile Include="Source\MongoInstanceManager.cpp" />
-    <ClCompile Include="Source\OptionsState.cpp" />
+    <ClCompile Include="Source\SettingsState.cpp" />
     <ClCompile Include="Source\PauseGame.cpp" />
     <ClCompile Include="Source\PlayerEntity.cpp" />
     <ClCompile Include="Source\PowerUP.cpp" />
@@ -76,7 +76,7 @@
     <ClInclude Include="Header Files\MainMenu.h" />
     <ClInclude Include="Header Files\MongoDB.h" />
     <ClInclude Include="Header Files\MongoInstanceManager.h" />
-    <ClInclude Include="Header Files\OptionsState.h" />
+    <ClInclude Include="Header Files\SettingsState.h" />
     <ClInclude Include="Header Files\PauseGame.h" />
     <ClInclude Include="Header Files\PlayerEntity.h" />
     <ClInclude Include="Header Files\PowerUP.h" />

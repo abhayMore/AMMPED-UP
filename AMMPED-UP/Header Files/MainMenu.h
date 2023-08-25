@@ -19,7 +19,7 @@ private:
 
 	bool m_isPlayButtonPressed;
 	bool m_isLeaderboardButtonPressed;
-	bool m_isOptionsButtonPressed;
+	bool m_isSettingsButtonPressed;
 	bool m_isExitButtonPressed;
 
 	//sf::Music& m_bgm;

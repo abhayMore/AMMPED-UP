@@ -10,11 +10,11 @@
 #include "MongoDB.h"
 #include "TextPrompt.h"
 
-class OptionsState : public am::State
+class SettingsState : public am::State
 {
 private:
 	std::shared_ptr<Context> m_context;
-	sf::Text m_optionsTitle;
+	sf::Text m_settingsTitle;
 	sf::Sprite m_menuBackground;
 	//DISPLAYS GENERAL CONTROLS
 	sf::Text m_controlDirections[5];
@@ -50,8 +50,8 @@ private:
 	learning::MongoDB m;
 
 public:
-	OptionsState(std::shared_ptr<Context>& context);
-	~OptionsState();
+	SettingsState(std::shared_ptr<Context>& context);
+	~SettingsState();
 
 	void init() override;
 	void processInput() override;

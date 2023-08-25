@@ -1,6 +1,6 @@
 #include "../Header Files/MainMenu.h"
 #include "SFML/Window/Event.hpp"
-#include "../Header Files/OptionsState.h"
+#include "../Header Files/SettingsState.h"
 #include "../Header Files/Leaderboard.h"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/ExitState.h"
@@ -10,7 +10,7 @@ enum buttonValues
 {
 	PLAY,
 	LEADERBOARD,
-	OPTIONS,
+	SETTINGS,
 	EXIT
 };
 
@@ -18,7 +18,7 @@ MainMenu::MainMenu(std::shared_ptr<Context>& context, float Overallvolume, float
 	m_context(context), 
 	m_isPlayButtonPressed(false),
 	m_isLeaderboardButtonPressed(false),
-	m_isOptionsButtonPressed(false),
+	m_isSettingsButtonPressed(false),
 	m_isExitButtonPressed(false),
 	gui(*m_context->m_window)
 {
@@ -90,9 +90,9 @@ void MainMenu::init()
 			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
 			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
 		}
-		else if (i == OPTIONS)
+		else if (i == SETTINGS)
 		{
-			m_pageButtons[i]->setText("OPTIONS");
+			m_pageButtons[i]->setText("SETTINGS");
 			m_pageButtons[i]->setPosition(m_context->m_window->getSize().x / 2 - m_pageButtons[i]->getSize().x / 2, m_context->m_window->getSize().y / 2);
 			m_pageButtons[i]->getRenderer()->setTextColorFocused(tgui::Color::Magenta);
 			m_pageButtons[i]->getRenderer()->setBorderColorFocused(tgui::Color::Transparent);
@@ -142,7 +142,7 @@ void MainMenu::processInput()
 				if (m_pageButtons[2]->isMouseOnWidget({ mouseX, mouseY })
 					&& m_pageButtons[2]->isFocused())
 				{
-					m_isOptionsButtonPressed = true;
+					m_isSettingsButtonPressed = true;
 				}
 				if (m_pageButtons[3]->isMouseOnWidget({ mouseX, mouseY })
 					&& m_pageButtons[3]->isFocused())
@@ -256,7 +256,7 @@ void MainMenu::processInput()
 				}
 				else if (m_pageButtons[2]->isFocused())
 				{
-					m_isOptionsButtonPressed = true;
+					m_isSettingsButtonPressed = true;
 				}
 				else if (m_pageButtons[3]->isFocused())
 				{
@@ -290,10 +290,10 @@ void MainMenu::update(sf::Time deltaTime)
 		m_context->m_states->add(std::make_unique<Leaderboard>(m_context));
 		m_isLeaderboardButtonPressed = false;
 	}
-	else if (m_isOptionsButtonPressed)
+	else if (m_isSettingsButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<OptionsState>(m_context));
-		m_isOptionsButtonPressed = false;
+		m_context->m_states->add(std::make_unique<SettingsState>(m_context));
+		m_isSettingsButtonPressed = false;
 	}
 	else if (m_isExitButtonPressed)
 	{
