@@ -286,7 +286,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)AMMPED-UP\Dependencies\TGUI\lib;$(SolutionDir)AMMPED-UP\Dependencies\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-system.lib;sfml-graphics.lib;sfml-audio.lib;sfml-window.lib;sfml-network.lib;tgui.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\lib\bson-1.0.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-c-driver\lib\mongoc-1.0.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\lib\bsoncxx.lib;$(SolutionDir)AMMPED-UP\Dependencies\mongo-cxx-driver\lib\mongocxx.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='rel|x64'">

@@ -75,18 +75,18 @@ std::tuple<std::string, std::string, std::string> learning::MongoDB::findDocumen
 bool learning::MongoDB::isDataPresent(const std::string& key, const std::string& value)
 {
 	// Create the query filter
-	auto filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
+	bsoncxx::v_noabi::document::value filter = bsoncxx::builder::stream::document{} << key << value << bsoncxx::builder::stream::finalize;
 	// Add query filter argument in find
-	auto cursor = loginInfoCollection.find({ filter });
+	mongocxx::v_noabi::cursor cursor = loginInfoCollection.find(filter.view());
 	return (cursor.begin() != cursor.end());
 }
 
 int learning::MongoDB::findScore(const std::string& value)
 {
-	auto filter = bsoncxx::builder::stream::document{} << "username" << value << bsoncxx::builder::stream::finalize;
+	bsoncxx::v_noabi::document::value filter = bsoncxx::builder::stream::document{} << "username" << value << bsoncxx::builder::stream::finalize;
 	mongocxx::options::find opts;
 	opts.projection(bsoncxx::builder::basic::make_document(bsoncxx::builder::basic::kvp("score", 1)));
-	auto cursor = loginInfoCollection.find({ filter }, opts);
+	mongocxx::v_noabi::cursor cursor = loginInfoCollection.find(filter.view(), opts);
 	for (auto&& doc : cursor)
 	{
 		bsoncxx::document::element curvename = doc["score"];
