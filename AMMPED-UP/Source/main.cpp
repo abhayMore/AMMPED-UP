@@ -1,6 +1,6 @@
 #include "../Header Files/Game.h"
 
-int main()
+int WinMain()
 {
     Game game;
     game.run();

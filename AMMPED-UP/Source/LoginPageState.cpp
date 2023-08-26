@@ -315,7 +315,6 @@ void LoginPageState::processInput()
 
 void LoginPageState::update(sf::Time deltaTime)
 {
-    m_elapsedTime += deltaTime;
     if (m_isSignInButtonPressed)
     {   
 
@@ -351,10 +350,14 @@ void LoginPageState::update(sf::Time deltaTime)
         m_isBackButtonPressed = false;
     }
 
-    if (m_elapsedTime.asSeconds() > 3.0)
+    if (m_errorPrompt.getLength() > 2)
     {
-        m_errorPrompt.setText("");
-        m_elapsedTime = sf::Time::Zero;
+        m_elapsedTime += deltaTime;
+        if (m_elapsedTime.asSeconds() > 3.0)
+        {
+            m_errorPrompt.setText("");
+            m_elapsedTime = sf::Time::Zero;
+        }
     }
 }
 
