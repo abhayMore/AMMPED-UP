@@ -4,6 +4,7 @@
 #include "SFML/Graphics/Text.hpp"
 #include "State.h"
 #include "Game.h"
+#include "AudioManager.h"
 
 class ExitState : public am::State
 {
@@ -24,7 +25,7 @@ private:
 	bool m_isLogoutExitButtonPressed;
 	bool m_isBackButtonPressed;
 
-	sf::Music& m_bgm;
+	AudioManager* m_bgm;
 
 public:
 	ExitState(std::shared_ptr<Context>& context);

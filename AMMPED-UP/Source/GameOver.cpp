@@ -15,12 +15,21 @@ GameOver::GameOver(std::shared_ptr<Context>& context, std::string currentState) 
 	m_currentGameState(currentState),
 	m_isRetryButtonPressed(false),
 	m_isMainmenuButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
 	gui(*m_context->m_window)
 {
 	theme.load("Resources/Black.txt");
 	m_finalScore = ScoreManager::getInstance();
 	m_userName = UserNameManager::getInstance();
+
+	AudioManager& audioManager = AudioManager::getInstance(
+		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
+		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
+		m_context->m_assets->getSoundEffect(DAMAGE_SFX),
+		m_context->m_assets->getSoundEffect(BLAST_SFX),
+		m_context->m_assets->getSoundEffect(COIN_SFX),
+		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
+	);
+	m_bgm = &audioManager;
 
 	if (m_currentGameState == "You Won!!") {
 			
@@ -250,13 +259,13 @@ void GameOver::update(sf::Time deltaTime)
 		//TODO
 		//Go to Play State
 		m_finalScore->setScore(0);
-		m_bgm.stop();
+		m_bgm->stopMainMenuMusic();
 		m_context->m_states->add(std::make_unique<GamePlay>(m_context), true);
 		m_isRetryButtonPressed = false;
 	}
 	else if (m_isMainmenuButtonPressed)
 	{
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context), true);
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
 		m_isMainmenuButtonPressed = false;
 
 	}
@@ -278,9 +287,9 @@ void GameOver::draw()
 
 void GameOver::start()
 {
-	m_bgm.play();
+	m_bgm->startMainMenuMusic();
 	if (m_currentGameState != "You Won!!")
 	{
-		m_deathSfx.play();
+		m_bgm->startSFXMusic(ENEMY_DEATH_SFX_SOUND);
 	}
 }

@@ -41,6 +41,7 @@ MainMenu::MainMenu(std::shared_ptr<Context>& context, float Overallvolume, float
 
 MainMenu::~MainMenu()
 {
+	std::cout << "desc called" << std::endl;
 	m_bgm->stopMainMenuMusic();
 
 }

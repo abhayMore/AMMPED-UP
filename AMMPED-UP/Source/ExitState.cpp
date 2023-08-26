@@ -1,8 +1,9 @@
 #include "../Header Files/ExitState.h"
+#include "../Header Files/MainMenu.h"
+
 #include "SFML/Window/Event.hpp"
 #include "../Header Files/GamePlay.h"
 #include "../Header Files/LoginState.h"
-#include "../Header Files/MainMenu.h"
 #include <memory>
 
 enum buttonValues
@@ -17,11 +18,18 @@ ExitState::ExitState(std::shared_ptr<Context>& context) :
 	m_isLogoutButtonPressed(false),
 	m_isLogoutExitButtonPressed(false),
 	m_isBackButtonPressed(false),
-	m_bgm(m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK)),
 	gui(*m_context->m_window)
 {
 	theme.load("Resources/Black.txt");
-
+	AudioManager& audioManager = AudioManager::getInstance(
+		m_context->m_assets->getSoundTrack(MAIN_SOUND_TRACK),
+		m_context->m_assets->getSoundTrack(IN_GAME_SOUND_TRACK),
+		m_context->m_assets->getSoundEffect(DAMAGE_SFX),
+		m_context->m_assets->getSoundEffect(BLAST_SFX),
+		m_context->m_assets->getSoundEffect(COIN_SFX),
+		m_context->m_assets->getSoundEffect(ENEMY_DEATH_SFX)
+	);
+	m_bgm = &audioManager;
 }
 
 ExitState::~ExitState()
@@ -221,15 +229,14 @@ void ExitState::update(sf::Time deltaTime)
 	else if (m_isLogoutButtonPressed)
 	{
 		//GOTO LOGIN STATE
-		m_bgm.stop();
+		m_bgm->stopMainMenuMusic();
 		//GO TO LOGIN STATE
 		m_context->m_states->add(std::make_unique<LoginState>(m_context), true);
 		m_isLogoutButtonPressed = false;
 	}
 	else if (m_isBackButtonPressed)
 	{
-		m_context->m_states->popCurrent();
-		m_context->m_states->add(std::make_unique<MainMenu>(m_context));
+		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
 		m_isBackButtonPressed = false;
 	}
 }

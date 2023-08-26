@@ -242,6 +242,7 @@ void PauseGame::update(sf::Time deltaTime)
 	{
 		m_context->m_states->popCurrent();
 		m_context->m_states->popCurrent();
+
 		m_context->m_states->add(std::make_unique<MainMenu>(m_context, m_bgm->getOverallVolume(), m_bgm->getInGameVolume(), m_bgm->getSFXVolume()), true);
 		m_isMainMenuButtonPressed = false;
 	}

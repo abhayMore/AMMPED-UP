@@ -8,6 +8,7 @@
 #include "Game.h"
 #include "ScoreManager.h"
 #include "UserNameManager.h"
+#include "AudioManager.h"
 #include "TGUI/TGUI.hpp"
 
 class GameOver : public am::State
@@ -36,7 +37,7 @@ private:
 	bool m_isMainmenuButtonPressed;
 
 	sf::Sound m_deathSfx;
-	sf::Music& m_bgm;
+	AudioManager* m_bgm;
 
 	//FILE SYSTEM FOR SCORE SAVING
 	UserNameManager* m_userName;
