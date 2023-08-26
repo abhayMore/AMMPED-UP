@@ -229,7 +229,7 @@ void GameOver::processInput()
 				}
 				break;
 			}
-			case sf::Keyboard::Return:
+			case sf::Keyboard::Enter:
 			{
 				if (m_pageButtons[0]->isFocused())
 				{

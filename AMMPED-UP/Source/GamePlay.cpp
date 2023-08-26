@@ -343,7 +343,7 @@ void GamePlay::processInput()
 				break;
 			}
 			//TEMPORARY DEBUGGIN TOOL
-			/*case sf::Keyboard::Q:
+			case sf::Keyboard::Q:
 			{
 				m_shiftToGameOver = true;
 				m_currentGameState = std::string("You Won!!");
@@ -369,7 +369,7 @@ void GamePlay::processInput()
 				else
 					showPowerUP = false;
 				break;
-			}*/
+			}
 			default:
 				break;
 			}

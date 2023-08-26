@@ -154,22 +154,22 @@ void LoginPageState::processInput()
             {
             case sf::Keyboard::Tab:
             {
-
                 if (m_editTextBoxes[0]->isFocused())
                 {
                     m_editTextBoxes[0]->setFocused(false);
                     m_editTextBoxes[1]->setFocused(true);
                 }
-                else if(m_editTextBoxes[1]->isFocused())
+                else if (m_editTextBoxes[1]->isFocused())
                 {
                     m_editTextBoxes[1]->setFocused(false);
                     m_pageButtons[0]->setFocused(true);
                 }
-                else if(m_pageButtons[0]->isFocused())
+                else if (m_pageButtons[0]->isFocused())
                 {
                     m_pageButtons[0]->setFocused(false);
                     m_pageButtons[1]->setFocused(true);
-                }else if(m_pageButtons[1]->isFocused())
+                }
+                else if (m_pageButtons[1]->isFocused())
                 {
                     m_pageButtons[1]->setFocused(false);
                     m_editTextBoxes[0]->setFocused(true);
@@ -188,12 +188,11 @@ void LoginPageState::processInput()
                 {
                     m_isSignInButtonPressed = true;
                 }
-
                 if (m_pageButtons[1]->isFocused() || m_pageButtons[1]->isMouseOnWidget({ mouseX, mouseY }))
                 {
                     m_isBackButtonPressed = true;
                 }
-
+                m_isSignInButtonPressed = true;
                 break;
             }
             case sf::Keyboard::Escape:
@@ -208,8 +207,8 @@ void LoginPageState::processInput()
         }
         case sf::Event::TextEntered:
         {
-            if (event.text.unicode != '\t' && event.text.unicode != '\n')
-            {
+            if ((event.text.unicode != '\n') && (event.text.unicode != '\t') && (event.text.unicode != '\r'))
+            {           
                 float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
                 float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
                 if (m_editTextBoxes[0]->isFocused())

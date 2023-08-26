@@ -193,7 +193,7 @@ void PauseGame::processInput()
 				m_isResumeButtonPressed = true;
 				break;
 			}
-			case sf::Keyboard::Return:
+			case sf::Keyboard::Enter:
 			{
 				if (m_pageButtons[0]->isFocused())
 				{

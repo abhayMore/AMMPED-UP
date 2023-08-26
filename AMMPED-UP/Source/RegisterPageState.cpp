@@ -293,6 +293,7 @@ void RegisterPageState::processInput()
                 {
                     m_isBackButtonPressed = true;
                 }
+                m_isRegisterButtonPressed = true;
                 break;
             }
             case sf::Keyboard::Escape:
@@ -307,7 +308,7 @@ void RegisterPageState::processInput()
         }
         case sf::Event::TextEntered:
         {
-            if (event.text.unicode != '\t' && event.text.unicode != '\n')
+            if ((event.text.unicode != '\n') && (event.text.unicode != '\t') && (event.text.unicode != '\r'))
             {
                 float mouseX = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).x);
                 float mouseY = static_cast<float>(sf::Mouse::getPosition(*m_context->m_window).y);
